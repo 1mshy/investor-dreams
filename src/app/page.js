@@ -18,8 +18,6 @@ export default class Home extends Component {
             price: null, stock_data: []
         };
         // setup the data in the backend
-        invoke("read_csv").then(_ => {
-        })
     }
 
     async componentDidMount() {

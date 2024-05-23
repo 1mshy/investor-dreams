@@ -1,5 +1,5 @@
-const api_keys = ["62f59cf3c1fe46498ed297915d46dfac"]
-const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&apikey=62f59cf3c1fe46498ed297915d46dfac"
+const api_key = "62f59cf3c1fe46498ed297915d46dfac"
+const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 
 export async function ticker_price(ticker_symbol) {
     const data = await request_ticker_data(ticker_symbol)
@@ -13,7 +13,7 @@ export async function request_ticker_data(ticker_symbol) {
     if (cached_data) {
         return cached_data;
     }
-    const url = `${api_url}&symbol=${ticker_symbol}`;
+    const url = `${api_url}&apikey=${api_key}&symbol=${ticker_symbol}`;
     const response = await fetch(url)
     const data = await response.json()
     await cache(data)
