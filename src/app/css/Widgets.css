@@ -1,0 +1,60 @@
+.widgets-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container {
+    background-color: #1e293b;
+    border-radius: 1rem;
+    padding: 1.3rem;
+    margin: 0.7rem;
+    color: white;
+    min-width: fit-content;
+    width: 40rem;
+    /*max-width: 300px;*/
+    overflow: hidden;
+}
+
+.head {
+
+}
+
+.ticker_symbol {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: 0.2rem;
+    display: inline;
+}
+
+.company_name {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #7c8793;
+    max-width: 100px;
+    text-wrap: nowrap;
+    text-overflow: fade;
+}
+
+.exchange {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #7c8793;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    font-size: 1.9rem;
+    font-weight: bold;
+}
+.price-change {
+    font-size: 1.2rem;
+
+}
+.date {
+    color: #94a3b8;
+}

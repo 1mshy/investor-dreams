@@ -1,95 +1,76 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
+import React, {Component} from 'react';
+import {
+    change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, ticker_price
+} from "@/app/funcs/stock_api";
+import StockWidget from "@/app/ui_components/StockWidget";
+import {invoke} from "@tauri-apps/api/tauri";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+/**
+ * css imports
+ */
+import "@/app/css/Widgets.css"
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+export default class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            price: null, stock_data: []
+        };
+        // setup the data in the backend
+        invoke("read_csv").then(_ => {
+        })
+    }
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+    async componentDidMount() {
+        const stocks = ["IBM", "AAPL", "TSLA", "AMZN", "MSFT", "INTC", "NFLX", "COST", "NVDA"]
+        for (const ticker_symbol of stocks) {
+            console.log(ticker_symbol)
+            await invoke("get_company_name", {tickerSymbol: ticker_symbol}).then(async company_name => {
+                await invoke("get_company_exchange", {tickerSymbol: ticker_symbol}).then(async company_exchange => {
+                    console.log(ticker_symbol)
+                    await request_ticker_data(ticker_symbol).then(ticker_data => {
+                        const price = price_from_data(ticker_data)
+                        const change = change_from_data(ticker_data)
+                        const date = last_date_from_data(ticker_data)
+                        const historical_prices = get_list_prices(ticker_data)
+                        let data = {
+                            symbol: ticker_symbol,
+                            name: company_name,
+                            exchange: company_exchange,
+                            price: price.toFixed(2),
+                            change: change.toFixed(2),
+                            date: date,
+                            historical_prices: historical_prices
+                        }
+                        let stock_data = this.state.stock_data;
+                        stock_data.push(data)
+                        this.setState({stock_data})
+                    })
+                })
+            })
+        }
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+    }
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    ticker_event = (event) => {
+        ticker_price(event.target.value).then((price) => {
+            this.setState({price: price})
+        });
+    };
+
+    render() {
+        const {stock_data} = this.state;
+        return (<div className={"widgets-container"}>
+            {/*<h1>Hello, World!</h1>*/}
+            {/*<input onChange={this.ticker_event}/>*/}
+            {/*{this.state.price && <p>Price: {this.state.price}</p>}*/}
+            {stock_data.map(data => {
+                const {symbol, name, exchange, price, change, date, historical_prices} = data;
+                return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
+                                    date={date} historical_prices={historical_prices}/>
+            })}
+        </div>);
+    }
 }
