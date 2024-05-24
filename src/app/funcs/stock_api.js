@@ -9,6 +9,12 @@ const ONE_MINUTE = 60_000; // 60,000 milliseconds
 /**
  * @param {string} ticker_symbol 
  * @returns {Promise<{meta:{},values:[]}>}
+ * @desc Request stock data from the API
+ * @desc This function is rate limited to 8 requests per minute
+ * @desc If the limit is reached, the function will wait for a minute and then resume
+ * @example
+ * const data = await request_ticker_data("AAPL")
+ * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
     while (current_requests_per_minute >= max_requests_per_minute) {
