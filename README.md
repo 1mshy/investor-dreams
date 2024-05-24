@@ -20,3 +20,7 @@ npm run tauri build
 
 Example of how it looks after 7th commit
 ![this is how it looks](static/investing_ss.png)
+
+
+Or with 500 stocks:
+![500 stockls](static/500.jpeg)

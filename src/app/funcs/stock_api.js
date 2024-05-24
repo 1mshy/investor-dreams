@@ -1,5 +1,5 @@
 import { delay } from "./tools";
-
+// 62f59cf3c1fe46498ed297915d46dfac first one
 const api_key = "d9471bdf0ba0406db018dd516ac29a0d"
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 let current_requests_per_minute = 0;
