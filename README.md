@@ -18,4 +18,5 @@ If you want to build the project into a compact executable, you can easily do so
 npm run tauri build
 ```
 
-This i
+Example of how it looks after 7th commit
+![this is how it looks](static/investing_ss.png)

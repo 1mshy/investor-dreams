@@ -1,6 +1,6 @@
 import { delay } from "./tools";
 
-const api_key = "62f59cf3c1fe46498ed297915d46dfac"
+const api_key = "d9471bdf0ba0406db018dd516ac29a0d"
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 let current_requests_per_minute = 0;
 const max_requests_per_minute = 8;
@@ -12,7 +12,7 @@ const ONE_MINUTE = 60_000; // 60,000 milliseconds
  */
 export async function request_ticker_data(ticker_symbol) {
     while (current_requests_per_minute >= max_requests_per_minute) {
-        console.log("Too many requests, waiting for a minute")
+        console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
         await delay(ONE_MINUTE+1000); // Wait for a minute
         current_requests_per_minute = 0;
         console.log("Minute over, resuming requests")
@@ -27,6 +27,8 @@ export async function request_ticker_data(ticker_symbol) {
             return stock_data;
         }
     }
+    console.log("requesting")
+    current_requests_per_minute++;
     const url = `${api_url}&apikey=${api_key}&symbol=${ticker_symbol}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -69,7 +71,7 @@ export function last_date_from_data(stock_data) {
 }
 
 export function get_list_prices(stock_data) {
-    return stock_data["values"].map(value => Number(value.close))
+    return stock_data["values"].map(value => Number(value.close)).reverse();
 }
 
 export function change_from_data(stock_data) {

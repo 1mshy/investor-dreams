@@ -60,7 +60,10 @@ export default class Home extends Component {
         };
     
         // Use Promise.all to fetch all data concurrently
-        await Promise.all(ticker_symbols.map(ticker_symbol => fetchStockData(ticker_symbol)));
+        // await Promise.all(ticker_symbols.map(ticker_symbol => fetchStockData(ticker_symbol)));
+        for(const ticker_symbol of ticker_symbols) {
+            await fetchStockData(ticker_symbol);
+        }
     }
     
 
