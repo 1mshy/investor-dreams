@@ -6,7 +6,10 @@ If you want to contribute, please change the api token used to your own, as to n
 
 This is a tauri application, using nextjs as the front end
 ## Getting Started
-
+Install all the required packages
+```bash
+npm install
+```
 To run the development application:
 ```bash
 npm run tauri dev
