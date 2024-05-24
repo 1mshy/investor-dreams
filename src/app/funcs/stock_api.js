@@ -1,12 +1,37 @@
+import { invoke } from "@tauri-apps/api";
 import { delay } from "./tools";
 require('dotenv').config()
 // 62f59cf3c1fe46498ed297915d46dfac first one
-const api_key = process.env.API_KEY;
+let api_key = ""
+/**
+ * @desc Get the api key from the backend
+ */
+invoke("get_api_key")
+        .then((key) => { api_key = key })
+        .catch((error) => console.error(`No api key found!!!: ${error}`));
+
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 let current_requests_per_minute = 0;
 const max_requests_per_minute = 8;
 const ONE_MINUTE = 60_000; // 60,000 milliseconds
 
+import { listen } from '@tauri-apps/api/event';
+
+// Function to listen for the 'api-key' event
+const listenForApiKey = () => {
+    listen('api-key', (event) => {
+        console.log('API Key:', event.payload); // Log the API key received from the backend
+    }).catch((error) => {
+        console.error('Failed to listen to api-key event:', error);
+    });
+};
+
+// Check if window is defined to ensure code runs in browser context
+if (typeof window !== 'undefined') {
+    listenForApiKey();
+} else {
+    console.warn('window is not defined. The code is running in a non-browser environment.');
+}
 /**
  * @param {string} ticker_symbol 
  * @returns {Promise<{meta:{},values:[]}>}
@@ -20,7 +45,7 @@ const ONE_MINUTE = 60_000; // 60,000 milliseconds
 export async function request_ticker_data(ticker_symbol) {
     while (current_requests_per_minute >= max_requests_per_minute) {
         console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
-        await delay(ONE_MINUTE+1000); // Wait for a minute
+        await delay(ONE_MINUTE + 1000); // Wait for a minute
         current_requests_per_minute = 0;
         console.log("Minute over, resuming requests")
     }
@@ -100,4 +125,8 @@ function is_error(stock_data) {
 export function percent_change(first, second) {
     return (first - second) / second * 100;
 
+}
+
+export function set_api_key() {
+    // api_key = 
 }

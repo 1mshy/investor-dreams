@@ -1,7 +1,7 @@
 "use client"
 import React, {Component} from 'react';
 import {
-    change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, ticker_price
+    change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, set_api_key, ticker_price
 } from "@/app/funcs/stock_api";
 import StockWidget from "@/app/ui_components/StockWidget";
 import {invoke} from "@tauri-apps/api/tauri";
@@ -37,7 +37,7 @@ export default class Home extends Component {
      */
     async componentDidMount() {
         const { ticker_symbols } = this.state;
-    
+        set_api_key();
         const fetchStockData = async (ticker_symbol) => {
             try {
                 const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
