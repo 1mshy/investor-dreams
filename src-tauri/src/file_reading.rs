@@ -1,6 +1,5 @@
-use std::io::{BufRead, BufReader};
-use tauri::{command, State};
-use crate::csv_data::{TICKER_MAP};
+use tauri::command;
+use crate::csv_data::TICKER_MAP;
 
 #[derive(Clone)]
 pub(crate) struct TickerSymbolData {
