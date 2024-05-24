@@ -1,3 +1,5 @@
+use std::env;
+
 use tauri::command;
 use crate::csv_data::TICKER_MAP;
 
@@ -15,6 +17,7 @@ impl TickerSymbolData {
         }
     }
 }
+
 
 // #[command]
 pub fn get_company_info(ticker_symbol: &str) -> Result<TickerSymbolData, String> {
