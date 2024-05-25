@@ -1,8 +1,6 @@
 "use client";
 
-import styled from 'styled-components';
-import { useEffect, useState } from "react";
-import PriceGraph from "@/app/ui_components/PriceGraph";
+import {  useState } from "react";
 import BigStockWidget from './BigStockWidget';
 import SmallStockWidget from './SmallStockWidget';
 
@@ -24,10 +22,7 @@ export const StockWidget = ({ symbol, name, exchange, price, change, date, histo
     return (
         <>
             <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(true) }} />
-
-            {big &&
-                <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} />
-            }
+            <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} open={big} />
         </>
     );
 };

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import PriceGraph from "@/app/ui_components/PriceGraph";
 import { Backdrop, Dialog } from '@mui/material';
 import { StockChange } from './StockWidget';
-import { Transition } from '../funcs/themes';
+import { Transition } from '../../funcs/themes';
 
-const BigStockWidget = ({ symbol, name, exchange, price, change, date, historical_prices, onClick }) => {
+const BigStockWidget = ({ symbol, name, exchange, price, change, date, historical_prices, onClick, open }) => {
     const [isPositive, setIsPositive] = useState(change >= 0);
 
     // Optionally, use an effect to update isPositive when the change prop updates
@@ -15,9 +15,9 @@ const BigStockWidget = ({ symbol, name, exchange, price, change, date, historica
     }, [change]);
 
     return (
-        <Backdrop open={true} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
+        <Backdrop open={open} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
             <Dialog
-                open={true}
+                open={open}
                 aria-labelledby="responsive-dialog-title"
                 TransitionComponent={Transition}
                 maxWidth='lg'

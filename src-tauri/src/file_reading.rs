@@ -1,5 +1,3 @@
-use std::env;
-
 use tauri::command;
 use crate::csv_data::TICKER_MAP;
 
