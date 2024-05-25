@@ -9,7 +9,7 @@ import {invoke} from "@tauri-apps/api/tauri";
  * css imports
  */
 import "@/app/css/Widgets.css"
-import { AppBar, Avatar, Button, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import { AppBar, Avatar, Button, Grid, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../ui_components/MenuButton';
 import { StockWidget } from '../ui_components/StockWidget';
@@ -127,7 +127,7 @@ export default class Home extends Component {
                         </Stack>
                     </Paper> */}
                 </div>
-                <div className={"widgets-container"}>
+                <Grid container spacing={3}>
                     {ticker_symbols.map(ticker_symbol => {
                         if (stock_data[ticker_symbol] === undefined) {
                             return <StockWidget symbol={ticker_symbol} key={ticker_symbol} />;
@@ -136,7 +136,7 @@ export default class Home extends Component {
                         return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
                             date={date} historical_prices={historical_prices} key={symbol} />
                     })}
-                </div>
+                </Grid>
             </div>);
     }
 }
