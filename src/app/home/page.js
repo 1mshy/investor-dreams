@@ -9,10 +9,11 @@ import { invoke } from "@tauri-apps/api/tauri";
  * css imports
  */
 import "@/app/css/Widgets.css"
-import { Divider, Paper, Stack } from '@mui/material';
+import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../ui_components/MenuButton';
 import { StockWidget } from '../ui_components/StockWidget';
+import theme from '../mui/theme';
 
 export default class Home extends Component {
     constructor(props) {
@@ -86,40 +87,43 @@ export default class Home extends Component {
     render() {
         const { stock_data, ticker_symbols } = this.state;
         return (
-            <div className={"main-page"}>
-                <div className={"header"}>
-                    <Paper elevation={8} component={Stack} marginBottom={5} square>
-                        <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
-                            <MenuButton disabled>
-                                Home
-                            </MenuButton>
-                            <MenuButton onClick={() => {
-                            }}>
-                                Favourites
-                            </MenuButton>
-                            <Divider />
-                            <MenuButton onClick={() => {
-                            }}>
-                                Technology
-                            </MenuButton>
-                            <MenuButton color="success" onClick={() => {
-                            }}>
-                                Stonks
-                            </MenuButton>
-                        </Grid2>
-                    </Paper>
+            <ThemeProvider theme={theme}>
+                <div className={"main-page"}>
+                    <div className={"header"}>
+                        <Paper elevation={8} component={Stack} marginBottom={5} square>
+                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
+                                <MenuButton disabled>
+                                    Home
+                                </MenuButton>
+                                <MenuButton onClick={() => {
+                                }}>
+                                    Favourites
+                                </MenuButton>
+                                <Divider />
+                                <MenuButton onClick={() => {
+                                }}>
+                                    Technology
+                                </MenuButton>
+                                <MenuButton color="success" onClick={() => {
+                                }}>
+                                    Stonks
+                                </MenuButton>
+                            </Grid2>
+                        </Paper>
 
+                    </div>
+                    <div className={"widgets-container"}>
+                        {ticker_symbols.map(ticker_symbol => {
+                            if (stock_data[ticker_symbol] === undefined) {
+                                return <StockWidget symbol={ticker_symbol} key={ticker_symbol} />;
+                            }
+                            const { symbol, name, exchange, price, change, date, historical_prices } = stock_data[ticker_symbol];
+                            return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
+                                date={date} historical_prices={historical_prices} key={symbol} />
+                        })}
+                    </div>
                 </div>
-                <div className={"widgets-container"}>
-                    {ticker_symbols.map(ticker_symbol => {
-                        if (stock_data[ticker_symbol] === undefined) {
-                            return <StockWidget symbol={ticker_symbol} key={ticker_symbol} />;
-                        }
-                        const { symbol, name, exchange, price, change, date, historical_prices } = stock_data[ticker_symbol];
-                        return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
-                            date={date} historical_prices={historical_prices} key={symbol} />
-                    })}
-                </div>
-            </div>);
+            </ThemeProvider>
+        );
     }
 }

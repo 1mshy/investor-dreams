@@ -23,9 +23,10 @@ export const StockWidget = ({ symbol, name, exchange, price, change, date, histo
     const [big, setBig] = useState(false);
     return (
         <>
-            {big ?
-                <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={()=>{setBig(false)}}/> :
-                <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={()=>{setBig(true)}}/>
+            <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(true) }} />
+
+            {big &&
+                <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} />
             }
         </>
     );

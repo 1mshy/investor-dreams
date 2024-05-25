@@ -30,7 +30,11 @@ class PriceGraph extends Component {
     }
 
     render() {
-        const { prices } = this.props;
+        const { prices, size } = this.props;
+        let dimensions = { width: '300px', height: '200px' };
+        if(size === 'big') {
+            dimensions = { width: '50%', height: '50%'};
+        }
 
         const data = {
             labels: prices,
@@ -85,7 +89,7 @@ class PriceGraph extends Component {
         };
 
         return (
-            <div style={{ width: '300px', height: '200px' }}> {/* Adjust the width and height as needed */}
+            <div style={dimensions}> {/* Adjust the width and height as needed */}
                 <Line data={data} options={options} />
             </div>
         );
