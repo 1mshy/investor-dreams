@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import {
     change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, set_api_key, ticker_price
 } from "@/app/funcs/stock_api";
-import {invoke} from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/tauri";
 
 /**
  * css imports
  */
 import "@/app/css/Widgets.css"
-import { AppBar, Avatar, Button, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import { AppBar, Avatar, Button, Divider, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../ui_components/MenuButton';
 import { StockWidget } from '../ui_components/StockWidget';
@@ -89,43 +89,27 @@ export default class Home extends Component {
         return (
             <div className={"main-page"}>
                 <div className={"header"}>
-                    <Grid2 container xs={6} md={8}>
-                        <MenuButton onClick={() => {
-
-                        }}>
-                            Joe
-                        </MenuButton>
-                    </Grid2>
-                    {/* <Paper elevation={6}>
-                        
-                        <Stack direction={'row'} spacing={5} useFlexGap flexWrap={"wrap"}>
-                            <MenuButton onClick={() => {
-                                console.log("hloer")
-                            }}>
-                                Joe
+                    <Paper elevation={8} component={Stack} marginBottom={5} square>
+                        <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1}} columnGap={1}>
+                            <MenuButton disabled>
+                                Home
                             </MenuButton>
-                            <Button variant='contained' color='primary' onClick={() => {
+                            <MenuButton onClick={() => {
+                            }}>
+                                Favourites
+                            </MenuButton>
+                            <Divider/>
+                            <MenuButton onClick={() => {
                             }}>
                                 Technology
-                            </Button>
-                            <Button variant='contained' color='primary' onClick={() => {
-
+                            </MenuButton>
+                            <MenuButton color="success" onClick={() => {
                             }}>
-                                Text 1
-                            </Button>
-                            <Button variant='contained' color='primary' onClick={() => {
+                                Stonks
+                            </MenuButton>
+                        </Grid2>
+                    </Paper>
 
-                            }}>
-                                Text 2
-                            </Button>
-                            <Button variant='contained' color='error' onClick={() => {
-
-                            }}>
-                                Edit
-                            </Button>
-                            <Avatar />
-                        </Stack>
-                    </Paper> */}
                 </div>
                 <div className={"widgets-container"}>
                     {ticker_symbols.map(ticker_symbol => {
