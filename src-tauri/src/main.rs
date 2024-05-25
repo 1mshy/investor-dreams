@@ -3,9 +3,10 @@
 use std::env;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
+use tauri::Manager;
+
 use crate::file_reading::{get_company_name, get_company_exchange, TickerSymbolData};
-use crate::sensitive_data::get_api_key;
-use tauri::{CustomMenuItem, Manager, Menu, MenuEntry, MenuItem, Submenu};
+use crate::sensitive_data::get_api_keys;
 
 mod file_reading;
 mod sensitive_data;
@@ -22,7 +23,7 @@ fn main() {
     Ok(())
 })
       .manage(Arc::new(RwLock::new(HashMap::<String, TickerSymbolData>::new()))) // Correctly instantiate the shared state
-      .invoke_handler(tauri::generate_handler![get_company_name, get_company_exchange, get_api_key ])
+      .invoke_handler(tauri::generate_handler![get_company_name, get_company_exchange, get_api_keys ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -1,23 +1,16 @@
 "use client"
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import "@/app/css/Widgets.css";
 
-/**
- * css imports
- */
-import "@/app/css/Widgets.css"
-import { redirect } from 'next/navigation';
+const Home = () => {
+    const router = useRouter();
 
-export default class Home extends Component {
-    constructor(props) {
-        super(props);
-    }
+    useEffect(() => {
+        router.push("/main");
+    }, [router]);
 
-    componentDidMount() {
-        redirect("/main")
-    }
+    return <div></div>;
+};
 
-
-    render() {
-            <div></div>
-    }
-}
+export default Home;

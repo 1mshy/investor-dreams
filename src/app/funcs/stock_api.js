@@ -2,36 +2,21 @@ import { invoke } from "@tauri-apps/api";
 import { delay } from "./tools";
 require('dotenv').config()
 // 62f59cf3c1fe46498ed297915d46dfac first one
-let api_key = ""
+// 06a953b321244222aab22c1cb0760634 second one
+// a21251ef23774ba4912b1bd9aaae2786 third one
+let api_keys = []
+let navigator = {}
 /**
  * @desc Get the api key from the backend
  */
-invoke("get_api_key")
-        .then((key) => { api_key = key })
+invoke("get_api_keys")
+        .then((keys) => { api_keys = keys.split(",") })
         .catch((error) => console.error(`No api key found!!!: ${error}`));
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
-let current_requests_per_minute = 0;
-const max_requests_per_minute = 8;
-const ONE_MINUTE = 60_000; // 60,000 milliseconds
+let stop_requesting = false;
+const WAIT_TIME = 61_000; // 61,000 milliseconds
 
-import { listen } from '@tauri-apps/api/event';
-
-// Function to listen for the 'api-key' event
-const listenForApiKey = () => {
-    listen('api-key', (event) => {
-        console.log('API Key:', event.payload); // Log the API key received from the backend
-    }).catch((error) => {
-        console.error('Failed to listen to api-key event:', error);
-    });
-};
-
-// Check if window is defined to ensure code runs in browser context
-if (typeof window !== 'undefined') {
-    listenForApiKey();
-} else {
-    console.warn('window is not defined. The code is running in a non-browser environment.');
-}
 /**
  * @param {string} ticker_symbol 
  * @returns {Promise<{meta:{},values:[]}>}
@@ -43,10 +28,10 @@ if (typeof window !== 'undefined') {
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    while (current_requests_per_minute >= max_requests_per_minute) {
+    while (stop_requesting) {
         console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
-        await delay(ONE_MINUTE + 1000); // Wait for a minute
-        current_requests_per_minute = 0;
+        await delay(WAIT_TIME); // Wait for the cooldown to end
+        stop_requesting = true;
         console.log("Minute over, resuming requests")
     }
     const cached_data = get_cache(ticker_symbol);
@@ -60,12 +45,11 @@ export async function request_ticker_data(ticker_symbol) {
         }
     }
     console.log("requesting")
-    current_requests_per_minute++;
-    const url = `${api_url}&apikey=${api_key}&symbol=${ticker_symbol}`;
+    const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
     const response = await fetch(url);
     const data = await response.json();
     if (is_error(data)) {
-        current_requests_per_minute = max_requests_per_minute;
+        stop_requesting = true;
         return request_ticker_data(ticker_symbol);
     }
     await cache(data);
@@ -79,6 +63,13 @@ async function cache(stock_data) {
         last_updated: Date.now()
     }
     localStorage.setItem(`${ticker_symbol}`, JSON.stringify(cache_data))
+}
+
+let current_api_index = 0;
+function get_next_api_key() {
+    let api_key = api_keys[current_api_index];
+    current_api_index = (current_api_index + 1) % api_keys.length;
+    return api_key;
 }
 
 /**
