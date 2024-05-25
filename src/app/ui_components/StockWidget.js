@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import PriceGraph from "@/app/ui_components/PriceGraph";
 import BigStockWidget from './BigStockWidget';
 import SmallStockWidget from './SmallStockWidget';
+import { Grid } from '@mui/material';
 
 
 /**
@@ -23,10 +24,12 @@ export const StockWidget = ({ symbol, name, exchange, price, change, date, histo
     const [big, setBig] = useState(false);
     return (
         <>
-            {big ?
-                <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={()=>{setBig(false)}}/> :
-                <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={()=>{setBig(true)}}/>
-            }
+            <Grid xs="auto">
+                {big ?
+                    <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} /> :
+                    <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(true) }} />
+                }
+            </Grid>
         </>
     );
 };
