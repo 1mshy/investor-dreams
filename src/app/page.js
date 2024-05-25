@@ -4,8 +4,6 @@ import {
     change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, set_api_key, ticker_price
 } from "@/app/funcs/stock_api";
 import {invoke} from "@tauri-apps/api/tauri";
-import StockWidget from "@/app/ui_components/StockWidget";
-import { invoke } from "@tauri-apps/api/tauri";
 
 /**
  * css imports
