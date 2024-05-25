@@ -7,14 +7,15 @@ import Link from 'next/link';
 const Home = () => {
     const router = useRouter();
 
-    // useEffect(() => {
-    //     router.push("/home");
-    // }, [router]);
+    useEffect(() => {
+        router.push("/home");
+    }, [router]);
 
     return <div>
         <h1>Investor Dreams</h1>
         <h2>HI THERE PERSON</h2>
-        <Link href="/home"> Click here</Link>
+        <p>You should automatically be moved to the homepage. If that is not the case, click on the button below</p>
+        <Link href="/home">Click here!</Link>
     </div>;
 };
 

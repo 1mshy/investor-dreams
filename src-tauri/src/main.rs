@@ -6,7 +6,7 @@ use std::sync::{Arc, RwLock};
 use tauri::Manager;
 
 use crate::file_reading::{get_company_name, get_company_exchange, TickerSymbolData};
-use crate::sensitive_data::get_api_keys;
+use crate::sensitive_data::{get_api_keys, get_username};
 
 mod file_reading;
 mod sensitive_data;
@@ -23,7 +23,7 @@ fn main() {
     Ok(())
 })
       .manage(Arc::new(RwLock::new(HashMap::<String, TickerSymbolData>::new()))) // Correctly instantiate the shared state
-      .invoke_handler(tauri::generate_handler![get_company_name, get_company_exchange, get_api_keys ])
+      .invoke_handler(tauri::generate_handler![get_company_name, get_company_exchange, get_api_keys, get_username ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

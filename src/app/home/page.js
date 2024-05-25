@@ -2,13 +2,24 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import "../css/Homepage.css"
+import { invoke } from '@tauri-apps/api';
 
 export default class Home extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            username: ""
+        }
+    }
+
+    async componentDidMount() {
+        invoke("get_username").then((response) => {
+            this.setState({ username: response });
+        });
     }
 
     render() {
+        const { username } = this.state;
         return (
             <div className={"mainPage"}>
                 <header className={"header"}>
@@ -19,7 +30,7 @@ export default class Home extends Component {
                     </nav>
                 </header>
                 <div className={"homepage-content"}>
-                    <h2 className={"welcomeText"}>HI THERE PERSON</h2>
+                    <h2 className={"welcomeText"}>Welcome back {username}</h2>
                 </div>
             </div>
         );
