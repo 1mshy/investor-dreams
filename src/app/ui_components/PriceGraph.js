@@ -1,5 +1,5 @@
 "use client"
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
