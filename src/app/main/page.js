@@ -18,7 +18,7 @@ export default class Home extends Component {
                         <Link href="/" className={"navButton"}>Top 300</Link>
                     </nav>
                 </header>
-                <div className={"content"}>
+                <div className={"homepage-content"}>
                     <h2 className={"welcomeText"}>HI THERE PERSON</h2>
                 </div>
             </div>
