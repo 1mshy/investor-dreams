@@ -1,0 +1,49 @@
+.mainPage {
+    padding: 20px;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: white;
+    min-height: 100vh;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  .title {
+    font-size: 2rem;
+    color: #0080b3;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navButton {
+    background-color: #0080b3;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navButton:hover {
+    background-color: #005f8a;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 160px);
+  }
+  
+  .welcomeText {
+    font-size: 2rem;
+    color: #ffffff;
+  }
+  
