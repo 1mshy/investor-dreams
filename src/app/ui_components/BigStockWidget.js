@@ -33,11 +33,10 @@ const BigStockWidget = ({ symbol, name, exchange, price, change, date, historica
 
             >
                 <div className={"big"}
-                    onClick={(e, reason) => {
+                    onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
                         e.nativeEvent.stopImmediatePropagation();
-                        console.log(e.target.Backdrop)
                     }}
                 >
                     <div className={"head"}>
