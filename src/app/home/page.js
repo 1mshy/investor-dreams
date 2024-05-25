@@ -1,7 +1,7 @@
 "use client"
 import React, { Component } from 'react';
 import {
-    change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, set_api_key, ticker_price
+    change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data
 } from "@/app/funcs/stock_api";
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -9,7 +9,7 @@ import { invoke } from "@tauri-apps/api/tauri";
  * css imports
  */
 import "@/app/css/Widgets.css"
-import { AppBar, Avatar, Button, Divider, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import { Divider, Paper, Stack } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../ui_components/MenuButton';
 import { StockWidget } from '../ui_components/StockWidget';
@@ -89,7 +89,7 @@ export default class Home extends Component {
             <div className={"main-page"}>
                 <div className={"header"}>
                     <Paper elevation={8} component={Stack} marginBottom={5} square>
-                        <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1}} columnGap={1}>
+                        <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                             <MenuButton disabled>
                                 Home
                             </MenuButton>
@@ -97,7 +97,7 @@ export default class Home extends Component {
                             }}>
                                 Favourites
                             </MenuButton>
-                            <Divider/>
+                            <Divider />
                             <MenuButton onClick={() => {
                             }}>
                                 Technology
