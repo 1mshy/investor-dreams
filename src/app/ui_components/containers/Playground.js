@@ -11,9 +11,9 @@ import { invoke } from "@tauri-apps/api/tauri";
 import "@/app/css/Widgets.css"
 import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import MenuButton from './MenuButton';
-import { StockWidget } from './widgets/StockWidget';
-import theme from '../mui/theme';
+import MenuButton from '../MenuButton';
+import { StockWidget } from '../widgets/StockWidget';
+import theme from '../../mui/theme';
 
 export default class Playground extends Component {
     constructor(props) {

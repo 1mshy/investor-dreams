@@ -55,6 +55,7 @@ const BigStockWidget = ({ symbol, name, exchange, price, change, date, historica
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </Dialog>
         </Backdrop>
