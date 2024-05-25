@@ -1,15 +1,20 @@
 "use client"
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data, set_api_key, ticker_price
 } from "@/app/funcs/stock_api";
 import {invoke} from "@tauri-apps/api/tauri";
+import StockWidget from "@/app/ui_components/StockWidget";
+import { invoke } from "@tauri-apps/api/tauri";
 
 /**
  * css imports
  */
 import "@/app/css/Widgets.css"
 import { StockWidget } from './ui_components/StockWidget';
+import { AppBar, Avatar, Button, Paper, Stack, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import MenuButton from './ui_components/MenuButton';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 export default class Home extends Component {
     constructor(props) {
@@ -43,18 +48,18 @@ export default class Home extends Component {
                 const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
                 const company_exchange = await invoke("get_company_exchange", { tickerSymbol: ticker_symbol }); // gets the exchange the company is listed on
                 const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
-                
+
                 // this should never happen, but if it does we should log it
                 if (ticker_data === undefined) {
                     console.log("Error fetching data for " + ticker_symbol);
                     return;
                 }
-    
+
                 const price = price_from_data(ticker_data);
                 const change = change_from_data(ticker_data);
                 const date = last_date_from_data(ticker_data);
                 const historical_prices = get_list_prices(ticker_data);
-    
+
                 let data = {
                     symbol: ticker_symbol,
                     name: company_name,
@@ -64,7 +69,7 @@ export default class Home extends Component {
                     date: date,
                     historical_prices: historical_prices
                 };
-    
+
                 let stock_data = this.state.stock_data;
                 stock_data[ticker_symbol] = data;
                 this.setState({ stock_data });
@@ -72,26 +77,68 @@ export default class Home extends Component {
                 console.log("Error fetching data for " + ticker_symbol + ": " + error.message);
             }
         };
-    
+
         // Use Promise.all to fetch all data concurrently
         // await Promise.all(ticker_symbols.map(ticker_symbol => fetchStockData(ticker_symbol)));
-        for(const ticker_symbol of ticker_symbols) {
+        for (const ticker_symbol of ticker_symbols) {
             await fetchStockData(ticker_symbol);
         }
     }
-    
+
 
     render() {
-        const {stock_data, ticker_symbols} = this.state;
-        return (<div className={"widgets-container"}>
-            {ticker_symbols.map(ticker_symbol => {
-                if(stock_data[ticker_symbol] === undefined) {
-                    return <StockWidget symbol={ticker_symbol} key={ticker_symbol}/>;
-                }
-                const {symbol, name, exchange, price, change, date, historical_prices} = stock_data[ticker_symbol];
-                return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
-                                    date={date} historical_prices={historical_prices} key={symbol} />
-            })}
-        </div>);
+        const { stock_data, ticker_symbols } = this.state;
+        return (
+            <div className={"main-page"}>
+                <div className={"header"}>
+                    <Grid2 container xs={6} md={8}>
+                        <MenuButton onClick={() => {
+
+                        }}>
+                            Joe
+                        </MenuButton>
+                    </Grid2>
+                    {/* <Paper elevation={6}>
+                        
+                        <Stack direction={'row'} spacing={5} useFlexGap flexWrap={"wrap"}>
+                            <MenuButton onClick={() => {
+                                console.log("hloer")
+                            }}>
+                                Joe
+                            </MenuButton>
+                            <Button variant='contained' color='primary' onClick={() => {
+                            }}>
+                                Technology
+                            </Button>
+                            <Button variant='contained' color='primary' onClick={() => {
+
+                            }}>
+                                Text 1
+                            </Button>
+                            <Button variant='contained' color='primary' onClick={() => {
+
+                            }}>
+                                Text 2
+                            </Button>
+                            <Button variant='contained' color='error' onClick={() => {
+
+                            }}>
+                                Edit
+                            </Button>
+                            <Avatar />
+                        </Stack>
+                    </Paper> */}
+                </div>
+                <div className={"widgets-container"}>
+                    {ticker_symbols.map(ticker_symbol => {
+                        if (stock_data[ticker_symbol] === undefined) {
+                            return <StockWidget symbol={ticker_symbol} key={ticker_symbol} />;
+                        }
+                        const { symbol, name, exchange, price, change, date, historical_prices } = stock_data[ticker_symbol];
+                        return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change}
+                            date={date} historical_prices={historical_prices} key={symbol} />
+                    })}
+                </div>
+            </div>);
     }
 }
