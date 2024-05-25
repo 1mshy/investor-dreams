@@ -33,3 +33,21 @@ export function toggle_favourite(ticker_symbol) {
         add_favourite(ticker_symbol);
     }
 }
+
+/**
+ * 
+ * @param {string} percent 
+ * @returns {Number}
+ */
+export function percent_to_decimal(percent) {
+    return Number(percent.replace("%", "")) / 100;
+}
+
+/**
+ * 
+ * @param {Number} decimal 
+ * @returns {string}
+ */
+export function decimal_to_percent(decimal) {
+    return (decimal * 100).toFixed(2) + "%";
+}
