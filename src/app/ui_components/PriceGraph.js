@@ -44,7 +44,6 @@ class PriceGraph extends Component {
                             // This case happens on initial chart render
                             return '';
                         }
-                        console.log(chartArea.top, chartArea.bottom)
                         const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
                         gradient.addColorStop(0, 'rgba(75, 192, 192, 0.2)');
                         gradient.addColorStop(0.5, 'rgba(75, 192, 192, 0.1)');

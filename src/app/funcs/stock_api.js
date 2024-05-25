@@ -5,7 +5,6 @@ require('dotenv').config()
 // 06a953b321244222aab22c1cb0760634 second one
 // a21251ef23774ba4912b1bd9aaae2786 third one
 let api_keys = []
-let navigator = {}
 /**
  * @desc Get the api key from the backend
  */
