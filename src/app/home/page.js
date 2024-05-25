@@ -40,7 +40,6 @@ export default class Home extends Component {
      */
     async componentDidMount() {
         const { ticker_symbols } = this.state;
-        set_api_key();
         const fetchStockData = async (ticker_symbol) => {
             try {
                 const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
