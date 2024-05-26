@@ -40,8 +40,6 @@ export default class Playground extends Component {
                 const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
                 const company_exchange = await invoke("get_company_exchange", { tickerSymbol: ticker_symbol }); // gets the exchange the company is listed on
                 const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
-                // const top_comps = await request_top_companies();
-                // console.log(top_comps)
                 // this should never happen, but if it does we should log it
                 if (ticker_data === undefined) {
                     console.log("Error fetching data for " + ticker_symbol);

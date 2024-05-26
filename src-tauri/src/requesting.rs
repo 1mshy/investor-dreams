@@ -30,6 +30,5 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
 pub async fn get_index_info() -> String {
     let url = "https://www.slickcharts.com/sp500";
     let response_text = get_request(url).await.unwrap();
-
     return response_text;
 }
