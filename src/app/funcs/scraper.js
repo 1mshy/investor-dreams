@@ -21,12 +21,3 @@ export async function request_top_companies() {
     console.log(data);
     return data;
 }
-
-export async function getServerSideProps() {
-    const data = await request_top_companies();
-    return {
-        props: {
-            companies: data,
-        },
-    };
-}
