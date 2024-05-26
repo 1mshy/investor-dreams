@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PriceGraph from "@/app/ui_components/PriceGraph";
+import PriceGraph from "@/components/PriceGraph";
 import { Backdrop, Dialog } from '@mui/material';
 import { StockChange } from './StockWidget';
-import { Transition } from '../../funcs/themes';
+import { Transition } from '../../app/funcs/themes';
 
 const BigStockWidget = ({ symbol, name, exchange, price, change, date, historical_prices, onClick, open }) => {
     const [isPositive, setIsPositive] = useState(change >= 0);
