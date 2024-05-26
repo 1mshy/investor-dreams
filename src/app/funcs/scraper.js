@@ -1,12 +1,11 @@
 
+import { invoke } from '@tauri-apps/api';
 import cheerio from 'cheerio';
 
 export async function request_top_companies() {
     console.log("runnins top comps")
-    const response = await fetch('https://www.slickcharts.com/sp500');
-    const text = await response.text();
+    const text = await invoke('get_index_info');
     const $ = cheerio.load(text);
-
     const data = [];
     $('table.table tbody tr').each((index, element) => {
         const cells = $(element).find('td');
