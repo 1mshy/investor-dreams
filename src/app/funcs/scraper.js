@@ -18,6 +18,5 @@ export async function request_top_companies() {
         }
     });
 
-    console.log(data);
     return data;
 }
