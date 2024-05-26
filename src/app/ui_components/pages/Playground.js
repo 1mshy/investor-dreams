@@ -11,8 +11,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 import "@/app/css/Widgets.css"
 import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import MenuButton from '../MenuButton';
-import { StockWidget } from '../widgets/StockWidget';
+import MenuButton from '../../../components/MenuButton';
+import { StockWidget } from '../../../components/widgets/StockWidget';
 import theme from '../../mui/theme';
 
 export default class Playground extends Component {
@@ -40,18 +40,19 @@ export default class Playground extends Component {
                 const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
                 const company_exchange = await invoke("get_company_exchange", { tickerSymbol: ticker_symbol }); // gets the exchange the company is listed on
                 const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
-    
+                // const top_comps = await request_top_companies();
+                // console.log(top_comps)
                 // this should never happen, but if it does we should log it
                 if (ticker_data === undefined) {
                     console.log("Error fetching data for " + ticker_symbol);
                     return;
                 }
-    
+
                 const price = price_from_data(ticker_data);
                 const change = change_from_data(ticker_data);
                 const date = last_date_from_data(ticker_data);
                 const historical_prices = get_list_prices(ticker_data);
-    
+
                 let data = {
                     symbol: ticker_symbol,
                     name: company_name,
@@ -61,7 +62,7 @@ export default class Playground extends Component {
                     date: date,
                     historical_prices: historical_prices
                 };
-    
+
                 let stock_data = this.state.stock_data;
                 stock_data[ticker_symbol] = data;
                 this.setState({ stock_data });
@@ -84,6 +85,8 @@ export default class Playground extends Component {
                 await this.fetchStockData(ticker_symbol);
             }
         }
+        const top_comps = await invoke("get_index_info");
+        console.log(top_comps)
     }
 
 

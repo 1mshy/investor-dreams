@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PriceGraph from "@/app/ui_components/PriceGraph";
+import PriceGraph from "@/components/PriceGraph";
 import { StockChange } from './StockWidget';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';

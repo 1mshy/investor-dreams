@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: false,
     output: 'export',
-    useFileSystemPublicRoutes: true
+    // useFileSystemPublicRoutes: true
 };
 
 export default nextConfig;
