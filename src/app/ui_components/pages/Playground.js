@@ -14,6 +14,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../../../components/MenuButton';
 import { StockWidget } from '../../../components/widgets/StockWidget';
 import theme from '../../mui/theme';
+import { ticker_to_name } from '@/app/funcs/scraper';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -37,8 +38,7 @@ export default class Playground extends Component {
     async fetchStockData(ticker_symbol) {
         if (typeof window !== 'undefined') {
             try {
-                const company_name = await invoke("get_company_name", { tickerSymbol: ticker_symbol }); // gets the name of the company
-                const company_exchange = await invoke("get_company_exchange", { tickerSymbol: ticker_symbol }); // gets the exchange the company is listed on
+                const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
                 const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
                 // this should never happen, but if it does we should log it
                 if (ticker_data === undefined) {
@@ -54,7 +54,6 @@ export default class Playground extends Component {
                 let data = {
                     symbol: ticker_symbol,
                     name: company_name,
-                    exchange: company_exchange,
                     price: price.toFixed(2),
                     change: change.toFixed(2),
                     date: date,
@@ -83,8 +82,6 @@ export default class Playground extends Component {
                 await this.fetchStockData(ticker_symbol);
             }
         }
-        const top_comps = await invoke("get_index_info");
-        console.log(top_comps)
     }
 
 
