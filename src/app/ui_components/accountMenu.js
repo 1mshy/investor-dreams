@@ -13,105 +13,117 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { invoke } from '@tauri-apps/api';
 
-export default function AccountMenu() {
-    //Got the method from Home.js if there's a better way please let me know... I wanna learn :)
-    //Defined in case of errors etc. - wouldnt brick the program
-    let initials = "";
-    invoke("get_username").then((response) => {
-        let username = response.split(" ");
-        initials = username[0].charAt(0) + username[1].charAt(0);
-       console.log(initials + " initials");
-    }).catch(error => {
-        console.error("Failed to fetch username:", error);
-    });
-    const [anchorEl, setAnchorEl] = React.useState(null);
+class AccountMenu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      anchorEl: null,
+      initials: ''
+    };
+  }
+
+  async componentDidMount() {
+    // Got the method from Home.js if there's a better way please let me know... I wanna learn :)
+    // Defined in case of errors etc. - wouldnt brick the program
+    const username = await invoke("get_username")
+    this.setState({ initials:username });
+  }
+
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  render() {
+    const { anchorEl, initials } = this.state;
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+
     return (
-        <React.Fragment>
-            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                <Tooltip title="Account settings">
-                    <IconButton
-                        onClick={handleClick}
-                        size="small"
-                        sx={{ ml: 2 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                    >
-                        <Avatar sx={{ width: 32, height: 32 }}>
-                            {/* Initial should be displayed here */}
-                            {initials}
-                        </Avatar>
-                    </IconButton>
-                </Tooltip>
-            </Box>
-            <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&::before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                        },
-                    },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      <>
+        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+          <Tooltip title="Account settings">
+            <IconButton
+              onClick={this.handleClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
             >
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
-            </Menu>
-        </React.Fragment>
+              <Avatar sx={{ width: 32, height: 32 }}>
+                {/* Initial should be displayed here */}
+                {initials}
+              </Avatar>
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={this.handleClose}
+          onClick={this.handleClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <MenuItem onClick={this.handleClose}>
+            <Avatar /> Profile
+          </MenuItem>
+          <MenuItem onClick={this.handleClose}>
+            <Avatar /> My account
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={this.handleClose}>
+            <ListItemIcon>
+              <PersonAdd fontSize="small" />
+            </ListItemIcon>
+            Add another account
+          </MenuItem>
+          <MenuItem onClick={this.handleClose}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+          <MenuItem onClick={this.handleClose}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </Menu>
+      </>
     );
+  }
 }
+
+export default AccountMenu;
