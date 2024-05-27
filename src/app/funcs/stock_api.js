@@ -30,7 +30,7 @@ export async function request_ticker_data(ticker_symbol) {
     while (stop_requesting) {
         console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
         await delay(WAIT_TIME); // Wait for the cooldown to end
-        stop_requesting = true;
+        stop_requesting = false;
         console.log("Minute over, resuming requests")
     }
     const cached_data = get_cache(ticker_symbol);
