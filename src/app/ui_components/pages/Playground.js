@@ -14,7 +14,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../../../components/MenuButton';
 import { StockWidget } from '../../../components/widgets/StockWidget';
 import theme from '../../mui/theme';
-import { ticker_to_name } from '@/app/funcs/scraper';
+import { get_portfolio_weight, ticker_to_name } from '@/app/funcs/scraper';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -75,6 +75,18 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
+        // map to an array of promises
+        const weight_promises = this.state.ticker_symbols.map(async (ticker_symbol) => {
+            const weight = await get_portfolio_weight(ticker_symbol);
+            return { ticker_symbol, weight };
+        });
+        // collect and wait for all the promises in the array to resolve
+        const weights = await Promise.all(weight_promises);
+        // sort by highest weight
+        const sorted_by_weight = weights.sort((a, b) => b.weight - a.weight).map(item => item.ticker_symbol);
+        // update the state with the sorted ticker symbols
+        this.setState({ ticker_symbols: sorted_by_weight });
+
         if (typeof window !== 'undefined') {
             const { ticker_symbols } = this.state;
             // Use Promise.all to fetch all data concurrently

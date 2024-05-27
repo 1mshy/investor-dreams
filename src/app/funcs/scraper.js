@@ -18,7 +18,7 @@ async function request_top_companies() {
             const number = index + 1;
             const company = $(cells[1]).text().trim();
             const ticker_symbol = $(cells[2]).text().trim();
-            const portfolio_percent = $(cells[3]).text().trim();
+            const portfolio_percent = Number($(cells[3]).text().trim().replace("%", ""));
             data[ticker_symbol] = { number, company, portfolio_percent };
         }
     });
@@ -43,4 +43,9 @@ export async function get_sp_500_data() {
 export async function ticker_to_name(ticker_symbol) {
     const data = await get_sp_500_data();
     return data[ticker_symbol].company;
+}
+
+export async function get_portfolio_weight(ticker_symbol) {
+    const data = await get_sp_500_data();
+    return data[ticker_symbol].portfolio_percent;
 }
