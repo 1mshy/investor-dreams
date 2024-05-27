@@ -17,12 +17,12 @@ export const StockChange = (props) => {
 }
 
 
-export const StockWidget = ({ symbol, name, exchange, price, change, date, historical_prices }) => {
+export const StockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices }) => {
     const [big, setBig] = useState(false);
     return (
         <>
-            <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(true) }} />
-            <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} change={change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} open={big} />
+            <SmallStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change} date={date} historical_prices={historical_prices} onClick={() => { setBig(true) }} />
+            <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change} date={date} historical_prices={historical_prices} onClick={() => { setBig(false) }} open={big} />
         </>
     );
 };

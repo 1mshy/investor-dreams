@@ -7,13 +7,13 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/tools";
-const SmallStockWidget = ({ symbol, name, price, change, date, historical_prices, onClick }) => {
-    const [isPositive, setIsPositive] = useState(change >= 0);
+const SmallStockWidget = ({ symbol, name, price, percent_change, date, historical_prices, onClick }) => {
+    const [isPositive, setIsPositive] = useState(percent_change >= 0);
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     // Optionally, use an effect to update isPositive when the change prop updates
     useEffect(() => {
-        setIsPositive(change >= 0);
-    }, [change]);
+        setIsPositive(percent_change >= 0);
+    }, [percent_change]);
     return (
         <>
             <div className={"container"} onClick={onClick}>
@@ -39,7 +39,7 @@ const SmallStockWidget = ({ symbol, name, price, change, date, historical_prices
                     <PriceGraph prices={historical_prices} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{change}%</StockChange>
+                            <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
                         </div>
                         <div className={"date"}>
                             {date}

@@ -6,13 +6,13 @@ import { Backdrop, Dialog } from '@mui/material';
 import { StockChange } from './StockWidget';
 import { Transition } from '../../app/funcs/themes';
 
-const BigStockWidget = ({ symbol, name, exchange, price, change, date, historical_prices, onClick, open }) => {
-    const [isPositive, setIsPositive] = useState(change >= 0);
+const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open }) => {
+    const [isPositive, setIsPositive] = useState(percent_change >= 0);
 
     // Optionally, use an effect to update isPositive when the change prop updates
     useEffect(() => {
-        setIsPositive(change >= 0);
-    }, [change]);
+        setIsPositive(percent_change >= 0);
+    }, [percent_change]);
 
     return (
         <Backdrop open={open} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
@@ -48,7 +48,7 @@ const BigStockWidget = ({ symbol, name, exchange, price, change, date, historica
                         <PriceGraph prices={historical_prices} size={"big"} />
                         <div className={"price-data"}>
                             <div className={"price-change"}>
-                                <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{change}%</StockChange>
+                                <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
                             </div>
                             <div className={"date"}>
                                 {date}
