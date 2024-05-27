@@ -21,7 +21,10 @@ class AccountMenu extends React.Component {
       initials: ''
     };
   }
-
+  /**
+   * @description Fetches the username from the backend and sets it to the initials state
+   * @description this is run **ONCE** when the component is mounted (fully rendered)
+   */
   async componentDidMount() {
     // Got the method from Home.js if there's a better way please let me know... I wanna learn :)
     // Defined in case of errors etc. - wouldnt brick the program
