@@ -88,9 +88,8 @@ export default class Playground extends Component {
         this.setState({ ticker_symbols: sorted_by_weight });
 
         if (typeof window !== 'undefined') {
-            const { ticker_symbols } = this.state;
             // Use Promise.all to fetch all data concurrently
-            for (const ticker_symbol of ticker_symbols) {
+            for (const ticker_symbol of sorted_by_weight) {
                 await this.fetchStockData(ticker_symbol);
             }
         }
