@@ -28,7 +28,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, date, historic
     }, [percent_change]);
     return (
         <>
-            <div className={"container"} onClick={onClick}>
+            <div className={"container"} style={{width: "40rem"}} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>

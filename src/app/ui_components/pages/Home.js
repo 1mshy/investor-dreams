@@ -12,7 +12,8 @@ export default class Home extends Component {
         super(props);
         this.state = {
             username: "",
-            top_3_changes: []
+            top_3_changes: [],
+            worst_3_changes: []
         }
     }
 
@@ -35,11 +36,12 @@ export default class Home extends Component {
                 .map(ticker_symbol => response[ticker_symbol])
             // console.log(top_3_changes)
             this.setState({ top_3_changes: top3 });
+            this.setState({ worst_3_changes: bottom3 });
         })
     }
 
     render() {
-        const { username, top_3_changes } = this.state;
+        const { username, top_3_changes, worst_3_changes } = this.state;
         return (
             <div className={"homepage-mainPage"}>
                 <header className={"homepage-header"}>
@@ -55,9 +57,24 @@ export default class Home extends Component {
                         <h2 className={"homepage-welcomeText"}>Welcome back {username}</h2>
                     </div>
                     <div>
-                        <h3>Top 3 changes</h3>
+                        <h3>Best Performing</h3>
                         <div className={"top3-list"}>
                             {top_3_changes.map((ticker_data) => {
+                                const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
+                                return <MiniStockWidget
+                                    symbol={ticker_symbol}
+                                    name={company}
+                                    price={current_price}
+                                    percent_change={percent_change}
+                                    key={ticker_symbol}
+                                />
+                            })}
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Worst performing</h3>
+                        <div>
+                            {worst_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return <MiniStockWidget
                                     symbol={ticker_symbol}

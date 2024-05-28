@@ -31,7 +31,6 @@ export async function request_ticker_data(ticker_symbol) {
         console.log("Minute over, resuming requests")
     }
     const cached_data = get_cache(ticker_symbol);
-    console.log(cached_data);
     if (cached_data) {
         const { last_updated, stock_data } = cached_data;
         const current_hour = Number(Date.now()) / 1000 / 60 / 60;
@@ -40,7 +39,7 @@ export async function request_ticker_data(ticker_symbol) {
             return stock_data;
         }
     }
-    console.log("requesting")
+    console.log("requesting " + ticker_symbol)
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
     const response = await fetch(url);
     const data = await response.json();
