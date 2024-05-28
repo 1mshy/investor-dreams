@@ -14,12 +14,13 @@ async function request_top_companies() {
     const data = {};
     $('table.table tbody tr').each((index, element) => {
         const cells = $(element).find('td');
+        // TODO create a regex function to remove all stuff that can be around a number to cause it to be parsed null
         if (cells.length >= 4) {
             const number = index + 1;
             const company = $(cells[1]).text().trim();
             const ticker_symbol = $(cells[2]).text().trim();
             const portfolio_percent = Number($(cells[3]).text().trim().replace("%", ""));
-            const current_price = Number($(cells[4]).text().trim());
+            const current_price = Number($(cells[4]).text().trim().replace(",", ""));
             const change = Number($(cells[5]).text().trim());
             const percent_change = Number($(cells[6]).text().trim().replace(/%(|)|\(|\)/g, "")); //replaces '%', '(', ')'
             console.log(current_price)
@@ -38,6 +39,7 @@ async function request_top_companies() {
 export async function get_sp_500_data() {
     let data = localStorage.getItem(local_storage_key);
     if (!data) {
+        console.log("Requesting top 500 company data from rust backend")
         data = await request_top_companies();
         localStorage.setItem(local_storage_key, JSON.stringify(data));
     } else {
