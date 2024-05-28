@@ -1,10 +1,11 @@
 "use client"
 import React, { Component } from 'react';
 import Link from 'next/link';
-import "../../css/Homepage.css";
 import { invoke } from '@tauri-apps/api';
 import { get_sp_500_data } from '@/app/funcs/scraper';
 import MiniStockWidget from '@/components/widgets/MiniStockWidget';
+import "../../css/Homepage.css";
+import "@/app/css/Widgets.css"
 
 export default class Home extends Component {
     constructor(props) {
@@ -24,12 +25,16 @@ export default class Home extends Component {
         });
         // TODO algorithm to get top 3 changes
         get_sp_500_data().then((response) => {
-            const top_3_changes = Object.keys(response)
-                .sort((a, b) => response[a].percent_change - response[b].percent_change)
+            const changes = Object.keys(response)
+                .sort((a, b) => response[b].percent_change - response[a].percent_change);
+            const top3 = changes
                 .slice(0, 3)
                 .map((ticker_symbol) => response[ticker_symbol]);
-            console.log(top_3_changes)
-            this.setState({ top_3_changes });
+            const bottom3 = changes
+                .slice(changes.length - 4, changes.length - 1)
+                .map(ticker_symbol => response[ticker_symbol])
+            // console.log(top_3_changes)
+            this.setState({ top_3_changes: top3 });
         })
     }
 
@@ -59,7 +64,7 @@ export default class Home extends Component {
                                     name={company}
                                     price={current_price}
                                     percent_change={percent_change}
-                                
+                                    key={ticker_symbol}
                                 />
                             })}
                         </div>
