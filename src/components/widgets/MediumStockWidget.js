@@ -2,12 +2,24 @@
 
 import { useEffect, useState } from "react";
 import PriceGraph from "@/components/PriceGraph";
-import { StockChange } from './StockWidget';
+import { StockChange } from './DynamicStockWidget';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/tools";
-const SmallStockWidget = ({ symbol, name, price, percent_change, date, historical_prices, onClick }) => {
+
+/**
+ * @param {string} symbol
+ * @param {string} name
+ * @param {number} price
+ * @param {number} percent_change
+ * @param {string} date
+ * @param {Array<number>} historical_prices
+ * @param {function} onClick
+ * @param {string} size - "big" or "medium" or "mini"
+ * @desc Medium sized stock widget, includes a price graph and a price change percentage
+ */
+const MediumStockWidget = ({ symbol, name, price, percent_change, date, historical_prices, onClick }) => {
     const [isPositive, setIsPositive] = useState(percent_change >= 0);
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     // Optionally, use an effect to update isPositive when the change prop updates
@@ -50,4 +62,4 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, date, historica
         </>
     );
 };
-export default SmallStockWidget;
+export default MediumStockWidget;

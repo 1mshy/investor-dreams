@@ -26,7 +26,7 @@ async function request_top_companies() {
             console.log("chng: " + change)
             console.log("*change: " + percent_change)
             if (!isNaN(ticker_symbol)) return;
-            data[ticker_symbol] = { number, company, portfolio_percent, current_price, change, percent_change };
+            data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change };
         }
     });
     return data;

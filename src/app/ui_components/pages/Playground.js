@@ -3,16 +3,10 @@ import React, { Component } from 'react';
 import {
     change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data
 } from "@/app/funcs/stock_api";
-import { invoke } from "@tauri-apps/api/tauri";
-
-/**
- * css imports
- */
-import "@/app/css/Widgets.css"
 import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../../../components/MenuButton';
-import { StockWidget } from '../../../components/widgets/StockWidget';
+import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
 import theme from '../../mui/theme';
 import { get_index_stocks, get_portfolio_weight, get_sp_500_data, ticker_to_name } from '@/app/funcs/scraper';
 
@@ -96,6 +90,7 @@ export default class Playground extends Component {
         sorted_by_weight.forEach(async (ticker_symbol) => {
             const { company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
             stock_data[ticker_symbol] = {
+                name: company,
                 price: current_price,
                 change: change,
                 percent_change: percent_change,
@@ -142,10 +137,10 @@ export default class Playground extends Component {
                     <div className={"widgets-container"}>
                         {ticker_symbols.map(ticker_symbol => {
                             if (stock_data[ticker_symbol] === undefined) {
-                                return <StockWidget symbol={ticker_symbol} key={ticker_symbol} />;
+                                return <DynamicStockWidget symbol={ticker_symbol} key={ticker_symbol} />;
                             }
                             const { symbol, name, exchange, price, percent_change, date, historical_prices } = stock_data[ticker_symbol];
-                            return <StockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change}
+                            return <DynamicStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change}
                                 date={date} historical_prices={historical_prices} key={symbol} />
                         })}
                     </div>

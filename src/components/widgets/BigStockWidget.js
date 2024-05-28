@@ -3,9 +3,21 @@
 import { useEffect, useState } from "react";
 import PriceGraph from "@/components/PriceGraph";
 import { Backdrop, Dialog } from '@mui/material';
-import { StockChange } from './StockWidget';
+import { StockChange } from './DynamicStockWidget';
 import { Transition } from '../../app/funcs/themes';
 
+/**
+ * @param {string} symbol
+ * @param {string} name
+ * @param {string} exchange
+ * @param {number} price
+ * @param {number} percent_change
+ * @param {string} date
+ * @param {Array<number>} historical_prices
+ * @param {string} size - "big" or "medium" or "mini"
+ * @desc Popup on the screen, blocks all other elements to focus on this one.
+ *      It is large and includes the most detail out of all the stock widgets
+ */
 const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open }) => {
     const [isPositive, setIsPositive] = useState(percent_change >= 0);
 

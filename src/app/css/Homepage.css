@@ -1,28 +1,29 @@
-.mainPage {
+.homepage-mainPage {
     padding: 20px;
-    background: linear-gradient(135deg, #0b0530, #070e3a);
+    /* background: linear-gradient(135deg, #0b0530, #070e3a); */
+    background-color: #2E3A47;
     color: white;
     min-height: 100vh;
 }
 
-.header {
+.homepage-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
 }
 
-.title {
+.homepage-title {
     font-size: 2rem;
     color: #0080b3;
 }
 
-.nav {
+.homepage-nav {
     display: flex;
     gap: 20px;
 }
 
-.navButton {
+.homepage-navButton {
     background-color: #0080b3;
     padding: 10px 20px;
     color: white;
@@ -31,7 +32,7 @@
     transition: background-color 0.3s ease;
 }
 
-.navButton:hover {
+.homepage-navButton:hover {
     background-color: #005f8a;
 }
 
@@ -41,7 +42,7 @@
     align-items: center;
 }
 
-.welcomeText {
+.homepage-welcomeText {
     font-size: 2rem;
     color: #ffffff;
 }
