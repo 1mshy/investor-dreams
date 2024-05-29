@@ -1,6 +1,5 @@
 import { fetch_widget_data } from "@/app/funcs/stock_api";
 import React, { Component } from "react";
-import { DynamicStockWidget } from "./DynamicStockWidget";
 import BigStockWidget from "./BigStockWidget";
 
 export default class ImplementedWidget extends Component {
