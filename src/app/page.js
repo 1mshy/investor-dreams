@@ -1,8 +1,11 @@
 "use client"
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import "@/app/css/Widgets.css";
 import Link from 'next/link';
+/**
+ * global css imports
+ */
+import "@/app/css/Widgets.css"
 
 const Home = () => {
     const router = useRouter();

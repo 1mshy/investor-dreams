@@ -1,9 +1,6 @@
 import { invoke } from "@tauri-apps/api";
 import { delay } from "./tools";
 require('dotenv').config()
-// 62f59cf3c1fe46498ed297915d46dfac first one
-// 06a953b321244222aab22c1cb0760634 second one
-// a21251ef23774ba4912b1bd9aaae2786 third one
 let api_keys = []
 /**
  * @desc Get the api key from the backend
@@ -30,11 +27,10 @@ export async function request_ticker_data(ticker_symbol) {
     while (stop_requesting) {
         console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
         await delay(WAIT_TIME); // Wait for the cooldown to end
-        stop_requesting = true;
+        stop_requesting = false;
         console.log("Minute over, resuming requests")
     }
     const cached_data = get_cache(ticker_symbol);
-    console.log(cached_data);
     if (cached_data) {
         const { last_updated, stock_data } = cached_data;
         const current_hour = Number(Date.now()) / 1000 / 60 / 60;
@@ -43,7 +39,7 @@ export async function request_ticker_data(ticker_symbol) {
             return stock_data;
         }
     }
-    console.log("requesting")
+    console.log("requesting " + ticker_symbol)
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
     const response = await fetch(url);
     const data = await response.json();
