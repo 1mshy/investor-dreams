@@ -3,12 +3,21 @@ import React, { Component } from 'react';
 import {
     change_from_data, get_list_prices, last_date_from_data, price_from_data, request_ticker_data
 } from "@/app/funcs/stock_api";
-import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
+import { invoke } from "@tauri-apps/api/tauri";
+import { Avatar, Box, Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import MenuButton from '../../../components/MenuButton';
 import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
 import theme from '../../mui/theme';
 import { get_index_stocks, get_portfolio_weight, get_sp_500_data, ticker_to_name } from '@/app/funcs/scraper';
+import { get_portfolio_weight, ticker_to_name } from '@/app/funcs/scraper';
+import { Height } from '@mui/icons-material';
+import { dialog } from '@tauri-apps/api';
+import AccountMenu from '../accountMenu';
+/**
+ * css imports
+ */
+import "@/app/css/Widgets.css"
 
 export default class Playground extends Component {
     constructor(props) {
@@ -112,12 +121,13 @@ export default class Playground extends Component {
             <ThemeProvider theme={theme}>
                 <div className={"main-page"}>
                     <div className={"header"}>
-                        <Paper elevation={8} component={Stack} marginBottom={5} square>
+                        <Paper elevation={8} component={Stack} marginBottom={5} square width={"100%"}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                                 <MenuButton disabled>
                                     Home
                                 </MenuButton>
                                 <MenuButton onClick={() => {
+
                                 }}>
                                     Favourites
                                 </MenuButton>
@@ -130,6 +140,10 @@ export default class Playground extends Component {
                                 }}>
                                     Stonks
                                 </MenuButton>
+                                <AccountMenu style={{marginLeft: "5000%"}}>
+
+                                </AccountMenu>
+
                             </Grid2>
                         </Paper>
 
