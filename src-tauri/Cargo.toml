@@ -1,10 +1,10 @@
 [package]
 name = "app"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Investring with dreams"
+authors = ["imshy"]
 license = ""
-repository = ""
+repository = "https://github.com/1mshy/investor-dreams"
 default-run = "app"
 edition = "2021"
 rust-version = "1.60"
