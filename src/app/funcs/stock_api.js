@@ -1,13 +1,14 @@
 import { invoke } from "@tauri-apps/api";
 import { delay } from "./tools";
+import { ticker_to_name } from "./scraper";
 require('dotenv').config()
 let api_keys = []
 /**
  * @desc Get the api key from the backend
  */
 invoke("get_api_keys")
-        .then((keys) => { api_keys = keys.split(",") })
-        .catch((error) => console.error(`No api key found!!!: ${error}`));
+    .then((keys) => { api_keys = keys.split(",") })
+    .catch((error) => console.error(`No api key found!!!: ${error}`));
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 let stop_requesting = false;
@@ -49,6 +50,43 @@ export async function request_ticker_data(ticker_symbol) {
     }
     await cache(data);
     return data;
+}
+/**
+ * 
+ * @param {string} ticker_symbol 
+ * @returns 
+ * @desc get information about the ticker symbol to create a stock widget
+ */
+export async function fetch_widget_data(ticker_symbol) {
+    try {
+        const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
+        const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
+        // this should never happen, but if it does we should log it
+        if (ticker_data === undefined) {
+            console.log("Error fetching data for " + ticker_symbol);
+            return;
+        }
+
+        const price = price_from_data(ticker_data);
+        const change = change_from_data(ticker_data);
+        const date = last_date_from_data(ticker_data);
+        const historical_prices = get_list_prices(ticker_data);
+
+        let data = {
+            symbol: ticker_symbol,
+            name: company_name,
+            price: price.toFixed(2),
+            percent_change: change.toFixed(2),
+            date: date,
+            historical_prices: historical_prices
+        };
+
+        return data;
+    } catch (error) {
+        console.log("Error fetching data for " + ticker_symbol + ": " + error.message);
+    }
+    return {};
+
 }
 
 async function cache(stock_data) {

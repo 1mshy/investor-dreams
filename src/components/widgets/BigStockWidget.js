@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import PriceGraph from "@/components/PriceGraph";
-import { Backdrop, Dialog } from '@mui/material';
+import { useEffect, useState } from "react";
 import { StockChange } from './DynamicStockWidget';
-import { Transition } from '../../app/funcs/themes';
 
 /**
  * @param {string} symbol
@@ -18,7 +16,7 @@ import { Transition } from '../../app/funcs/themes';
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */
-const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open }) => {
+const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices }) => {
     const [isPositive, setIsPositive] = useState(percent_change >= 0);
 
     // Optionally, use an effect to update isPositive when the change prop updates
@@ -27,50 +25,33 @@ const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, h
     }, [percent_change]);
 
     return (
-        <Backdrop open={open} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
-            <Dialog
-                open={open}
-                aria-labelledby="responsive-dialog-title"
-                TransitionComponent={Transition}
-                maxWidth='lg'
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        width: "100%",
-                        maxWidth: "90%",
-                        height: "100%",
-                        maxHeight: "80%",
-                    }
-                }}
-
-            >
-                <div className={"big"}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        e.nativeEvent.stopImmediatePropagation();
-                    }}
-                >
-                    <div className={"head"}>
-                        <div className={"ticker_symbol"}>{symbol}</div>
-                        <div className={"company_name"}>{name} ({exchange})</div>
+        
+        <div className={"big"}
+            onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                e.nativeEvent.stopImmediatePropagation();
+            }}
+        >
+            <div className={"head"}>
+                <div className={"ticker_symbol"}>{symbol}</div>
+                <div className={"company_name"}>{name} ({exchange})</div>
+            </div>
+            <div className={"content"}>
+                <div className={"price"}>${price}</div>
+                <PriceGraph prices={historical_prices} size={"big"} />
+                <div className={"price-data"}>
+                    <div className={"price-change"}>
+                        <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
                     </div>
-                    <div className={"content"}>
-                        <div className={"price"}>${price}</div>
-                        <PriceGraph prices={historical_prices} size={"big"} />
-                        <div className={"price-data"}>
-                            <div className={"price-change"}>
-                                <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
-                            </div>
-                            <div className={"date"}>
-                                {date}
-                            </div>
-                        </div>
+                    <div className={"date"}>
+                        {date}
                     </div>
-                    
                 </div>
-            </Dialog>
-        </Backdrop>
+            </div>
+
+        </div>
     );
 };
+
 export default BigStockWidget;
