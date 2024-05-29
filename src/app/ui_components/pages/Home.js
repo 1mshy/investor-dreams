@@ -36,6 +36,7 @@ export default class Home extends Component {
             const bottom3 = changes
                 .slice(changes.length - 4, changes.length - 1)
                 .map(ticker_symbol => response[ticker_symbol])
+                .reverse();
             // console.log(top_3_changes)
             this.setState({ top_3_changes: top3 });
             this.setState({ worst_3_changes: bottom3 });
