@@ -30,6 +30,7 @@ async function request_top_companies() {
             data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change };
         }
     });
+    data["time_requested"] = Date.now();
     return data;
 }
 /**
@@ -38,7 +39,9 @@ async function request_top_companies() {
  */
 export async function get_sp_500_data() {
     let data = localStorage.getItem(local_storage_key);
-    if (!data) {
+    const ten_minutes = 1000 * 60 * 10;
+    const date_requested = data ? JSON.parse(data)["time_requested"] : false;
+    if (!data || Date.now() - date_requested > ten_minutes){
         console.log("Requesting top 500 company data from rust backend")
         data = await request_top_companies();
         localStorage.setItem(local_storage_key, JSON.stringify(data));

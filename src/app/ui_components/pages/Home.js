@@ -6,6 +6,8 @@ import { get_sp_500_data } from '@/app/funcs/scraper';
 import MiniStockWidget from '@/components/widgets/MiniStockWidget';
 import "../../css/Homepage.css";
 import "@/app/css/Widgets.css"
+import StockSearch from '@/components/searching/SeachBoxes';
+
 
 export default class Home extends Component {
     constructor(props) {
@@ -46,6 +48,9 @@ export default class Home extends Component {
             <div className={"homepage-mainPage"}>
                 <header className={"homepage-header"}>
                     <h1 className={"homepage-title"}>Investor Dreams</h1>
+                    <div>
+                        <StockSearch label="" variant="standard" fullWidth />
+                    </div>
                     <nav className={"homepage-nav"}>
                         <Link href="/playground" className={"homepage-navButton"}>Top 10</Link>
                         <Link href="/" className={"homepage-navButton"}>Top 300</Link>
