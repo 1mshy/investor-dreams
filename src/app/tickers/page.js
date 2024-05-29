@@ -1,20 +1,45 @@
-// src/app/ticker/[symbol]/page.js
+// src/app/tickers/page.js
+'use client';
 
-"use client"; // Mark this file as a client component
+import ImplementedWidget from '@/components/widgets/ImplementedWidget';
+import { Paper, ThemeProvider } from '@mui/material';
+import React, { Component } from 'react';
+import { SoftPaper, theme } from '../mui/theme';
 
-import { usePathname } from 'next/navigation';
+class TickerPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tickerSymbol: this.get_param('ticker_symbol')
+        };
+    }
 
-const TickerPage = () => {
-  const pathname = usePathname();
-  const symbol = pathname.split('/').pop(); // Extracts the symbol from the URL
-  console.log(pathname)
+    componentDidMount() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tickerSymbol = urlParams.get('ticker_symbol');
+        this.setState({ tickerSymbol });
+    }
 
-  return (
-    <div>
-      <h1>Ticker: {symbol}</h1>
-      {/* You can use the symbol variable here to fetch and display data */}
-    </div>
-  );
-};
+    get_param(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tickerSymbol = urlParams.get(param);
+        return tickerSymbol;
+    }
+
+    render() {
+        const { tickerSymbol } = this.state;
+        console.log(tickerSymbol)
+
+        return (
+            <ThemeProvider theme={theme}>
+                <SoftPaper>
+                    <h1>Tickers Page</h1>
+                    {tickerSymbol ? <p>Ticker Symbol: {tickerSymbol}</p> : <p>Loading...</p>}
+                    <ImplementedWidget ticker_symbol={tickerSymbol} />
+                </SoftPaper>
+            </ThemeProvider>
+        );
+    }
+}
 
 export default TickerPage;

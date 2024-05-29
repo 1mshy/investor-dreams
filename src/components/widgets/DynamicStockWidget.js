@@ -4,6 +4,7 @@ import { Component } from 'react';
 import BigStockWidget from './BigStockWidget';
 import MediumStockWidget from './MediumStockWidget';
 import MiniStockWidget from "./MiniStockWidget";
+import PopupWidget from './PopupWidget';
 
 
 /**
@@ -67,7 +68,7 @@ export class DynamicStockWidget extends Component {
           historical_prices={historical_prices} 
           onClick={() => { this.setSize("big") }} 
         />}
-        <BigStockWidget 
+        <PopupWidget 
           symbol={symbol} 
           name={name} 
           price={price} 

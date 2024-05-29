@@ -54,7 +54,14 @@ export default class Home extends Component {
                     <nav className={"homepage-nav"}>
                         <Link href="/playground" className={"homepage-navButton"}>Top 10</Link>
                         <Link href="/" className={"homepage-navButton"}>Top 300</Link>
-                        <Link href="/tickers/AMD" className={"homepage-navButton"}>Top 300</Link>
+                        <Link
+                            href={{
+                                pathname: '/tickers',
+                                query: { ticker_symbol: 'AAPL' },
+                            }}
+                            passHref
+                        >
+                            trest ticker</Link>
                     </nav>
                 </header>
 
