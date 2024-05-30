@@ -113,7 +113,7 @@ export async function get_all_sectors() {
             sectors.push(data[key]["sector"]);
         }
     });
-    sectors.remove("")
+    sectors.filter(item => item !== undefined && item !== null && item !== "")
     return sectors.sort();
 }
 

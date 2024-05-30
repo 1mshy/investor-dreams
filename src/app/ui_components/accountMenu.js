@@ -29,7 +29,7 @@ class AccountMenu extends React.Component {
     // Defined in case of errors etc. - wouldnt brick the program
     const username = await invoke("get_username")
     const nameSplit = username.split(" ");
-    this.setState({ initials:nameSplit[0].charAt(0) + nameSplit[1].charAt(0) });
+    this.setState({ initials:nameSplit[0].charAt(0) + nameSplit[0].charAt(0) });
   }
 
   render() {
