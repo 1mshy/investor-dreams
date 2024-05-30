@@ -3,18 +3,19 @@ import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/f
 import {
     fetch_widget_data
 } from "@/app/funcs/stock_api";
-import { Divider, Paper, Stack } from '@mui/material';
+import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
 import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
 import AccountMenu from '../accountMenu';
+import Link from 'next/link';
+import { SoftPaper, theme } from '@/app/mui/theme';
 /**
  * css imports
  */
 import "@/app/css/Widgets.css";
-import Link from 'next/link';
-import { SoftPaper } from '@/app/mui/theme';
+import "@/app/css/Playground.css";
 
 export default class Playground extends Component {
     constructor(props) {
@@ -84,6 +85,7 @@ export default class Playground extends Component {
     render() {
         const { stock_data, ticker_symbols } = this.state;
         return (
+            <ThemeProvider theme={theme}>
                 <div className={"main-page"}>
                     <div className={"header"}>
                         <SoftPaper elevation={8} component={Stack} marginBottom={5} square width={"100%"}>
@@ -124,6 +126,7 @@ export default class Playground extends Component {
                         })}
                     </div>
                 </div>
+                </ThemeProvider>
         );
     }
 }
