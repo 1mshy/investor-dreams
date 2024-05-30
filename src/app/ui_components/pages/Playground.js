@@ -5,7 +5,7 @@ import {
     fetch_widget_data,
     get_sector
 } from "@/app/funcs/stock_api";
-import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
+import { Divider, Paper, Stack, TextField, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
@@ -18,6 +18,7 @@ import { SoftPaper, theme } from '@/app/mui/theme';
  */
 import "@/app/css/Widgets.css";
 import "@/app/css/Playground.css";
+import SectorSelect from '../sectorSelect';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -101,9 +102,10 @@ export default class Playground extends Component {
                                 }}>
                                     Favourites
                                 </MenuButton>
+                                <SectorSelect/>
+                                <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
                                 <AccountMenu flexGrow>
                                 </AccountMenu>
-
                             </Grid2>
                         </SoftPaper>
 
