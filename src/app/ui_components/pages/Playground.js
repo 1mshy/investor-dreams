@@ -65,8 +65,6 @@ export default class Playground extends Component {
         let stock_data = this.state.stock_data;
         sorted_by_weight.forEach(async (ticker_symbol) => {
             const { company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
-            const sector = await get_sector(ticker_symbol);
-            console.log(sector)
             stock_data[ticker_symbol] = {
                 name: company,
                 price: current_price,
