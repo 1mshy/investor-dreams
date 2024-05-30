@@ -1,7 +1,9 @@
 "use client"
 import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
-    fetch_widget_data
+    all_data,
+    fetch_widget_data,
+    get_sector
 } from "@/app/funcs/stock_api";
 import { Divider, Paper, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
@@ -43,11 +45,12 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
+        
         // get the top companies
-        const ticker_symbols = (await get_index_stocks()).slice(0, 10);
+        const ticker_symbols = (await get_index_stocks())
         console.log(ticker_symbols)
         // map to an array of promises
-        const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
+        const weight_promises = ticker_symbols.slice(0, 10).map(async (ticker_symbol) => {
             const weight = await get_portfolio_weight(ticker_symbol);
             return { ticker_symbol, weight };
         });
@@ -62,6 +65,8 @@ export default class Playground extends Component {
         let stock_data = this.state.stock_data;
         sorted_by_weight.forEach(async (ticker_symbol) => {
             const { company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+            const sector = await get_sector(ticker_symbol);
+            console.log(sector)
             stock_data[ticker_symbol] = {
                 name: company,
                 price: current_price,
