@@ -17,7 +17,6 @@ class AccountMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchorEl: null,
       initials: ''
     };
   }
@@ -29,16 +28,9 @@ class AccountMenu extends React.Component {
     // Got the method from Home.js if there's a better way please let me know... I wanna learn :)
     // Defined in case of errors etc. - wouldnt brick the program
     const username = await invoke("get_username")
-    this.setState({ initials:username });
+    const nameSplit = username.split(" ");
+    this.setState({ initials:nameSplit[0].charAt(0) + nameSplit[1].charAt(0) });
   }
-
-  handleClick = (event) => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
 
   render() {
     const { anchorEl, initials } = this.state;
@@ -46,10 +38,10 @@ class AccountMenu extends React.Component {
 
     return (
       <>
-        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: "flex-end", marginLeft: "auto", marginRight: "2%"}}>
           <Tooltip title="Account settings">
             <IconButton
-              onClick={this.handleClick}
+              // onClick={this.handleClick}
               size="small"
               sx={{ ml: 2 }}
               aria-controls={open ? 'account-menu' : undefined}
@@ -63,67 +55,6 @@ class AccountMenu extends React.Component {
             </IconButton>
           </Tooltip>
         </Box>
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={this.handleClose}
-          onClick={this.handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={this.handleClose}>
-            <Avatar /> Profile
-          </MenuItem>
-          <MenuItem onClick={this.handleClose}>
-            <Avatar /> My account
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={this.handleClose}>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem>
-          <MenuItem onClick={this.handleClose}>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-          <MenuItem onClick={this.handleClose}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </>
     );
   }
