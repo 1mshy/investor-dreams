@@ -1,3 +1,15 @@
-.main-page {
+.playground {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     background-color: #2E3A47;
+}
+
+.header {
+    flex-shrink: 0;
+}
+
+.playground-content {
+    flex-grow: 1;
+    overflow: hidden; /* Prevents the playground content from scrolling */
 }
