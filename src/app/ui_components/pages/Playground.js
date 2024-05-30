@@ -13,13 +13,12 @@ import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidg
 import AccountMenu from '../accountMenu';
 import Link from 'next/link';
 import { SoftPaper, theme } from '@/app/mui/theme';
+import SectorSelect from '../sectorSelect';
 /**
  * css imports
  */
 import "@/app/css/Widgets.css";
 import "@/app/css/Playground.css";
-import SectorSelect from '../sectorSelect';
-import { Height } from '@mui/icons-material';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -47,7 +46,7 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
-        
+
         // get the top companies
         const ticker_symbols = (await get_index_stocks())
         console.log(ticker_symbols)
@@ -91,9 +90,9 @@ export default class Playground extends Component {
         const { stock_data, ticker_symbols } = this.state;
         return (
             <ThemeProvider theme={theme}>
-                <div className={"main-page"}>
+                <div className={"playground"}>
                     <div className={"header"}>
-                        <SoftPaper elevation={8} component={Stack} marginBottom={5} square width={"100%"} style={{borderTopRightRadius: 0, borderTopLeftRadius: 0}}>
+                        <SoftPaper elevation={8} component={Stack} marginBottom={5} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                                 <MenuButton component={Link} href="/home" >
                                     Home
@@ -103,7 +102,7 @@ export default class Playground extends Component {
                                 }}>
                                     Favourites
                                 </MenuButton>
-                                <SectorSelect/>
+                                <SectorSelect />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
                                 <AccountMenu flexGrow>
                                 </AccountMenu>
@@ -111,18 +110,20 @@ export default class Playground extends Component {
                         </SoftPaper>
 
                     </div>
-                    <div className={"widgets-container"}>
-                        {ticker_symbols.map(ticker_symbol => {
-                            if (stock_data[ticker_symbol] === undefined) {
-                                return <DynamicStockWidget symbol={ticker_symbol} key={ticker_symbol} />;
-                            }
-                            const { symbol, name, exchange, price, percent_change, date, historical_prices } = stock_data[ticker_symbol];
-                            return <DynamicStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change}
-                                date={date} historical_prices={historical_prices} key={symbol} />
-                        })}
+                    <div className={"playground-content"}>
+                        <div className={"widgets-container"}>
+                            {ticker_symbols.map(ticker_symbol => {
+                                if (stock_data[ticker_symbol] === undefined) {
+                                    return <DynamicStockWidget symbol={ticker_symbol} key={ticker_symbol} />;
+                                }
+                                const { symbol, name, exchange, price, percent_change, date, historical_prices } = stock_data[ticker_symbol];
+                                return <DynamicStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change}
+                                    date={date} historical_prices={historical_prices} key={symbol} />
+                            })}
+                        </div>
                     </div>
                 </div>
-                </ThemeProvider>
+            </ThemeProvider>
         );
     }
 }
