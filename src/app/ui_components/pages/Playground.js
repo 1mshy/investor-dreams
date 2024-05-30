@@ -19,6 +19,7 @@ import { SoftPaper, theme } from '@/app/mui/theme';
 import "@/app/css/Widgets.css";
 import "@/app/css/Playground.css";
 import SectorSelect from '../sectorSelect';
+import { Height } from '@mui/icons-material';
 
 export default class Playground extends Component {
     constructor(props) {
