@@ -98,17 +98,7 @@ export default class Playground extends Component {
                                 }}>
                                     Favourites
                                 </MenuButton>
-                                <Divider />
-                                <MenuButton onClick={() => {
-                                }}>
-                                    Technology
-                                </MenuButton>
-                                <MenuButton color="success" onClick={() => {
-                                }}>
-                                    Stonks
-                                </MenuButton>
-                                <AccountMenu style={{ marginLeft: "5000%" }}>
-
+                                <AccountMenu flexGrow>
                                 </AccountMenu>
 
                             </Grid2>
