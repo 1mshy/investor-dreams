@@ -35,6 +35,7 @@ export class DynamicStockWidget extends Component {
     this.state = {
       size: props.size ? props.size : 'medium',
     };
+    this.start_size = this.state.size;
 
     this.setSize = this.setSize.bind(this);
   }
@@ -75,7 +76,7 @@ export class DynamicStockWidget extends Component {
           percent_change={percent_change} 
           date={date} 
           historical_prices={historical_prices} 
-          onClick={() => { this.setSize(this.props.size) }} 
+          onClick={() => { this.setSize(this.start_size) }} 
           open={is_big} 
         />
       </>

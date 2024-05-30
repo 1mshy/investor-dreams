@@ -3,6 +3,8 @@ import { delay } from "./tools";
 import { ticker_to_name } from "./scraper";
 require('dotenv').config()
 let api_keys = []
+let all_data = undefined;
+// export const all_data = await fetch("/json/index_data.json").then(response => response.json());
 /**
  * @desc Get the api key from the backend
  */
@@ -86,7 +88,32 @@ export async function fetch_widget_data(ticker_symbol) {
         console.log("Error fetching data for " + ticker_symbol + ": " + error.message);
     }
     return {};
-
+}
+/**
+ * 
+ * @returns {Promise<{}>}
+ * @example {A: {symbol: 'A', name: 'Agilent Technologies, Inc.', summary: 'Agilent Technologies, Inc. provides application fo… and is headquartered in Santa Clara, California.', currency: 'USD', sector: 'Health Care', …}}
+ * @desc possible keys: city, composite_figi, country, currency, description, cusip, exchange, figi, industry, industry_group, isin, market, market_cap, name, sector, shareclass_figi, state, summary, symbol, website, zipcode
+*/
+export async function get_all_data() {
+    if (!all_data)
+        all_data = await fetch("/json/index_data.json").then(response => response.json());
+    console.log(all_data)
+    return all_data;
+}
+/**
+ * returns all the possible sectors
+ * @returns {Promise<[]>}
+ */
+export async function get_all_sectors() {
+    let sectors = [];
+    const data = await get_all_data();
+    Object.keys(data).forEach(key => {
+        if (!sectors.includes(data[key]["sector"])) {
+            sectors.push(data[key]["sector"]);
+        }
+    });
+    return sectors.sort();
 }
 
 async function cache(stock_data) {
