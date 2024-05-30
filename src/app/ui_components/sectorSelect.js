@@ -10,16 +10,18 @@ import { get_all_sectors } from '../funcs/stock_api';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+    disableScrollLock: true,
+    marginThreshold: null,
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
     },
-  },
 };
 
 export default class SectorSelect extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props)
         this.state = {
             sector: [],
@@ -28,43 +30,43 @@ export default class SectorSelect extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange (event) {
-        this.setState({sector: event.target.value})
+    handleChange(event) {
+        this.setState({ sector: event.target.value })
     }
 
     componentDidMount() {
-        get_all_sectors().then(sectors => {this.setState({sectors: sectors})})
+        get_all_sectors().then(sectors => { this.setState({ sectors: sectors }) })
     }
 
-    render () {
-        const {sector, sectors} = this.state;
+    render() {
+        const { sector, sectors } = this.state;
         return (
-        <div>
-            <Box sx={{ minWidth: 120 }}>
-                <FormControl sx={{m: 1, width: 300}}>
-                    <InputLabel id="sectorSelectLabel">Sector</InputLabel>
-                    <Select
-                        labelId="sectorSelectLabel"
-                        id="sectorSelect"
-                        label="Sector"
-                        multiple
-                        value={sector}
-                        onChange={this.handleChange}
-                        input={<OutlinedInput label="Sector"/>}
-                        MenuProps={MenuProps}
-                    >
-                        {sectors.map((sector) => (
-                            <MenuItem
-                                key={sector}
-                                value={sector}
-                            >
-                                {sector}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Box>
-        </div>
+            <div>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl sx={{ m: 1, width: 300 }}>
+                        <InputLabel id="sectorSelectLabel">Sector</InputLabel>
+                        <Select
+                            labelId="sectorSelectLabel"
+                            id="sectorSelect"
+                            label="Sector"
+                            multiple
+                            value={sector}
+                            onChange={this.handleChange}
+                            input={<OutlinedInput label="Sector" />}
+                            MenuProps={MenuProps}
+                        >
+                            {sectors.map((sector) => (
+                                <MenuItem
+                                    key={sector}
+                                    value={sector}
+                                >
+                                    {sector}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Box>
+            </div>
         )
     };
 }
