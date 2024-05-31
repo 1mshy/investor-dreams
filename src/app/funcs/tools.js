@@ -19,6 +19,10 @@ export function get_favourite_array() {
     return Object.keys(get_favourites());
 }
 
+export function has_favourites() {
+    return get_favourite_array().length > 0;
+}
+
 export function is_ticker_favourite(ticker_symbol) {
     let favourites = get_favourites();
     if (!favourites) return false;
