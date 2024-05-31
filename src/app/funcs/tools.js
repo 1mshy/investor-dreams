@@ -1,12 +1,24 @@
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const favourite_local_storage_key = "favourites";
-
+/**
+ * 
+ * @returns {}
+ * @example {AAPL: true, JS: true}
+ */
 export function get_favourites() {
     let favourites = localStorage.getItem(favourite_local_storage_key);
     if (!favourites) return {};
     return JSON.parse(favourites);
 }
+/**
+ * 
+ * @returns []
+ */
+export function get_favourite_array() {
+    return Object.keys(get_favourites());
+}
+
 export function is_ticker_favourite(ticker_symbol) {
     let favourites = get_favourites();
     if (!favourites) return false;
