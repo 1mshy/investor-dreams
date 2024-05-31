@@ -7,7 +7,7 @@ import MiniStockWidget from '@/components/widgets/MiniStockWidget';
 import "../../css/Homepage.css";
 import "@/app/css/Widgets.css"
 import StockSearch from '@/components/searching/SeachBoxes';
-import { get_favourite_array, get_favourites } from '@/app/funcs/tools';
+import { get_favourite_array, get_favourites, has_favourites } from '@/app/funcs/tools';
 import ImplementedDynamicStockWidget from '@/components/widgets/ImplementedDynamicStockWidget';
 
 
@@ -68,15 +68,15 @@ export default class Home extends Component {
                 </header>
 
                 <div className={"homepage-content"}>
-                    <div>
+                    {has_favourites() && <div>
                         <h3>Favourites:</h3>
                         <div className={"homepage-favourties"}>
 
                             {get_favourite_array().map(ticker_symbol => {
-                                return <ImplementedDynamicStockWidget ticker_symbol={ticker_symbol} size={"mini"}/>
+                                return <ImplementedDynamicStockWidget ticker_symbol={ticker_symbol} size={"mini"} />
                             })}
                         </div>
-                    </div>
+                    </div>}
                     <div>
                         <h3>Best Performing</h3>
                         <div className={"top3-list"}>
