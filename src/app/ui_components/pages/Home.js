@@ -7,6 +7,8 @@ import MiniStockWidget from '@/components/widgets/MiniStockWidget';
 import "../../css/Homepage.css";
 import "@/app/css/Widgets.css"
 import StockSearch from '@/components/searching/SeachBoxes';
+import { get_favourite_array, get_favourites } from '@/app/funcs/tools';
+import ImplementedDynamicStockWidget from '@/components/widgets/ImplementedDynamicStockWidget';
 
 
 export default class Home extends Component {
@@ -48,7 +50,7 @@ export default class Home extends Component {
         return (
             <div className={"homepage-mainPage"}>
                 <header className={"homepage-header"}>
-                    <h1 className={"homepage-title"}>Investor Dreams</h1>
+                    <h1 className={"homepage-title"}>To the moon {username} 🚀🚀</h1>
                     <div>
                         <StockSearch label="" variant="standard" fullWidth />
                     </div>
@@ -67,7 +69,13 @@ export default class Home extends Component {
 
                 <div className={"homepage-content"}>
                     <div>
-                        <h2 className={"homepage-welcomeText"}>Welcome back {username}</h2>
+                        <h3>Favourites:</h3>
+                        <div className={"homepage-favourties"}>
+
+                            {get_favourite_array().map(ticker_symbol => {
+                                return <ImplementedDynamicStockWidget ticker_symbol={ticker_symbol} size={"mini"}/>
+                            })}
+                        </div>
                     </div>
                     <div>
                         <h3>Best Performing</h3>
@@ -86,7 +94,7 @@ export default class Home extends Component {
                     </div>
                     <div>
                         <h3>Worst performing</h3>
-                        <div>
+                        <div className={"bottom3-list"}>
                             {worst_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return <MiniStockWidget
