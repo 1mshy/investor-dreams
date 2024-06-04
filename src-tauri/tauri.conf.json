@@ -54,10 +54,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 1080,
         "resizable": true,
         "title": "inverstor-dreams",
-        "width": 1200
+        "width": 1920
       }
     ]
   }
