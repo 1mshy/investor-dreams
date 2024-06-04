@@ -1,0 +1,1 @@
+for code that I made that I thought was good but now realised is completely uselss :)
