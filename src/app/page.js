@@ -9,7 +9,11 @@ import "@/app/css/Widgets.css"
 
 const Home = () => {
     const router = useRouter();
-
+    // useEffect(() => {
+    //     invoke("set_base_size").then((response) => {
+    //         console.log("All windows:", response);
+    //     });
+    // });
     useEffect(() => {
         router.push("/home");
     }, [router]);
