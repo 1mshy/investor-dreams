@@ -7,8 +7,10 @@ import MiniStockWidget from '@/components/widgets/MiniStockWidget';
 import "../../css/Homepage.css";
 import "@/app/css/Widgets.css"
 import StockSearch from '@/components/searching/SeachBoxes';
-import { get_favourite_array, get_favourites, has_favourites } from '@/app/funcs/tools';
+import { get_favourite_array, get_favourites, has_favourites } from '@/app/funcs/favourites';
 import ImplementedDynamicStockWidget from '@/components/widgets/ImplementedDynamicStockWidget';
+import { Button } from '@mui/material';
+import { clear_application_data } from '@/app/funcs/tools';
 
 
 export default class Home extends Component {
@@ -20,6 +22,8 @@ export default class Home extends Component {
             worst_3_changes: []
         }
     }
+
+
 
     async componentDidMount() {
         // Only access browser-specific APIs here
@@ -68,6 +72,7 @@ export default class Home extends Component {
                             passHref
                         >
                             trest ticker</Link>
+                            {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
                     </nav>
                 </header>
 

@@ -6,7 +6,7 @@ import { StockChange } from './DynamicStockWidget';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
-import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/tools";
+import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 
 /**
  * @param {string} symbol
