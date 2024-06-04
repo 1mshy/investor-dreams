@@ -28,6 +28,10 @@ export default class Home extends Component {
         }).catch(error => {
             console.error("Failed to fetch username:", error);
         });
+        invoke("get_current_monitor_info").then(response => {
+            console.log(response)
+            console.log(response.size)
+        })
         // TODO algorithm to get top 3 changes
         get_sp_500_data().then((response) => {
             const changes = Object.keys(response)

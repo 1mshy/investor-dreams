@@ -4,24 +4,21 @@ use std::env;
 use tauri::Manager;
 
 use crate::requesting::get_index_info;
-use crate::sensitive_data::{get_api_keys, get_username};
+use crate::sensitive_data::{get_api_keys, get_username, get_all_windows, get_current_monitor_info, set_base_size};
 mod requesting;
 mod sensitive_data;
 
 fn main() {
     dotenv::dotenv().ok();
-    let api_key = env::var("API_KEY").expect("API_KEY must be set");
 
     tauri::Builder::default()
-        .setup(|app| {
-            let main_window = app.get_window("main").unwrap();
-            main_window.emit("api-key", api_key).unwrap();
-            Ok(())
-        }) // Correctly instantiate the shared state
         .invoke_handler(tauri::generate_handler![
             get_api_keys,
             get_username,
-            get_index_info
+            get_index_info,
+            get_all_windows,
+            get_current_monitor_info,
+            set_base_size,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
