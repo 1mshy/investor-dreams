@@ -65,8 +65,9 @@ export default class Playground extends Component {
         const sp_500_data = await get_sp_500_data();
         let stock_data = this.state.stock_data;
         sorted_by_weight.forEach(async (ticker_symbol) => {
-            const { company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+            const { symbol, company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
             stock_data[ticker_symbol] = {
+                symbol: symbol,
                 name: company,
                 price: current_price,
                 change: change,
@@ -113,12 +114,7 @@ export default class Playground extends Component {
                     <div className={"playground-content"}>
                         <div className={"widgets-container"}>
                             {ticker_symbols.map(ticker_symbol => {
-                                if (stock_data[ticker_symbol] === undefined) {
-                                    return <DynamicStockWidget symbol={ticker_symbol} key={ticker_symbol} />;
-                                }
-                                const { symbol, name, exchange, price, percent_change, date, historical_prices } = stock_data[ticker_symbol];
-                                return <DynamicStockWidget symbol={symbol} name={name} exchange={exchange} price={price} percent_change={percent_change}
-                                    date={date} historical_prices={historical_prices} key={symbol} />
+                                return <DynamicStockWidget {...stock_data[ticker_symbol]} key={ticker_symbol} />
                             })}
                         </div>
                     </div>
