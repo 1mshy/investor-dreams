@@ -125,7 +125,14 @@ async function cache(stock_data) {
     }
     localStorage.setItem(`${ticker_symbol}`, JSON.stringify(cache_data))
 }
-
+/**
+ * finds the price of a company using the large dataset that is requested every few minutes. 
+ * Note: This data is not completely up to date
+ */
+export async function lazy_price_of_ticker(ticker_symbol) {
+    const all_data = await get_sp_500_data();
+    return all_data[ticker_symbol].current_price;
+}
 let current_api_index = 0;
 function get_next_api_key() {
     let api_key = api_keys[current_api_index];
@@ -163,6 +170,8 @@ export function change_from_data(stock_data) {
     const yesterday_stock_price = yesterday_close_from_data(stock_data);
     return percent_change(current_stock_price, yesterday_stock_price)
 }
+
+
 
 function is_error(stock_data) {
     return stock_data.status === "error";
