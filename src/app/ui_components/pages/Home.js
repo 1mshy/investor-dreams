@@ -38,6 +38,7 @@ export default class Home extends Component {
         get_sp_500_data().then((response) => {
             const changes = Object.keys(response)
                 .sort((a, b) => response[b].percent_change - response[a].percent_change);
+                console.log(response)
             const top3 = changes
                 .slice(0, 3)
                 .map((ticker_symbol) => response[ticker_symbol]);
@@ -83,6 +84,7 @@ export default class Home extends Component {
                         <h3>Favourites:</h3>
                         <div className={"homepage-favourties"}>
                             {top_favs.map(ticker_symbol => {
+                                console.log(top_favs)
                                 get_sp_500_data().then((response) => { console.log(response) });
                                 return <ImplementedDynamicStockWidget symbol={ticker_symbol} size={"small"}
                                     key={ticker_symbol} />
