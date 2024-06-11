@@ -1,16 +1,13 @@
 "use client"
-import React, { Component } from 'react';
-import Link from 'next/link';
-import { invoke } from '@tauri-apps/api';
+import "@/app/css/Widgets.css";
+import { has_favourites, top_favourite_changes } from '@/app/funcs/favourites';
 import { get_sp_500_data } from '@/app/funcs/scraper';
-import MiniStockWidget from '@/components/widgets/MiniStockWidget';
-import "../../css/Homepage.css";
-import "@/app/css/Widgets.css"
 import StockSearch from '@/components/searching/SeachBoxes';
-import { get_favourite_array, get_favourites, has_favourites } from '@/app/funcs/favourites';
 import ImplementedDynamicStockWidget from '@/components/widgets/ImplementedDynamicStockWidget';
-import { Button } from '@mui/material';
-import { clear_application_data } from '@/app/funcs/tools';
+import { invoke } from '@tauri-apps/api';
+import Link from 'next/link';
+import { Component } from 'react';
+import "../../css/Homepage.css";
 
 
 export default class Home extends Component {
@@ -19,7 +16,8 @@ export default class Home extends Component {
         this.state = {
             username: "",
             top_3_changes: [],
-            worst_3_changes: []
+            worst_3_changes: [],
+            top_favs: []
         }
     }
 
@@ -51,10 +49,14 @@ export default class Home extends Component {
             this.setState({ top_3_changes: top3 });
             this.setState({ worst_3_changes: bottom3 });
         })
+
+        top_favourite_changes().then(top_favs => {
+            this.setState({ top_favs });
+        });
     }
 
     render() {
-        const { username, top_3_changes, worst_3_changes } = this.state;
+        const { username, top_3_changes, worst_3_changes, top_favs } = this.state;
         return (
             <div className={"homepage-mainPage"}>
                 <header className={"homepage-header"}>
@@ -80,10 +82,10 @@ export default class Home extends Component {
                     {has_favourites() && <div>
                         <h3>Favourites:</h3>
                         <div className={"homepage-favourties"}>
-
-                            {get_favourite_array().map(ticker_symbol => {
-                                return <ImplementedDynamicStockWidget symbol={ticker_symbol} size={"small"} 
-                                key={ticker_symbol}/>
+                            {top_favs.map(ticker_symbol => {
+                                get_sp_500_data().then((response) => { console.log(response) });
+                                return <ImplementedDynamicStockWidget symbol={ticker_symbol} size={"small"}
+                                    key={ticker_symbol} />
                             })}
                         </div>
                     </div>}
