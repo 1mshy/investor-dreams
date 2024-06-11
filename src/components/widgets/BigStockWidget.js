@@ -2,7 +2,7 @@
 
 import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
-import { StockChange } from './DynamicStockWidget';
+import { PercentageFormat } from './DynamicStockWidget';
 
 /**
  * @param {string} symbol
@@ -42,7 +42,7 @@ const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, h
                 <PriceGraph prices={historical_prices} size={"big"} />
                 <div className={"price-data"}>
                     <div className={"price-change"}>
-                        <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
+                        <PercentageFormat isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</PercentageFormat>
                     </div>
                     <div className={"date"}>
                         {date}

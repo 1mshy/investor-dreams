@@ -49,9 +49,14 @@
     font-size: 1.9rem;
     font-weight: bold;
 }
+.smaller-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+
+}
 .price-change {
     font-size: 1.2rem;
-
+    overflow: hidden;
 }
 .date {
     color: #94a3b8;

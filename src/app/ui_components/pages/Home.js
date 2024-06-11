@@ -72,7 +72,7 @@ export default class Home extends Component {
                             passHref
                         >
                             trest ticker</Link>
-                            {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
+                        {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
                     </nav>
                 </header>
 
@@ -82,7 +82,8 @@ export default class Home extends Component {
                         <div className={"homepage-favourties"}>
 
                             {get_favourite_array().map(ticker_symbol => {
-                                return <ImplementedDynamicStockWidget ticker_symbol={ticker_symbol} size={"mini"} />
+                                return <ImplementedDynamicStockWidget symbol={ticker_symbol} size={"small"} 
+                                key={ticker_symbol}/>
                             })}
                         </div>
                     </div>}
@@ -91,7 +92,8 @@ export default class Home extends Component {
                         <div className={"top3-list"}>
                             {top_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                return <MiniStockWidget
+                                return <ImplementedDynamicStockWidget
+                                    size={"small"}
                                     symbol={ticker_symbol}
                                     name={company}
                                     price={current_price}
@@ -106,7 +108,8 @@ export default class Home extends Component {
                         <div className={"bottom3-list"}>
                             {worst_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                return <MiniStockWidget
+                                return <ImplementedDynamicStockWidget
+                                    size={"small"}
                                     symbol={ticker_symbol}
                                     name={company}
                                     price={current_price}
