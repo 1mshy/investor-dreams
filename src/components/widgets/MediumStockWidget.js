@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PriceGraph from "@/components/PriceGraph";
-import { StockChange } from './DynamicStockWidget';
+import { PercentageFormat } from './DynamicStockWidget';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
@@ -20,12 +20,7 @@ import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
 const MediumStockWidget = ({ symbol, name, price, percent_change, date, historical_prices, onClick }) => {
-    const [isPositive, setIsPositive] = useState(percent_change >= 0);
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
-    // Optionally, use an effect to update isPositive when the change prop updates
-    useEffect(() => {
-        setIsPositive(percent_change >= 0);
-    }, [percent_change]);
     return (
         <>
             <div className={"container"} style={{width: "40rem"}} onClick={onClick}>
@@ -51,7 +46,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, date, historic
                     <PriceGraph prices={historical_prices} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            <StockChange isPositive={isPositive}>{isPositive ? '+' : ''}{percent_change}%</StockChange>
+                            <PercentageFormat percent_change={percent_change}/>
                         </div>
                         <div className={"date"}>
                             {date}

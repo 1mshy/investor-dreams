@@ -32,12 +32,17 @@ class PriceGraph extends Component {
     render() {
         const { prices, size } = this.props;
         let dimensions = { width: '300px', height: '200px' };
-        if(size === 'big') {
-            dimensions = { width: '50%', height: '50%'};
+        switch(size) {
+            case 'big':
+                dimensions = { width: '50%', height: '50%'};
+                break;
+            case 'full':
+                dimensions = { width: '100%', height: '100%'};
+                break;
         }
 
         const data = {
-            labels: prices,
+            labels: prices, //remove price header from hover tooltip
             datasets: [
                 {
                     backgroundColor: function(context) {
