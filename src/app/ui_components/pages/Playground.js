@@ -3,6 +3,7 @@ import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/f
 import {
     all_data,
     fetch_widget_data,
+    get_all_data,
     get_sector
 } from "@/app/funcs/stock_api";
 import { Divider, Paper, Stack, TextField, ThemeProvider } from '@mui/material';
@@ -13,7 +14,7 @@ import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidg
 import AccountMenu from '../accountMenu';
 import Link from 'next/link';
 import { SoftPaper, theme } from '@/app/mui/theme';
-import SectorSelect from '../sectorSelect';
+import SectorSelect from '../SectorSelect';
 /**
  * css imports
  */
@@ -35,8 +36,56 @@ export default class Playground extends Component {
             stock_data: {},
             ticker_symbols: [],
         };
-        // setup the data in the backend
+        this.set_sector = this.set_sector.bind(this);
+        this.set_tickers = this.set_tickers.bind(this);
     }
+    /**
+     * 
+     * @param {[string]} ticker_symbols 
+     */
+    async set_tickers(ticker_symbols) {
+        this.setState({ ticker_symbols });
+        console.log(ticker_symbols)
+        const sp_500_data = await get_sp_500_data();
+        let stock_data = this.state.stock_data;
+        ticker_symbols.forEach(async (ticker_symbol) => {
+            const { symbol, company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+            console.log(sp_500_data[ticker_symbol])
+            stock_data[ticker_symbol] = {
+                symbol: symbol,
+                name: company,
+                price: current_price,
+                change: change,
+                percent_change: percent_change,
+            };
+        });
+
+        if (typeof window !== 'undefined') {
+            // Use Promise.all to fetch all data concurrently
+            for (const ticker_symbol of ticker_symbols) {
+                const data = await fetch_widget_data(ticker_symbol);
+                let stock_data = this.state.stock_data;
+                stock_data[ticker_symbol] = data;
+                this.setState({ stock_data });
+            }
+        }
+    }
+    /**
+     * sets the sector/industry filter
+     * @param {string} sector 
+     */
+    set_sector(sector) {
+        console.log(sector)
+        get_all_data().then((data) => {
+            let tickers_in_sector = [];
+            for (const ticker in data) {
+                if (data[ticker].sector === sector) {
+                    tickers_in_sector.push(ticker);
+                }
+            };
+            this.set_tickers(tickers_in_sector).then(_ => { });
+        });
+    };
 
     /**
      * This function is called when the component is mounted 
@@ -44,7 +93,6 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
-
         // get the top companies
         const ticker_symbols = (await get_index_stocks())
         console.log(ticker_symbols)
@@ -58,30 +106,7 @@ export default class Playground extends Component {
         // sort by highest weight
         const sorted_by_weight = weights.sort((a, b) => b.weight - a.weight).map(item => item.ticker_symbol);
         // update the state with the sorted ticker symbols
-        this.setState({ ticker_symbols: sorted_by_weight });
-
-        const sp_500_data = await get_sp_500_data();
-        let stock_data = this.state.stock_data;
-        sorted_by_weight.forEach(async (ticker_symbol) => {
-            const { symbol, company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
-            stock_data[ticker_symbol] = {
-                symbol: symbol,
-                name: company,
-                price: current_price,
-                change: change,
-                percent_change: percent_change,
-            };
-        });
-
-        if (typeof window !== 'undefined') {
-            // Use Promise.all to fetch all data concurrently
-            for (const ticker_symbol of sorted_by_weight) {
-                const data = await fetch_widget_data(ticker_symbol);
-                let stock_data = this.state.stock_data;
-                stock_data[ticker_symbol] = data;
-                this.setState({ stock_data });
-            }
-        }
+        await this.set_tickers(sorted_by_weight);
     }
 
 
@@ -101,7 +126,7 @@ export default class Playground extends Component {
                                 }}>
                                     Favourites
                                 </MenuButton>
-                                <SectorSelect />
+                                <SectorSelect set_sector={this.set_sector} />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
                                 <AccountMenu flexGrow>
                                 </AccountMenu>
@@ -112,7 +137,7 @@ export default class Playground extends Component {
                     <div className={"playground-content"}>
                         <div className={"widgets-container"}>
                             {ticker_symbols.map(ticker_symbol => {
-                                return <DynamicStockWidget {...stock_data[ticker_symbol]} key={ticker_symbol} />
+                                return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={ticker_symbol} />
                             })}
                         </div>
                     </div>

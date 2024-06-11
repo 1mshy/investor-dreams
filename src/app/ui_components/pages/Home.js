@@ -66,7 +66,8 @@ export default class Home extends Component {
                         <StockSearch label="" variant="standard" fullWidth />
                     </div>
                     <nav className={"homepage-nav"}>
-                        <Link href="/playground" className={"homepage-navButton"}>Join Playground</Link>
+                    <Link href="/playground" className={"homepage-navButton"}>Playground</Link>
+                    <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
                             href={{
                                 pathname: '/tickers',

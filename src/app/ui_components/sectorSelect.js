@@ -31,11 +31,17 @@ export default class SectorSelect extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ sector: event.target.value })
+        const sector = event.target.value;
+        this.setState({ sector })
+        this.props.set_sector(sector)
     }
 
     componentDidMount() {
-        get_all_sectors().then(sectors => { this.setState({ sectors: sectors }) })
+        get_all_sectors().then(sectors => { 
+            const default_sector = "Default";
+            sectors.unshift(default_sector);
+            this.setState({ sectors: sectors, sector: default_sector }) 
+        })
     }
 
     render() {
@@ -49,7 +55,6 @@ export default class SectorSelect extends React.Component {
                             labelId="sectorSelectLabel"
                             id="sectorSelect"
                             label="Sector"
-                            multiple
                             value={sector}
                             onChange={this.handleChange}
                             input={<OutlinedInput label="Sector" />}

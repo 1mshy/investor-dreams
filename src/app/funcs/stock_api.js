@@ -98,7 +98,6 @@ export async function fetch_widget_data(ticker_symbol) {
 export async function get_all_data() {
     if (!all_data)
         all_data = await fetch("/json/index_data.json").then(response => response.json());
-    console.log(all_data)
     return all_data;
 }
 /**
@@ -113,7 +112,7 @@ export async function get_all_sectors() {
             sectors.push(data[key]["sector"]);
         }
     });
-    sectors.filter(item => item !== undefined && item !== null && item !== "")
+    sectors = sectors.filter(item => item !== undefined && item !== null && item !== "")
     return sectors.sort();
 }
 
