@@ -14,9 +14,9 @@ const Home = () => {
     //         console.log("All windows:", response);
     //     });
     // });
-    useEffect(() => {
-        router.push("/home");
-    }, [router]);
+    // useEffect(() => {
+    //     router.push("/home");
+    // }, [router]);
 
     return <div>
         <h1>Investor Dreams</h1>

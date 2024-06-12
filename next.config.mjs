@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: false,
     output: 'export',
-    ssg: false,
+    // ssg: false,
     // useFileSystemPublicRoutes: true
 };
 
