@@ -6,6 +6,7 @@ import Link from 'next/link';
  * global css imports
  */
 import "@/app/css/Widgets.css"
+import { clear_application_data } from './funcs/tools';
 
 const Home = () => {
     const router = useRouter();
@@ -14,9 +15,10 @@ const Home = () => {
     //         console.log("All windows:", response);
     //     });
     // });
-    // useEffect(() => {
-    //     router.push("/home");
-    // }, [router]);
+    useEffect(() => {
+        clear_application_data();
+        router.push("/home");
+    }, [router]);
 
     return <div>
         <h1>Investor Dreams</h1>
