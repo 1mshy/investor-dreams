@@ -1,9 +1,17 @@
 use std::{collections::HashMap, env};
 use tauri::{command, PhysicalSize};
 
+// add the api keys that will be used in the build of the application
+const BUILD_API_KEYS:&str = "";
+
 #[command]
 pub fn get_api_keys() -> String {
-    return env::var("API_KEY").expect("API_KEY must be set");
+    let env_keys = env::var("API_KEY");
+    let api_keys = match env_keys {
+        Ok(keys) =>  keys,
+        Err(_) => BUILD_API_KEYS.to_string()
+    };
+    return api_keys;
 }
 
 #[command]
