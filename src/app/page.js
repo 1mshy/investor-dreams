@@ -16,7 +16,7 @@ const Home = () => {
     //     });
     // });
     useEffect(() => {
-        clear_application_data();
+        // clear_application_data();
         router.push("/home");
     }, [router]);
 
