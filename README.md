@@ -22,7 +22,7 @@ If you want to build the project into a compact executable, you can easily do so
 npm run tauri build
 ```
 
-Note: if you want the build to have the api keys built it, you must add them to the sensitive_constants.rs file. To keep git from publishing these keys, you can untrack the file aswell using:
+Note: if you want the build to have the api keys inside (to eleminate the need for an env file bundled with the executable), you must add them to the sensitive_constants.rs file. To keep git from publishing these keys, you can untrack the file aswell using:
 ```bash
 git update-index --assume-unchanged src-tauri/src/sensitive_constants.rs
 ```
