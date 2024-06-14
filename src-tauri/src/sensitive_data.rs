@@ -1,15 +1,14 @@
 use std::{collections::HashMap, env};
 use tauri::{command, PhysicalSize};
 
-// add the api keys that will be used in the build of the application
-const BUILD_API_KEYS:&str = "";
+use crate::sensitive_constants;
 
 #[command]
 pub fn get_api_keys() -> String {
     let env_keys = env::var("API_KEY");
     let api_keys = match env_keys {
         Ok(keys) =>  keys,
-        Err(_) => BUILD_API_KEYS.to_string()
+        Err(_) => sensitive_constants::BUILD_API_KEYS.to_string()
     };
     return api_keys;
 }
