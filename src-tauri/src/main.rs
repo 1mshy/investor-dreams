@@ -6,6 +6,7 @@ use crate::requesting::get_index_info;
 use crate::sensitive_data::{get_api_keys, get_username, get_all_windows, get_current_monitor_info, set_base_size};
 mod requesting;
 mod sensitive_data;
+mod sensitive_constants;
 
 fn main() {
     dotenv::dotenv().ok();
