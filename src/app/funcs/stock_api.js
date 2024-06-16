@@ -27,12 +27,6 @@ const WAIT_TIME = 61_000; // 61,000 milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    while (stop_requesting) {
-        console.log("Too many requests, waiting for a minute to request" + ticker_symbol)
-        await delay(WAIT_TIME); // Wait for the cooldown to end
-        stop_requesting = false;
-        console.log("Minute over, resuming requests")
-    }
     const cached_data = get_cache(ticker_symbol);
     if (cached_data) {
         const { last_updated, stock_data } = cached_data;
@@ -41,6 +35,12 @@ export async function request_ticker_data(ticker_symbol) {
         if (current_hour - last_updated_hour < 1) {
             return stock_data;
         }
+    }
+    while (stop_requesting) {
+        console.log("Too many requests, waiting for a minute to request " + ticker_symbol)
+        await delay(WAIT_TIME); // Wait for the cooldown to end
+        stop_requesting = false;
+        console.log("Minute over, resuming requests")
     }
     console.log("requesting " + ticker_symbol)
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
