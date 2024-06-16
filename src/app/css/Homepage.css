@@ -2,8 +2,11 @@
     padding: 20px;
     /* background: linear-gradient(135deg, #0b0530, #070e3a); */
     background-color: #2E3A47;
-    color: white;
-    min-height: 100vh;
+    color: #ffffff;
+    display: flexbox;
+    flex-direction: column;
+    height: 100%;
+
 }
 
 .homepage-header {
@@ -38,8 +41,12 @@
 
 .homepage-content {
     display: flex;
+    flex: 1;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    overflow-y: auto;
+
 }
 
 .homepage-welcomeText {
