@@ -1,6 +1,6 @@
 "use client";
 
-import { PercentageFormat } from './DynamicStockWidget';
+import PercentageFormat from "../PercentageFormat";
 
 /**
  * @param {string} symbol

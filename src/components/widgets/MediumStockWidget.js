@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PriceGraph from "@/components/PriceGraph";
-import { PercentageFormat } from './DynamicStockWidget';
+import PercentageFormat from "../PercentageFormat";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";

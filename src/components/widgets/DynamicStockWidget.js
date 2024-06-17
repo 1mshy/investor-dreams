@@ -1,27 +1,10 @@
 "use client";
 
-import { Component, useEffect, useState } from 'react';
-import BigStockWidget from './BigStockWidget';
+import { Component } from 'react';
 import MediumStockWidget from './MediumStockWidget';
 import MiniStockWidget from "./MiniStockWidget";
 import PopupWidget from './PopupWidget';
 
-
-/**
- * @param props.isPositive {boolean}
- * @type {IStyledComponent<"web", Substitute<import("react").DetailedHTMLProps<import("react").HTMLAttributes<HTMLDivElement>, HTMLDivElement>, BaseObject>> & BaseObject & {}}
- * @desc affects colour if positive or negative (green or red) and adds + or - to the percentage
- */
-export const PercentageFormat = ({ percent_change }) => {
-  const [isPositive, setIsPositive] = useState(percent_change >= 0);
-  // Optionally, use an effect to update isPositive when the change prop updates
-  useEffect(() => {
-    setIsPositive(percent_change >= 0);
-  }, [percent_change]);
-  return <div style={{ color: isPositive ? '#4caf50' : '#e74c3c' }}>
-    {`${isPositive ? "+" : ""}${percent_change}%`}
-  </div>
-}
 /**
  * @param {string} symbol
  * @param {string} name

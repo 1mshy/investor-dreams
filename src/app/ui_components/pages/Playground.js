@@ -116,7 +116,7 @@ export default class Playground extends Component {
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
                     <div className={"header"}>
-                        <SoftPaper elevation={8} component={Stack} marginBottom={5} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
+                        <SoftPaper elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                                 <MenuButton component={Link} href="/home" >
                                     Home
@@ -135,7 +135,7 @@ export default class Playground extends Component {
 
                     </div>
                     <div className={"playground-content"}>
-                        <div className={"widgets-container"}>
+                        <div className={"widgets-container"} style={{paddingTop: "3rem"}}>
                             {ticker_symbols.map(ticker_symbol => {
                                 return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={ticker_symbol} />
                             })}
