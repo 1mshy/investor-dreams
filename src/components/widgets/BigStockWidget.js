@@ -1,8 +1,7 @@
 "use client";
 
 import PriceGraph from "@/components/PriceGraph";
-import { useEffect, useState } from "react";
-import { PercentageFormat } from './DynamicStockWidget';
+import PercentageFormat from "../PercentageFormat";
 
 /**
  * @param {string} symbol

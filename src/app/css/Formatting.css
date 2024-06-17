@@ -1,0 +1,8 @@
+.percent-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.term {
+    font-size: 0.6rem;
+}
