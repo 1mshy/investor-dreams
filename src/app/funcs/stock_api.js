@@ -4,7 +4,6 @@ import { ticker_to_name } from "./scraper";
 require('dotenv').config()
 let api_keys = []
 let all_data = undefined;
-// export const all_data = await fetch("/json/index_data.json").then(response => response.json());
 /**
  * @desc Get the api key from the backend
  */
@@ -56,7 +55,6 @@ export async function request_ticker_data(ticker_symbol) {
 /**
  * 
  * @param {string} ticker_symbol 
- * @returns 
  * @desc get information about the ticker symbol to create a stock widget
  */
 export async function fetch_widget_data(ticker_symbol) {
@@ -90,7 +88,6 @@ export async function fetch_widget_data(ticker_symbol) {
     return {};
 }
 /**
- * 
  * @returns {Promise<{}>}
  * @example {A: {symbol: 'A', name: 'Agilent Technologies, Inc.', summary: 'Agilent Technologies, Inc. provides application fo… and is headquartered in Santa Clara, California.', currency: 'USD', sector: 'Health Care', …}}
  * @desc possible keys: city, composite_figi, country, currency, description, cusip, exchange, figi, industry, industry_group, isin, market, market_cap, name, sector, shareclass_figi, state, summary, symbol, website, zipcode
