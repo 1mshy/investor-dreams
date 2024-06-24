@@ -5,7 +5,7 @@ import MiniStockWidget from "./MiniStockWidget";
 import MediumStockWidget from "./MediumStockWidget";
 import SmallStockWidget from "./SmallStockWidget";
 
-export default class ImplementedDynamicStockWidget extends Component {
+export default class StockWidget extends Component {
     constructor(props) {
         super(props);
         this.state = {

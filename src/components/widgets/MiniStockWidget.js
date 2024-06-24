@@ -24,7 +24,7 @@ const MiniStockWidget = ({ symbol, name, price, percent_change, onClick }) => {
                     <div className={"price"}>${price}</div>
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            <PercentageFormat percent_change={percent_change}/>
+                        <PercentageFormat percent_change={percent_change}/>
                         </div>
                     </div>
                 </div>
