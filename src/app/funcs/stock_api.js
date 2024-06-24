@@ -179,8 +179,6 @@ export function monthly_change_from_data(stock_data) {
     return percent_change(current_stock_price, thiry_days_past);
 }
 
-
-
 function is_error(stock_data) {
     return stock_data.status === "error";
 }

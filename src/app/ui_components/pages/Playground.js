@@ -45,7 +45,6 @@ export default class Playground extends Component {
      */
     async set_tickers(ticker_symbols) {
         this.setState({ ticker_symbols });
-        console.log(ticker_symbols)
         const sp_500_data = await get_sp_500_data();
         let stock_data = this.state.stock_data;
         ticker_symbols.forEach(async (ticker_symbol) => {
@@ -115,14 +114,13 @@ export default class Playground extends Component {
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
-                    <div className={"header"}>
+                    <div className={"generic-header"}>
                         <SoftPaper elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                                 <MenuButton component={Link} href="/home" >
                                     Home
                                 </MenuButton>
                                 <MenuButton onClick={() => {
-
                                 }}>
                                     Favourites
                                 </MenuButton>

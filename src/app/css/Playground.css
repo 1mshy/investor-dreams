@@ -5,7 +5,7 @@
     background-color: #2E3A47;
 }
 
-.header {
+.generic-header {
     flex-shrink: 0;
 }
 
