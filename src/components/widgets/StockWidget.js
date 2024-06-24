@@ -25,7 +25,7 @@ export default class StockWidget extends Component {
 
     render() {
 
-        return <div>
+        return <>
             {this.props.size === "mini" && <MiniStockWidget
                 {...this.state.ticker_data}
             />}
@@ -36,6 +36,6 @@ export default class StockWidget extends Component {
                 {...this.state.ticker_data} />}
             {this.props.size === "big" &&
                 <BigStockWidget {...this.state.ticker_data} />}
-        </div>;
+        </>;
     }
 }

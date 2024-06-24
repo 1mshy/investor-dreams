@@ -23,9 +23,6 @@ async function request_top_companies() {
             const current_price = Number($(cells[4]).text().trim().replace(",", ""));
             const change = Number($(cells[5]).text().trim());
             const percent_change = Number($(cells[6]).text().trim().replace(/%(|)|\(|\)/g, "")); //replaces '%', '(', ')'
-            console.log(current_price)
-            console.log("chng: " + change)
-            console.log("*change: " + percent_change)
             if (!isNaN(ticker_symbol)) return;
             data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change };
         }

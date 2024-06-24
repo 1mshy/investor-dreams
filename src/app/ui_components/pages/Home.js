@@ -7,7 +7,9 @@ import StockWidget from '@/components/widgets/StockWidget';
 import { invoke } from '@tauri-apps/api';
 import Link from 'next/link';
 import { Component } from 'react';
+
 import "../../css/Homepage.css";
+import "@/app/css/Playground.css";
 
 
 export default class Home extends Component {
@@ -60,12 +62,12 @@ export default class Home extends Component {
         const { username, top_3_changes, worst_3_changes, top_favs } = this.state;
         return (
             <div className={"homepage-mainPage"}>
-                <header className={"homepage-header"}>
-                    <h1 className={"homepage-title"}>To the moon {username} 🚀🚀</h1>
-                    <div>
+                <div className={"homepage-header"}>
+                    <h1 className={"homepage-title"} style={{display: "inline-flex"}}>To the moon {username} 🚀🚀</h1>
+                    <div style={{display: "inline-flex"}}>
                         <StockSearch label="" variant="standard" fullWidth />
                     </div>
-                    <nav className={"homepage-nav"}>
+                    <nav className={"homepage-nav"} style={{display: "inline-flex"}}>
                         <Link href="/playground" className={"homepage-navButton"}>Playground</Link>
                         <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
@@ -78,17 +80,17 @@ export default class Home extends Component {
                             trest ticker</Link>
                         {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
                     </nav>
-                </header>
-                <div className={"homepage-content"} style={{overflowY: "scroll !important"}}>
+                </div>
+                <div className={"homepage-content"} style={{ overflowY: "scroll !important" }}>
                     {has_favourites() && <div>
                         <h3>Favourites:</h3>
                         <div className={"homepage-favourties"}>
-                                {top_favs.map(ticker_symbol => {
-                                    console.log(top_favs)
-                                    get_sp_500_data().then((response) => { console.log(response) });
-                                    return <StockWidget symbol={ticker_symbol} size={"small"}
-                                        key={ticker_symbol} />
-                                })}
+                            {top_favs.map(ticker_symbol => {
+                                console.log(top_favs)
+                                get_sp_500_data().then((response) => { console.log(response) });
+                                return <StockWidget symbol={ticker_symbol} size={"small"}
+                                    key={ticker_symbol} />
+                            })}
                         </div>
                     </div>}
                     <div>
