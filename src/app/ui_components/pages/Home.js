@@ -3,7 +3,7 @@ import "@/app/css/Widgets.css";
 import { has_favourites, top_favourite_changes } from '@/app/funcs/favourites';
 import { get_sp_500_data } from '@/app/funcs/scraper';
 import StockSearch from '@/components/searching/SeachBoxes';
-import ImplementedDynamicStockWidget from '@/components/widgets/ImplementedDynamicStockWidget';
+import StockWidget from '@/components/widgets/StockWidget';
 import { invoke } from '@tauri-apps/api';
 import Link from 'next/link';
 import { Component } from 'react';
@@ -86,7 +86,7 @@ export default class Home extends Component {
                                 {top_favs.map(ticker_symbol => {
                                     console.log(top_favs)
                                     get_sp_500_data().then((response) => { console.log(response) });
-                                    return <ImplementedDynamicStockWidget symbol={ticker_symbol} size={"small"}
+                                    return <StockWidget symbol={ticker_symbol} size={"small"}
                                         key={ticker_symbol} />
                                 })}
                         </div>
@@ -96,7 +96,7 @@ export default class Home extends Component {
                         <div className={"top3-list"}>
                             {top_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                return <ImplementedDynamicStockWidget
+                                return <StockWidget
                                     size={"small"}
                                     symbol={ticker_symbol}
                                     name={company}
@@ -112,7 +112,7 @@ export default class Home extends Component {
                         <div className={"bottom3-list"}>
                             {worst_3_changes.map((ticker_data) => {
                                 const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                return <ImplementedDynamicStockWidget
+                                return <StockWidget
                                     size={"small"}
                                     symbol={ticker_symbol}
                                     name={company}

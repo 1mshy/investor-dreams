@@ -67,16 +67,18 @@ export async function fetch_widget_data(ticker_symbol) {
             return;
         }
 
-        const price = price_from_data(ticker_data);
+        const price = current_price_from_data(ticker_data);
         const change = change_from_data(ticker_data);
+        const change_month = monthly_change_from_data(ticker_data);
         const date = last_date_from_data(ticker_data);
         const historical_prices = get_list_prices(ticker_data);
-
+        console.log(ticker_data)
         let data = {
             symbol: ticker_symbol,
             name: company_name,
             price: price.toFixed(2),
             percent_change: change.toFixed(2),
+            percent_change_month: change_month.toFixed(2),
             date: date,
             historical_prices: historical_prices
         };
@@ -145,12 +147,15 @@ function get_cache(ticker_symbol) {
     return JSON.parse(localStorage.getItem(`${ticker_symbol.toUpperCase()}`))
 }
 
-export function price_from_data(stock_data) {
+export function current_price_from_data(stock_data) {
     return Number(stock_data["values"][0]["close"])
 }
 
 export function yesterday_close_from_data(stock_data) {
     return Number(stock_data["values"][1]["close"])
+}
+export function price_days_out_from_data(stock_data, days_out) {
+    return Number(stock_data["values"][days_out]["close"])
 }
 
 export function last_date_from_data(stock_data) {
@@ -162,9 +167,16 @@ export function get_list_prices(stock_data) {
 }
 
 export function change_from_data(stock_data) {
-    const current_stock_price = price_from_data(stock_data);
+    const current_stock_price = current_price_from_data(stock_data);
     const yesterday_stock_price = yesterday_close_from_data(stock_data);
     return percent_change(current_stock_price, yesterday_stock_price)
+}
+
+export function monthly_change_from_data(stock_data) {
+    const THIRTY_DAYS_FROM_TODAY = 29;
+    const current_stock_price = current_price_from_data(stock_data);
+    const thiry_days_past = price_days_out_from_data(stock_data, THIRTY_DAYS_FROM_TODAY);
+    return percent_change(current_stock_price, thiry_days_past);
 }
 
 

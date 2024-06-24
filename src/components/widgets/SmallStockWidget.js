@@ -10,7 +10,7 @@ import PriceGraph from "../PriceGraph";
  * @param {number} percent_change
  * @param {function} onClick
  */
-const SmallStockWidget = ({ symbol, name, price, percent_change, onClick, historical_prices, show_name = true }) => {
+const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_month, onClick, historical_prices, show_name = true }) => {
     console.log(percent_change)
     return (
         <>
@@ -18,9 +18,10 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, onClick, histor
                 <div className={"widget-header"}>
                     <div style={{ width: "100%" }}>
                         <div className={"ticker_symbol"}>{symbol}</div>
-                        <div style={{float: "right"}}>
+                        <div style={{ float: "right" }}>
                             <div className={"price-change"}>
-                                <PercentageFormat percent_change={percent_change} />
+                                {percent_change && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
+                                {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                             </div>
                             <div className={"smaller-price"}>${price}</div>
                         </div>
