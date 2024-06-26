@@ -2,17 +2,14 @@
     /* background: linear-gradient(135deg, #0b0530, #070e3a); */
     background-color: #2E3A47;
     color: #ffffff;
-    display: flexbox;
+    display: flex;
     flex-direction: column;
-    height: 100%;
-
 }
 
 .homepage-header {
-    flex: 1;
+    flex-shrink: 0;
     justify-content: space-between;
     align-items: center;
-    height: 4rem;
     padding: 20px;
 }
 
@@ -43,7 +40,8 @@
     display: flex;
     flex-grow: 1;
     justify-content: center;
-    overflow-y: auto;
+    overflow: auto; /* Prevents the playground content from scrolling */
+    height: 100%;
 }
 
 .homepage-welcomeText {
