@@ -83,18 +83,19 @@ export default class Home extends Component {
                 </div>
                 <div className={"homepage-content"}>
                     {/* <div className={"widgets-container"}> */}
-                        {has_favourites() && <div>
+                        {has_favourites() && 
+                        <div className={"homepage-columns"}>
                             <h3>Favourites:</h3>
                             <div className={"homepage-favourties"}>
                                 {top_favs.map(ticker_symbol => {
-                                    console.log(top_favs)
-                                    get_sp_500_data().then((response) => { console.log(response) });
+                                    // console.log(top_favs)
+                                    // get_sp_500_data().then((response) => { console.log(response) });
                                     return <StockWidget symbol={ticker_symbol} size={"small"}
                                         key={ticker_symbol} />
                                 })}
                             </div>
                         </div>}
-                        <div>
+                        <div className={"homepage-columns"}>
                             <h3>Best Performing</h3>
                             <div className={"top3-list"}>
                                 {top_3_changes.map((ticker_data) => {
@@ -110,7 +111,7 @@ export default class Home extends Component {
                                 })}
                             </div>
                         </div>
-                        <div>
+                        <div className={"homepage-columns"}>
                             <h3>Worst performing</h3>
                             <div className={"bottom3-list"}>
                                 {worst_3_changes.map((ticker_data) => {
