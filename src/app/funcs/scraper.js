@@ -38,7 +38,7 @@ export async function get_sp_500_data() {
     let data = localStorage.getItem(local_storage_key);
     const ten_minutes = 1000 * 60 * 10;
     const date_requested = data ? JSON.parse(data)["time_requested"] : false;
-    if (!data || Date.now() - date_requested > ten_minutes){
+    if (!data || Date.now() - date_requested > ten_minutes) {
         console.log("Requesting top 500 company data from rust backend")
         data = await request_top_companies();
         localStorage.setItem(local_storage_key, JSON.stringify(data));
@@ -51,6 +51,14 @@ export async function get_sp_500_data() {
 export async function get_index_stocks() {
     const index_data = await get_sp_500_data();
     return Object.keys(index_data);
+}
+/**
+ * Returns the change from the last list of all the stocks
+ * It is not always spot on.
+ */
+export async function get_lazy_percent_change(ticker_symbol) {
+    const data = await get_sp_500_data();
+    return data[ticker_symbol].percent_change;
 }
 
 export async function ticker_to_name(ticker_symbol) {

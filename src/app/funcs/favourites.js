@@ -28,7 +28,7 @@ export function get_favourites() {
     return JSON.parse(favourites);
 }
 /**
- * 
+ * gets the favourite symbols in an array
  * @returns []
  */
 export function get_favourite_array() {
