@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { OutlinedInput } from '@mui/material';
-import { get_all_sectors } from '../funcs/stock_api';
+import { get_all_sectors } from '../../funcs/stock_api';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
