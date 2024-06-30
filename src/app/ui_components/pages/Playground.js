@@ -6,7 +6,7 @@ import {
     get_all_data,
     get_sector
 } from "@/app/funcs/stock_api";
-import { Divider, Paper, Stack, TextField, ThemeProvider } from '@mui/material';
+import { Divider, Paper, Select, Stack, TextField, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
@@ -14,7 +14,7 @@ import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidg
 import AccountMenu from '../accountMenu';
 import Link from 'next/link';
 import { SoftPaper, theme } from '@/app/mui/theme';
-import SectorSelect from '../SectorSelect';
+import SectorSelect from '../misc/SectorSelect';
 /**
  * css imports
  */
@@ -36,7 +36,7 @@ export default class Playground extends Component {
         this.state = {
             stock_data: {},
             ticker_symbols: [],
-            sort_method: "Bearish", // Weight, Volitility, Bullish, Bearish
+            sort_method: "Volitility", // Weight, Volitility, Bullish, Bearish
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
@@ -171,7 +171,9 @@ export default class Playground extends Component {
                                     Favourites
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
+                                <Select></Select>
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
+                                
                                 <AccountMenu flexGrow>
                                 </AccountMenu>
                             </Grid2>
