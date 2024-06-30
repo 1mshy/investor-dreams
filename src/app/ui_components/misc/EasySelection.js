@@ -22,6 +22,7 @@ const MenuProps = {
 export default class EasySelection extends Component {
     /**
      * props.label - label for the selection
+     * props.default - item that will be selected by default when mounting
      * props.content - object with the display item as key
      * and function as the value
      * The function will be run when the user selects the item from the list
@@ -30,9 +31,9 @@ export default class EasySelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current_item: "Weight"
+            current_item: props.default
         }
-        
+
         this.handle_change = this.handle_change.bind(this);
     }
 
