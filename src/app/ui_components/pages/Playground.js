@@ -1,26 +1,24 @@
 "use client"
 import { get_index_stocks, get_lazy_percent_change, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
-    all_data,
     fetch_widget_data,
-    get_all_data,
-    get_sector
+    get_all_data
 } from "@/app/funcs/stock_api";
-import { Divider, Paper, Select, Stack, TextField, ThemeProvider } from '@mui/material';
+import { SoftPaper, theme } from '@/app/mui/theme';
+import { Stack, TextField, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import Link from 'next/link';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
 import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
 import AccountMenu from '../accountMenu';
-import Link from 'next/link';
-import { SoftPaper, theme } from '@/app/mui/theme';
 import SectorSelect from '../misc/SectorSelect';
 /**
  * css imports
  */
-import "@/app/css/Widgets.css";
 import "@/app/css/Playground.css";
-import { get_favourite_array, get_favourites } from '@/app/funcs/favourites';
+import "@/app/css/Widgets.css";
+import EasySelection from '../misc/EasySelection';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -40,6 +38,13 @@ export default class Playground extends Component {
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
+
+        this.sorting_content = {
+            "Weight": () => {this.set_sorting("Weight")},
+            "Volitility": () => {this.set_sorting("Volitility")},
+            "Bullish": () => {this.set_sorting("Bullish")},
+            "Bearish": () => {this.set_sorting("Bearish")},
+        }
     }
     /**
      * 
@@ -138,7 +143,7 @@ export default class Playground extends Component {
                 await this.set_tickers(sorted_by_weight);
                 break;
             }
-        
+
         }
     }
 
@@ -157,6 +162,7 @@ export default class Playground extends Component {
 
     render() {
         const { stock_data, ticker_symbols } = this.state;
+        
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
@@ -171,9 +177,9 @@ export default class Playground extends Component {
                                     Favourites
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
-                                <Select></Select>
+                                <EasySelection label="Sort" content={this.sorting_content} />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
-                                
+
                                 <AccountMenu flexGrow>
                                 </AccountMenu>
                             </Grid2>

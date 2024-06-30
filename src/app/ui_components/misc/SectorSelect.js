@@ -37,41 +37,39 @@ export default class SectorSelect extends React.Component {
     }
 
     componentDidMount() {
-        get_all_sectors().then(sectors => { 
+        get_all_sectors().then(sectors => {
             const default_sector = "Default";
             sectors.unshift(default_sector);
-            this.setState({ sectors: sectors, sector: default_sector }) 
+            this.setState({ sectors: sectors, sector: default_sector })
         })
     }
 
     render() {
         const { sector, sectors } = this.state;
         return (
-            <div>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl sx={{ m: 1, width: 300 }}>
-                        <InputLabel id="sectorSelectLabel">Sector</InputLabel>
-                        <Select
-                            labelId="sectorSelectLabel"
-                            id="sectorSelect"
-                            label="Sector"
-                            value={sector}
-                            onChange={this.handleChange}
-                            input={<OutlinedInput label="Sector" />}
-                            MenuProps={MenuProps}
-                        >
-                            {sectors.map((sector) => (
-                                <MenuItem
-                                    key={sector}
-                                    value={sector}
-                                >
-                                    {sector}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Box>
-            </div>
+            <Box sx={{ minWidth: 120 }}>
+                <FormControl sx={{ m: 1, width: 300 }}>
+                    <InputLabel id="sectorSelectLabel">Sector</InputLabel>
+                    <Select
+                        labelId="sectorSelectLabel"
+                        id="sectorSelect"
+                        label="Sector"
+                        value={sector}
+                        onChange={this.handleChange}
+                        input={<OutlinedInput label="Sector" />}
+                        MenuProps={MenuProps}
+                    >
+                        {sectors.map((sector) => (
+                            <MenuItem
+                                key={sector}
+                                value={sector}
+                            >
+                                {sector}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Box>
         )
     };
 }
