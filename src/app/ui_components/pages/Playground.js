@@ -40,10 +40,10 @@ export default class Playground extends Component {
         this.set_tickers = this.set_tickers.bind(this);
 
         this.sorting_content = {
-            "Weight": () => {this.set_sorting("Weight")},
-            "Volitility": () => {this.set_sorting("Volitility")},
-            "Bullish": () => {this.set_sorting("Bullish")},
-            "Bearish": () => {this.set_sorting("Bearish")},
+            "Weight": () => { this.set_sorting("Weight") },
+            "Volitility": () => { this.set_sorting("Volitility") },
+            "Bullish": () => { this.set_sorting("Bullish") },
+            "Bearish": () => { this.set_sorting("Bearish") },
         }
     }
     /**
@@ -154,15 +154,14 @@ export default class Playground extends Component {
      */
     async componentDidMount() {
         // get the top companies
-        const ticker_symbols = await get_index_stocks()
-        const sp_500_data = await get_sp_500_data();
+        const ticker_symbols = await get_index_stocks();
         this.set_tickers(ticker_symbols.slice(0, 12), () => this.set_sorting(this.state.sort_method));
     }
 
 
     render() {
         const { stock_data, ticker_symbols } = this.state;
-        
+
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
@@ -177,7 +176,7 @@ export default class Playground extends Component {
                                     Favourites
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
-                                <EasySelection label="Sort" content={this.sorting_content} />
+                                <EasySelection label="Sort" content={this.sorting_content} default={"Weight"} />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
 
                                 <AccountMenu flexGrow>
