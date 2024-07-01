@@ -42,6 +42,7 @@ export default class EasySelection extends Component {
         this.props.content[item]();
         this.setState({ current_item: item });
     }
+
     render() {
         const { label, content } = this.props;
         const { current_item } = this.state;

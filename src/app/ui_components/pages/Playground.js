@@ -55,7 +55,8 @@ export default class Playground extends Component {
         const sp_500_data = await get_sp_500_data();
         let stock_data = this.state.stock_data;
         ticker_symbols.forEach(async (ticker_symbol) => {
-            const { symbol, company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+            console.log(JSON.stringify(sp_500_data))
+            const { symbol, company, portfolio_percent, current_price, change, percent_change } = await sp_500_data[ticker_symbol];
             // console.log(sp_500_data[ticker_symbol])
             stock_data[ticker_symbol] = {
                 symbol: symbol,
@@ -93,6 +94,8 @@ export default class Playground extends Component {
 
     async set_sorting(sort_method) {
         const { ticker_symbols, stock_data } = this.state;
+        console.log(sort_method)
+        this.setState({ sort_method })
         switch (sort_method) {
             case "Weight": {
                 const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
@@ -160,7 +163,7 @@ export default class Playground extends Component {
 
 
     render() {
-        const { stock_data, ticker_symbols } = this.state;
+        const { stock_data, ticker_symbols, sort_method } = this.state;
 
         return (
             <ThemeProvider theme={theme}>
@@ -176,7 +179,7 @@ export default class Playground extends Component {
                                     Favourites
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
-                                <EasySelection label="Sort" content={this.sorting_content} default={"Weight"} />
+                                <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
 
                                 <AccountMenu flexGrow>
