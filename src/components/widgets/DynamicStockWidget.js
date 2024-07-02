@@ -33,7 +33,6 @@ export class DynamicStockWidget extends Component {
   }
 
   render() {
-    const { symbol, name, price, percent_change, date, historical_prices } = this.props;
     const { size } = this.state;
     const is_big = size === 'big';
     const is_medium = size === 'medium';
@@ -42,28 +41,15 @@ export class DynamicStockWidget extends Component {
     return (
       <>
         {is_mini && <MiniStockWidget
-          symbol={symbol}
-          name={name}
-          price={price}
-          percent_change={percent_change}
+          {...this.props}
           onClick={() => { this.setSize("big") }}
         />}
         {is_medium && <MediumStockWidget
-          symbol={symbol}
-          name={name}
-          price={price}
-          percent_change={percent_change}
-          date={date}
-          historical_prices={historical_prices}
+          {...this.props}
           onClick={() => { this.setSize("big") }}
         />}
         <PopupWidget
-          symbol={symbol}
-          name={name}
-          price={price}
-          percent_change={percent_change}
-          date={date}
-          historical_prices={historical_prices}
+          {...this.props}
           onClick={() => { this.setSize(this.start_size) }}
           open={is_big}
         />

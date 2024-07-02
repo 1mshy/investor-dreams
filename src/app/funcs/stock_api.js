@@ -131,6 +131,7 @@ export async function lazy_price_of_ticker(ticker_symbol) {
     const all_data = await get_sp_500_data();
     return all_data[ticker_symbol].current_price;
 }
+
 let current_api_index = 0;
 function get_next_api_key() {
     let api_key = api_keys[current_api_index];
