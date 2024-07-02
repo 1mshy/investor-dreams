@@ -23,8 +23,6 @@ export default class Home extends Component {
         }
     }
 
-
-
     async componentDidMount() {
         // Only access browser-specific APIs here
         invoke("get_username").then((response) => {
@@ -64,10 +62,10 @@ export default class Home extends Component {
             <div className={"homepage-mainPage"}>
                 <div className={"homepage-header"}>
                     <h1 className={"homepage-title"} style={{ display: "inline-flex" }}>To the moon {username} 🚀🚀</h1>
-                    <div style={{ display: "inline-flex" }}>
+                    {/* <div style={{ display: "inline-flex" }}>
                         <StockSearch label="" variant="standard" fullWidth />
-                    </div>
-                    <nav className={"homepage-nav"} style={{ display: "inline-flex" }}>
+                    </div> */}
+                    <div className={"homepage-nav"} >
                         <Link href="/playground" className={"homepage-navButton"}>Playground</Link>
                         <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
@@ -79,11 +77,11 @@ export default class Home extends Component {
                         >
                             trest ticker</Link>
                         {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
-                    </nav>
+                    </div>
                 </div>
                 <div className={"homepage-content"}>
                     {/* <div className={"widgets-container"}> */}
-                        {has_favourites() && 
+                    {has_favourites() &&
                         <div className={"homepage-columns"}>
                             <h3>Favourites:</h3>
                             <div className={"homepage-favourties"}>
@@ -95,37 +93,37 @@ export default class Home extends Component {
                                 })}
                             </div>
                         </div>}
-                        <div className={"homepage-columns"}>
-                            <h3>Best Performing</h3>
-                            <div className={"top3-list"}>
-                                {top_3_changes.map((ticker_data) => {
-                                    const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                    return <StockWidget
-                                        size={"small"}
-                                        symbol={ticker_symbol}
-                                        name={company}
-                                        price={current_price}
-                                        percent_change={percent_change}
-                                        key={ticker_symbol}
-                                    />
-                                })}
-                            </div>
+                    <div className={"homepage-columns"}>
+                        <h3>Best Performing</h3>
+                        <div className={"top3-list"}>
+                            {top_3_changes.map((ticker_data) => {
+                                const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
+                                return <StockWidget
+                                    size={"small"}
+                                    symbol={ticker_symbol}
+                                    name={company}
+                                    price={current_price}
+                                    percent_change={percent_change}
+                                    key={ticker_symbol}
+                                />
+                            })}
                         </div>
-                        <div className={"homepage-columns"}>
-                            <h3>Worst performing</h3>
-                            <div className={"bottom3-list"}>
-                                {worst_3_changes.map((ticker_data) => {
-                                    const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
-                                    return <StockWidget
-                                        size={"small"}
-                                        symbol={ticker_symbol}
-                                        name={company}
-                                        price={current_price}
-                                        percent_change={percent_change}
-                                        key={ticker_symbol}
-                                    />
-                                })}
-                            </div>
+                    </div>
+                    <div className={"homepage-columns"}>
+                        <h3>Worst performing</h3>
+                        <div className={"bottom3-list"}>
+                            {worst_3_changes.map((ticker_data) => {
+                                const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
+                                return <StockWidget
+                                    size={"small"}
+                                    symbol={ticker_symbol}
+                                    name={company}
+                                    price={current_price}
+                                    percent_change={percent_change}
+                                    key={ticker_symbol}
+                                />
+                            })}
+                        </div>
                         {/* </div> */}
                     </div>
                 </div>

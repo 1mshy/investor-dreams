@@ -25,7 +25,8 @@
 }
 
 .homepage-nav {
-    display: flex;
+    display: inline-flex;
+    float: right;
     gap: 20px;
 }
 

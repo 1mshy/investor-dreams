@@ -4,7 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { OutlinedInput } from '@mui/material';
+import { ListSubheader, OutlinedInput } from '@mui/material';
 import { get_all_sectors } from '../../funcs/stock_api';
 
 const ITEM_HEIGHT = 48;
@@ -25,7 +25,8 @@ export default class SectorSelect extends React.Component {
         super(props)
         this.state = {
             sector: [],
-            sectors: []
+            custom_sectors: [],
+            generated_sectors: [],
         }
         this.handleChange = this.handleChange.bind(this);
     }
@@ -38,14 +39,14 @@ export default class SectorSelect extends React.Component {
 
     componentDidMount() {
         get_all_sectors().then(sectors => {
-            const default_sector = "Default";
+            const default_sector = "Top 12";
             sectors.unshift(default_sector);
-            this.setState({ sectors: sectors, sector: default_sector })
+            this.setState({ generated_sectors: sectors, sector: default_sector })
         })
     }
 
     render() {
-        const { sector, sectors } = this.state;
+        const { sector, custom_sectors, generated_sectors } = this.state;
         return (
             <Box sx={{ minWidth: 120 }}>
                 <FormControl sx={{ m: 1, width: 300 }}>
@@ -59,7 +60,17 @@ export default class SectorSelect extends React.Component {
                         input={<OutlinedInput label="Sector" />}
                         MenuProps={MenuProps}
                     >
-                        {sectors.map((sector) => (
+                        <ListSubheader>Custom</ListSubheader>
+                        {custom_sectors.map((sector) => (
+                            <MenuItem
+                                key={sector}
+                                value={sector}
+                            >
+                                {sector}
+                            </MenuItem>
+                        ))}
+                        <ListSubheader>Default</ListSubheader>
+                        {generated_sectors.map((sector) => (
                             <MenuItem
                                 key={sector}
                                 value={sector}

@@ -19,11 +19,11 @@ import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
  * @param {string} size - "big" or "medium" or "mini"
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
-const MediumStockWidget = ({ symbol, name, price, percent_change, date, historical_prices, onClick }) => {
+const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change_month, date, historical_prices, onClick }) => {
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     return (
         <>
-            <div className={"container"} style={{width: "40rem"}} onClick={onClick}>
+            <div className={"container"} style={{ width: "40rem" }} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>
@@ -46,7 +46,8 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, date, historic
                     <PriceGraph prices={historical_prices} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            <PercentageFormat percent_change={percent_change}/>
+                            {percent_change && <PercentageFormat percent_change={percent_change} />}
+                            {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                         </div>
                         <div className={"date"}>
                             {date}
