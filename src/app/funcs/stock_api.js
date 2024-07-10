@@ -1,8 +1,13 @@
 import { invoke } from "@tauri-apps/api";
 import { delay } from "./tools";
 import { ticker_to_name } from "./scraper";
+import { cache_is_valid, set_cache, get_cache } from "./cache";
 require('dotenv').config()
 let api_keys = []
+/**
+ * data on stock tickers, not related to price
+ * ex: location, sector, industry, etc
+ */
 let all_data = undefined;
 /**
  * @desc Get the api key from the backend
@@ -13,7 +18,7 @@ invoke("get_api_keys")
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
 let stop_requesting = false;
-const WAIT_TIME = 61_000; // 61,000 milliseconds
+const WAIT_TIME = 61_000; // milliseconds
 
 /**
  * @param {string} ticker_symbol 
@@ -26,14 +31,9 @@ const WAIT_TIME = 61_000; // 61,000 milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    const cached_data = get_cache(ticker_symbol);
-    if (cached_data) {
-        const { last_updated, stock_data } = cached_data;
-        const current_hour = Date.now() / 1000 / 60 / 60;
-        const last_updated_hour = Number(last_updated) / 1000 / 60 / 60;
-        if (current_hour - last_updated_hour < 1) {
-            return stock_data;
-        }
+    console.log(ticker_symbol, cache_is_valid(ticker_symbol))
+    if (cache_is_valid(ticker_symbol)) {
+        return get_cache(ticker_symbol).stock_data;
     }
     while (stop_requesting) {
         console.log("Too many requests, waiting for a minute to request " + ticker_symbol)
@@ -47,11 +47,12 @@ export async function request_ticker_data(ticker_symbol) {
     const data = await response.json();
     if (is_error(data)) {
         stop_requesting = true;
-        return request_ticker_data(ticker_symbol);
+        return await request_ticker_data(ticker_symbol);
     }
-    await cache(data);
+    set_cache(ticker_symbol, { stock_data: data });
     return data;
 }
+
 /**
  * 
  * @param {string} ticker_symbol 
@@ -115,14 +116,6 @@ export async function get_all_sectors() {
     return sectors.sort();
 }
 
-async function cache(stock_data) {
-    const ticker_symbol = stock_data["meta"]["symbol"];
-    let cache_data = {
-        stock_data: stock_data,
-        last_updated: Date.now()
-    }
-    localStorage.setItem(`${ticker_symbol}`, JSON.stringify(cache_data))
-}
 /**
  * finds the price of a company using the large dataset that is requested every few minutes. 
  * Note: This data is not completely up to date
@@ -137,15 +130,6 @@ function get_next_api_key() {
     let api_key = api_keys[current_api_index];
     current_api_index = (current_api_index + 1) % api_keys.length;
     return api_key;
-}
-
-/**
- *
- * @param ticker_symbol {string}
- * @returns {Promise<any>}
- */
-function get_cache(ticker_symbol) {
-    return JSON.parse(localStorage.getItem(`${ticker_symbol.toUpperCase()}`))
 }
 
 export function current_price_from_data(stock_data) {
