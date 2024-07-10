@@ -48,3 +48,17 @@ export function set_cache(key, value) {
 export function get_cache(key) {
     return JSON.parse(localStorage.getItem(key))
 }
+
+export function clear_cache() {
+    localStorage.clear();
+}
+
+/**
+ * basic wrappers around the localStorage API so that it can be changed if ever needed
+ */
+export function store(key, value) {
+    localStorage.setItem(key, value)
+}
+export function retrieve(key) {
+    return localStorage.getItem(key)
+}

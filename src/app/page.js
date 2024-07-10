@@ -6,7 +6,8 @@ import Link from 'next/link';
  * global css imports
  */
 import "@/app/css/Widgets.css"
-import { clear_application_data } from './funcs/tools';
+import { clear_cache, retrieve, store } from './funcs/cache';
+import { log } from './funcs/logger';
 
 const Home = () => {
     const router = useRouter();
@@ -15,8 +16,14 @@ const Home = () => {
     //         console.log("All windows:", response);
     //     });
     // });
+    const current_version = "1.0.1"
     useEffect(() => {
-        // clear_application_data();
+        const set_version = retrieve("current_version")
+        if (!set_version || set_version !== current_version) {
+            log("New version detected, clearing cache", set_version, current_version)
+            clear_cache()
+            store("current_version", current_version)
+        }
         router.push("/home");
     }, [router]);
 
