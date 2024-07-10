@@ -18,11 +18,6 @@ export function decimal_to_percent(decimal) {
     return (decimal * 100).toFixed(2) + "%";
 }
 
-
-export function clear_application_data() {
-    localStorage.clear();
-}
-
 /**
  * gets the lowest n values from an array
  * @param {[number]} array 
