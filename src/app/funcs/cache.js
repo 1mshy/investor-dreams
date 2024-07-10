@@ -2,7 +2,7 @@
  * Will be a general caching system for all data
  */
 
-const DEFAULT_EXPIRATION = 5; // minutes
+export const DEFAULT_EXPIRATION = 5; // minutes
 
 /**
  * 
@@ -16,7 +16,7 @@ export function create_cache_profile(key, expiration) {
     }));
 }
 /**
- * @param {string} key - 
+ * @param {string} key - key of the cached item
  * @returns {boolean} checks if the current cache of a key is valid: exists and in the proper time frame
  */
 export function cache_is_valid(key) {
@@ -35,11 +35,16 @@ export function cache_is_valid(key) {
 export function set_cache(key, value) {
     if (!localStorage.getItem(key))
         create_cache_profile(key, DEFAULT_EXPIRATION)
-    const item = localStorage.getItem(key);
+    const item = JSON.parse(localStorage.getItem(key));
+    console.log(item)
     const writable_value = JSON.stringify({
         ...value,
         last_updated: Date.now(),
         expiration: item.expiration
     });
-    localStorage.setItem(key, writable_value);
+    localStorage.setItem(`${key}`, writable_value);
+}
+
+export function get_cache(key) {
+    return JSON.parse(localStorage.getItem(key))
 }

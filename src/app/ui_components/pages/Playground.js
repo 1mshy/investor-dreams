@@ -56,9 +56,7 @@ export default class Playground extends Component {
         const sp_500_data = await get_sp_500_data();
         let stock_data = this.state.stock_data;
         ticker_symbols.forEach(async (ticker_symbol) => {
-            console.log(JSON.stringify(sp_500_data))
             const { symbol, company, portfolio_percent, current_price, change, percent_change } = await sp_500_data[ticker_symbol];
-            // console.log(sp_500_data[ticker_symbol])
             stock_data[ticker_symbol] = {
                 symbol: symbol,
                 name: company,
@@ -168,10 +166,8 @@ export default class Playground extends Component {
         this.set_tickers(ticker_symbols.slice(0, 12), () => this.set_sorting(this.state.sort_method));
     }
 
-
     render() {
         const { stock_data, ticker_symbols, sort_method } = this.state;
-
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
