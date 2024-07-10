@@ -1,0 +1,45 @@
+/**
+ * Will be a general caching system for all data
+ */
+
+const DEFAULT_EXPIRATION = 5; // minutes
+
+/**
+ * 
+ * @param {string} key 
+ * @param {Number} expiration - time in minutes
+ */
+export function create_cache_profile(key, expiration) {
+    localStorage.setItem(key, JSON.stringify({
+        expiration: expiration,
+        last_updated: 0
+    }));
+}
+/**
+ * @param {string} key - 
+ * @returns {boolean} checks if the current cache of a key is valid: exists and in the proper time frame
+ */
+export function cache_is_valid(key) {
+    const value = localStorage.getItem(key);
+    if (!value) return false;
+    const item = JSON.parse(value)
+    const now = Date.now();
+    const { last_updated, expiration } = item;
+    return now - last_updated < expiration * 60 * 1000 // minutes to miliseconds
+}
+/**
+ * 
+ * @param {string} key 
+ * @param {Object} value 
+ */
+export function set_cache(key, value) {
+    if (!localStorage.getItem(key))
+        create_cache_profile(key, DEFAULT_EXPIRATION)
+    const item = localStorage.getItem(key);
+    const writable_value = JSON.stringify({
+        ...value,
+        last_updated: Date.now(),
+        expiration: item.expiration
+    });
+    localStorage.setItem(key, writable_value);
+}

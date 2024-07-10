@@ -2,7 +2,8 @@
 import { get_index_stocks, get_lazy_percent_change, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
-    get_all_data
+    get_all_data,
+    get_all_sectors
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
 import { Stack, TextField, ThemeProvider } from '@mui/material';
@@ -81,15 +82,21 @@ export default class Playground extends Component {
      * @param {string} sector 
      */
     set_sector(sector) {
-        get_all_data().then((data) => {
-            let tickers_in_sector = [];
-            for (const ticker in data) {
-                if (data[ticker].sector === sector) {
-                    tickers_in_sector.push(ticker);
-                }
-            };
-            this.set_tickers(tickers_in_sector).then(_ => { });
-        });
+        get_all_sectors().then(sectors => {
+            if (sector in sectors) {
+                get_all_data().then((data) => {
+                    let tickers_in_sector = [];
+                    for (const ticker in data) {
+                        if (data[ticker].sector === sector) {
+                            tickers_in_sector.push(ticker);
+                        }
+                    };
+                    this.set_tickers(tickers_in_sector).then(_ => { });
+                });
+            }
+        })
+        
+
     };
 
     async set_sorting(sort_method) {
