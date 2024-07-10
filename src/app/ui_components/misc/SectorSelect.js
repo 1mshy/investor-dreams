@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { ListSubheader, OutlinedInput } from '@mui/material';
 import { get_all_sectors } from '../../funcs/stock_api';
+import { cache_is_valid } from '@/app/funcs/cache';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -43,6 +44,8 @@ export default class SectorSelect extends React.Component {
             sectors.unshift(default_sector);
             this.setState({ generated_sectors: sectors, sector: default_sector })
         })
+        let x = cache_is_valid("AAPL")
+        console.log(x)
     }
 
     render() {

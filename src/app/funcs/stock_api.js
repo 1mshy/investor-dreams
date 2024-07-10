@@ -29,7 +29,7 @@ export async function request_ticker_data(ticker_symbol) {
     const cached_data = get_cache(ticker_symbol);
     if (cached_data) {
         const { last_updated, stock_data } = cached_data;
-        const current_hour = Number(Date.now()) / 1000 / 60 / 60;
+        const current_hour = Date.now() / 1000 / 60 / 60;
         const last_updated_hour = Number(last_updated) / 1000 / 60 / 60;
         if (current_hour - last_updated_hour < 1) {
             return stock_data;
