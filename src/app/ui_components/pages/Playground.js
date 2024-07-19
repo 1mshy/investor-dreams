@@ -81,7 +81,7 @@ export default class Playground extends Component {
      */
     set_sector(sector) {
         get_all_sectors().then(sectors => {
-            if (sector in sectors) {
+            if (sectors.includes(sector)) {
                 get_all_data().then((data) => {
                     let tickers_in_sector = [];
                     for (const ticker in data) {
@@ -89,11 +89,12 @@ export default class Playground extends Component {
                             tickers_in_sector.push(ticker);
                         }
                     };
+                    console.log("setting tickers in sector", tickers_in_sector)
                     this.set_tickers(tickers_in_sector).then(_ => { });
                 });
             }
         })
-        
+
 
     };
 
