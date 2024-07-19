@@ -89,7 +89,6 @@ export default class Playground extends Component {
                             tickers_in_sector.push(ticker);
                         }
                     };
-                    console.log("setting tickers in sector", tickers_in_sector)
                     this.set_tickers(tickers_in_sector).then(_ => { });
                 });
             }
