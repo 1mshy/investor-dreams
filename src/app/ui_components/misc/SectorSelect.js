@@ -44,8 +44,6 @@ export default class SectorSelect extends React.Component {
             sectors.unshift(default_sector);
             this.setState({ generated_sectors: sectors, sector: default_sector })
         })
-        let x = cache_is_valid("AAPL")
-        console.log(x)
     }
 
     render() {

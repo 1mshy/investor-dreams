@@ -68,5 +68,6 @@ export async function ticker_to_name(ticker_symbol) {
 
 export async function get_portfolio_weight(ticker_symbol) {
     const data = await get_sp_500_data();
+    console.log(ticker_symbol)
     return data[ticker_symbol].portfolio_percent;
 }
