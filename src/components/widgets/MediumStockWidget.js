@@ -7,6 +7,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
+import AddIcon from '@mui/icons-material/Add';
 
 /**
  * @param {string} symbol
@@ -38,6 +39,14 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                             e.nativeEvent.stopImmediatePropagation();
                         }}>
                             {is_favourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                        </IconButton>
+                        <IconButton onClick={(e) => {
+                            
+                            e.stopPropagation();
+                            e.preventDefault();
+                            e.nativeEvent.stopImmediatePropagation();
+                        }}>
+                            <AddIcon />
                         </IconButton>
                     </div>
                 </div>
