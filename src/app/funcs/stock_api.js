@@ -93,18 +93,24 @@ export async function fetch_widget_data(ticker_symbol) {
  * @example {A: {symbol: 'A', name: 'Agilent Technologies, Inc.', summary: 'Agilent Technologies, Inc. provides application fo… and is headquartered in Santa Clara, California.', currency: 'USD', sector: 'Health Care', …}}
  * @desc possible keys: city, composite_figi, country, currency, description, cusip, exchange, figi, industry, industry_group, isin, market, market_cap, name, sector, shareclass_figi, state, summary, symbol, website, zipcode
 */
-export async function get_all_data() {
+export async function get_index_info() {
     if (!all_data)
         all_data = await fetch("/json/index_data.json").then(response => response.json());
     return all_data;
 }
+
+export async function get_ticker_info(ticker) {
+    const data = await get_index_info();
+    return data[ticker];
+}
+
 /**
  * returns all the possible sectors
  * @returns {Promise<[]>}
  */
 export async function get_all_sectors() {
     let sectors = [];
-    const data = await get_all_data();
+    const data = await get_index_info();
     Object.keys(data).forEach(key => {
         if (!sectors.includes(data[key]["sector"])) {
             sectors.push(data[key]["sector"]);

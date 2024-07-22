@@ -2,7 +2,7 @@
 import { get_index_stocks, get_lazy_percent_change, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
-    get_all_data,
+    get_index_info,
     get_all_sectors
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
@@ -93,7 +93,7 @@ export default class Playground extends Component {
     set_sector(sector) {
         get_all_sectors().then(sectors => {
             if (sectors.includes(sector)) {
-                get_all_data().then((data) => {
+                get_index_info().then((data) => {
                     get_sp_500_data().then(sp_500_data => {
                         let tickers_in_sector = [];
                         for (const ticker in sp_500_data) {
@@ -191,7 +191,7 @@ export default class Playground extends Component {
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
-                                <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
+                                {/* <TextField id='searchBar' label="Stock" variant='outlined' color='primary' /> */}
                             </Grid2>
                         </SoftPaper>
                     </div>
