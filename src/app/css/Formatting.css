@@ -1,6 +1,7 @@
 .percent-container {
     display: flex;
     flex-direction: row;
+    font-size: large;
 }
 
 .term {
