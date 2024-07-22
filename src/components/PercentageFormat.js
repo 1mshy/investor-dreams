@@ -17,7 +17,7 @@ const PercentageFormat = ({ percent_change, timeset }) => {
     }, [percent_change]);
     return <div className={"percent-container"} style={{ color: isPositive ? '#4caf50' : '#e74c3c' }}>
         <div >
-            {`${isPositive ? "+" : ""}${percent_change}%`}
+            {`${isPositive ? "+" : ""}${Number(percent_change).toFixed(2)}%`}
         </div>
         <div className={"term"}>
            {timeset ? timeset : "D"}
