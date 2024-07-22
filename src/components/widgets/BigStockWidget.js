@@ -15,7 +15,7 @@ import PercentageFormat from "../PercentageFormat";
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */
-const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices }) => {
+const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_prices }) => {
     return (
         <div className={"big"}
             onClick={(e) => {
@@ -26,7 +26,7 @@ const BigStockWidget = ({ symbol, name, exchange, price, percent_change, date, h
         >
             <div className={"head"}>
                 <div className={"ticker_symbol"}>{symbol}</div>
-                <div className={"company_name"}>{name} ({exchange})</div>
+                <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
                 <div className={"price"}>${price}</div>
