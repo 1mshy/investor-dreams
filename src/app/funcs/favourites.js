@@ -1,3 +1,4 @@
+import { retrieve, store } from "./cache";
 import { get_sp_500_data } from "./scraper";
 
 const favourite_local_storage_key = "favourites";
@@ -23,7 +24,7 @@ export async function top_favourite_changes() {
  * @example {AAPL: true, JS: true}
  */
 export function get_favourites() {
-    let favourites = localStorage.getItem(favourite_local_storage_key);
+    let favourites = retrieve(favourite_local_storage_key);
     if (!favourites) return {};
     return JSON.parse(favourites);
 }
@@ -48,14 +49,14 @@ export function is_ticker_favourite(ticker_symbol) {
 export function add_favourite(ticker_symbol) {
     let favourites = get_favourites();
     favourites[ticker_symbol] = true;
-    localStorage.setItem(favourite_local_storage_key, JSON.stringify(favourites));
+    store(favourite_local_storage_key, JSON.stringify(favourites));
 }
 
 export function remove_favourite(ticker_symbol) {
     let favourites = get_favourites();
     if (!favourites) return;
     delete favourites[ticker_symbol];
-    localStorage.setItem(favourite_local_storage_key, JSON.stringify(favourites));
+    store(favourite_local_storage_key, JSON.stringify(favourites));
 }
 
 export function toggle_favourite(ticker_symbol) {

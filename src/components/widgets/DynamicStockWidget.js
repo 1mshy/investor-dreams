@@ -4,6 +4,7 @@ import { Component } from 'react';
 import MediumStockWidget from './MediumStockWidget';
 import MiniStockWidget from "./MiniStockWidget";
 import PopupWidget from './PopupWidget';
+import SmallStockWidget from './SmallStockWidget';
 
 /**
  * @param {string} symbol
@@ -36,21 +37,29 @@ export class DynamicStockWidget extends Component {
     const { size } = this.state;
     const is_big = size === 'big';
     const is_medium = size === 'medium';
+    const is_small = size === 'small';
     const is_mini = size === 'mini';
+
+    const expand = () => { this.setSize("big") }
+    const shrink = () => { this.setSize(this.start_size) }
 
     return (
       <>
         {is_mini && <MiniStockWidget
           {...this.props}
-          onClick={() => { this.setSize("big") }}
+          onClick={expand}
+        />}
+        {is_small && <SmallStockWidget
+          {...this.props}
+          onClick={expand}
         />}
         {is_medium && <MediumStockWidget
           {...this.props}
-          onClick={() => { this.setSize("big") }}
+          onClick={expand}
         />}
         <PopupWidget
           {...this.props}
-          onClick={() => { this.setSize(this.start_size) }}
+          onClick={shrink}
           open={is_big}
         />
       </>

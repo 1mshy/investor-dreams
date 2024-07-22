@@ -1,7 +1,6 @@
 // src/app/tickers/page.js
 'use client';
 
-import ImplementedWidget from '@/components/widgets/ImplementedWidget';
 import { ThemeProvider } from '@mui/material';
 import { Component } from 'react';
 import { SoftPaper, theme } from '../../mui/theme';
@@ -30,7 +29,7 @@ class TickerPage extends Component {
                 <SoftPaper>
                     <h1>Tickers Page</h1>
                     {tickerSymbol ? <p>Ticker Symbol: {tickerSymbol}</p> : <p>Loading...</p>}
-                    <ImplementedWidget symbol={tickerSymbol} />
+                    {/* <ImplementedWidget symbol={tickerSymbol} /> */}
                 </SoftPaper>
             </ThemeProvider>
         );

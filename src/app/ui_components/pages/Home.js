@@ -2,14 +2,13 @@
 import "@/app/css/Widgets.css";
 import { has_favourites, top_favourite_changes } from '@/app/funcs/favourites';
 import { get_sp_500_data } from '@/app/funcs/scraper';
-import StockSearch from '@/components/searching/SeachBoxes';
 import StockWidget from '@/components/widgets/StockWidget';
 import { invoke } from '@tauri-apps/api';
 import Link from 'next/link';
 import { Component } from 'react';
 
-import "../../css/Homepage.css";
 import "@/app/css/Playground.css";
+import "../../css/Homepage.css";
 
 
 export default class Home extends Component {
@@ -30,10 +29,6 @@ export default class Home extends Component {
         }).catch(error => {
             console.error("Failed to fetch username:", error);
         });
-        invoke("get_current_monitor_info").then(response => {
-            console.log(response)
-            console.log(response.size)
-        })
         // TODO algorithm to get top 3 changes
         get_sp_500_data().then((response) => {
             const changes = Object.keys(response)
@@ -67,7 +62,7 @@ export default class Home extends Component {
                     </div> */}
                     <div className={"homepage-nav"} >
                         <Link href="/playground" className={"homepage-navButton"}>Playground</Link>
-                        <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
+                        {/* <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
                             href={{
                                 pathname: '/tickers',
@@ -75,7 +70,7 @@ export default class Home extends Component {
                             }}
                             passHref
                         >
-                            trest ticker</Link>
+                            trest ticker</Link> */}
                         {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { get_month_prices } from "@/app/funcs/historical_pricing";
 import PercentageFormat from "../PercentageFormat";
 import PriceGraph from "../PriceGraph";
 
@@ -9,9 +10,10 @@ import PriceGraph from "../PriceGraph";
  * @param {number} price
  * @param {number} percent_change
  * @param {function} onClick
+ * Small stock WIdget includes the same info as the mini, but includes a small graph of the month's pricing
  */
 const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_month, onClick, historical_prices, show_name = true }) => {
-    console.log(percent_change)
+    const month_prices = get_month_prices(historical_prices)
     return (
         <>
             <div className={"container"} onClick={onClick}>
@@ -30,7 +32,7 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
                     </div>
                 </div>
                 <div className={"content"}>
-                    <PriceGraph prices={historical_prices} size={"full"} />
+                    <PriceGraph prices={month_prices} size={"full"} />
                 </div>
             </div>
         </>

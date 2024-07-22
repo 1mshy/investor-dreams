@@ -6,7 +6,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { ListSubheader, OutlinedInput } from '@mui/material';
 import { get_all_sectors } from '../../funcs/stock_api';
-import { cache_is_valid } from '@/app/funcs/cache';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

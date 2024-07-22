@@ -8,6 +8,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { IconButton } from "@mui/material";
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import AddIcon from '@mui/icons-material/Add';
+import GeneralPopup from "../popups/GeneralPopup";
+import { get_month_prices } from "@/app/funcs/historical_pricing";
 
 /**
  * @param {string} symbol
@@ -22,6 +24,7 @@ import AddIcon from '@mui/icons-material/Add';
  */
 const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change_month, date, historical_prices, onClick }) => {
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
+    const month_prices = get_month_prices(historical_prices);
     return (
         <>
             <div className={"container"} style={{ width: "40rem" }} onClick={onClick}>
@@ -41,7 +44,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                             {is_favourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                         </IconButton>
                         <IconButton onClick={(e) => {
-                            
+
                             e.stopPropagation();
                             e.preventDefault();
                             e.nativeEvent.stopImmediatePropagation();
@@ -52,7 +55,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                 </div>
                 <div className={"content"}>
                     <div className={"price"}>${price}</div>
-                    <PriceGraph prices={historical_prices} />
+                    <PriceGraph prices={month_prices} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
                             {percent_change && <PercentageFormat percent_change={percent_change} />}

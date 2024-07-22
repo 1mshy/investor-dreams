@@ -36,6 +36,8 @@ export default class Playground extends Component {
             stock_data: {},
             ticker_symbols: [],
             sort_method: "Volitility", // Weight, Volitility, Bullish, Bearish
+            add_sector_menu: false,
+            create_sector_popup: false,
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
@@ -183,19 +185,11 @@ export default class Playground extends Component {
                                 <MenuButton component={Link} href="/home" >
                                     Home
                                 </MenuButton>
-                                <MenuButton onClick={() => {
-                                }}>
-                                    Favourites
-                                </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <TextField id='searchBar' label="Stock" variant='filled' color='primary' />
-
-                                <AccountMenu flexGrow>
-                                </AccountMenu>
                             </Grid2>
                         </SoftPaper>
-
                     </div>
                     <div className={"playground-content"}>
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
