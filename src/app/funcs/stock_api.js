@@ -130,25 +130,52 @@ function get_next_api_key() {
     return api_key;
 }
 
+/**
+ * 
+ * @param {object} stock_data 
+ * @returns {number}
+ */
 export function current_price_from_data(stock_data) {
     return Number(stock_data["values"][0]["close"])
 }
-
+/**
+ * 
+ * @param {object} stock_data 
+ * @returns {number}
+ */
 export function yesterday_close_from_data(stock_data) {
     return Number(stock_data["values"][1]["close"])
 }
+/**
+ * 
+ * @param {object} stock_data 
+ * @param {number} days_out 
+ * @returns {number}
+ */
 export function price_days_out_from_data(stock_data, days_out) {
     return Number(stock_data["values"][days_out]["close"])
 }
-
+/**
+ * 
+ * @param {object} stock_data 
+ * @returns {number}
+ */
 export function last_date_from_data(stock_data) {
     return stock_data["values"][0]["datetime"]
 }
-
+/**
+ * 
+ * @param {object} stock_data 
+ * @returns {[number]}
+ */
 export function get_list_prices(stock_data) {
     return stock_data["values"].map(value => Number(value.close)).reverse();
 }
-
+/**
+ * 
+ * @param {object} stock_data 
+ * @returns {number}
+ */
 export function change_from_data(stock_data) {
     const current_stock_price = current_price_from_data(stock_data);
     const yesterday_stock_price = yesterday_close_from_data(stock_data);

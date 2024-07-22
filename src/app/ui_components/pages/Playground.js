@@ -12,7 +12,6 @@ import Link from 'next/link';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
 import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
-import AccountMenu from '../accountMenu';
 import SectorSelect from '../misc/SectorSelect';
 /**
  * css imports
@@ -55,7 +54,7 @@ export default class Playground extends Component {
      * @param {[string]} ticker_symbols 
      */
     async set_tickers(ticker_symbols, func) {
-        this.setState({ ticker_symbols }, func);
+        this.setState({ ticker_symbols });
         get_sp_500_data().then(async sp_500_data => {
             let stock_data = this.state.stock_data;
             ticker_symbols.forEach(async (ticker_symbol) => {
@@ -72,11 +71,17 @@ export default class Playground extends Component {
 
             if (typeof window !== 'undefined') {
                 let stock_data = this.state.stock_data;
-                for (const ticker_symbol of ticker_symbols) {
+                Promise.all(ticker_symbols.map(async (ticker_symbol) => {
                     const data = await fetch_widget_data(ticker_symbol);
                     stock_data[ticker_symbol] = data;
                     this.setState({ stock_data });
-                }
+                })).then(func)
+
+                // for (const ticker_symbol of ticker_symbols) {
+                //     const data = await fetch_widget_data(ticker_symbol);
+                //     stock_data[ticker_symbol] = data;
+                //     this.setState({ stock_data });
+                // }
             }
         });
     }
@@ -97,7 +102,7 @@ export default class Playground extends Component {
                             }
                         };
 
-                        this.set_tickers(tickers_in_sector).then(_ => { });
+                        this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
                     });
                 });
             }
@@ -124,7 +129,7 @@ export default class Playground extends Component {
             }
             case "Volitility": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = await get_lazy_percent_change(ticker_symbol);
+                    const change = stock_data[ticker_symbol].percent_change;
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -136,7 +141,7 @@ export default class Playground extends Component {
             }
             case "Bullish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = await get_lazy_percent_change(ticker_symbol);
+                    const change = stock_data[ticker_symbol].percent_change;
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -148,7 +153,7 @@ export default class Playground extends Component {
             }
             case "Bearish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = await get_lazy_percent_change(ticker_symbol);
+                    const change = stock_data[ticker_symbol].percent_change;
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
