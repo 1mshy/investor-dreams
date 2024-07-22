@@ -60,7 +60,7 @@ export default class Playground extends Component {
             let stock_data = this.state.stock_data;
             ticker_symbols.forEach(async (ticker_symbol) => {
                 if (!sp_500_data[ticker_symbol]) return; // checks if stock exists in the large dataset
-                const { symbol, company, portfolio_percent, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+                const { symbol, company, current_price, change, percent_change } = sp_500_data[ticker_symbol];
                 stock_data[ticker_symbol] = {
                     symbol: symbol,
                     name: company,

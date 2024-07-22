@@ -38,13 +38,13 @@ async function request_top_companies() {
 export async function get_sp_500_data() {
     let data = await complex_retrieve(local_storage_key);
     const ten_minutes = 1000 * 60 * 10;
-    const date_requested = data ? JSON.parse(data)["time_requested"] : false;
+    const date_requested = data ? data["time_requested"] : false;
     if (!data || Date.now() - date_requested > ten_minutes) {
         console.log("Requesting top 500 company data from rust backend")
         data = await request_top_companies();
-        complex_store(local_storage_key, JSON.stringify(data));
+        complex_store(local_storage_key, data);
     } else {
-        data = JSON.parse(data);
+        data = data;
     }
     return data;
 }
@@ -69,6 +69,5 @@ export async function ticker_to_name(ticker_symbol) {
 
 export async function get_portfolio_weight(ticker_symbol) {
     const data = await get_sp_500_data();
-    console.log(ticker_symbol)
     return data[ticker_symbol].portfolio_percent;
 }

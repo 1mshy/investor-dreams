@@ -69,14 +69,12 @@ export async function fetch_widget_data(ticker_symbol) {
             console.log("Error fetching data for " + ticker_symbol);
             return;
         }
-
         const price = current_price_from_data(ticker_data);
         const change = change_from_data(ticker_data);
         const change_month = monthly_change_from_data(ticker_data);
         const date = last_date_from_data(ticker_data);
         const historical_prices = get_list_prices(ticker_data);
-        console.log(ticker_data)
-        let data = {
+        return {
             symbol: ticker_symbol,
             name: company_name,
             price: price.toFixed(2),
@@ -85,8 +83,6 @@ export async function fetch_widget_data(ticker_symbol) {
             date: date,
             historical_prices: historical_prices
         };
-
-        return data;
     } catch (error) {
         console.log("Error fetching data for " + ticker_symbol + ": " + error.message);
     }
