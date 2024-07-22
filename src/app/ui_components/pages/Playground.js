@@ -79,7 +79,6 @@ export default class Playground extends Component {
                 }
             }
         });
-
     }
 
     /**
