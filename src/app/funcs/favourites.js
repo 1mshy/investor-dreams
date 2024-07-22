@@ -12,7 +12,6 @@ export async function top_favourite_changes() {
         const change = Math.abs(stock_data.percent_change);
         top_3_changes.push({ ticker_symbol, change });
     }
-    console.log(JSON.stringify(top_3_changes));
     return top_3_changes.sort((a, b) => b.change - a.change)
     // .slice(0, 3)
     .map(item => item.ticker_symbol);
