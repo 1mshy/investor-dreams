@@ -16,7 +16,7 @@ invoke("get_api_keys")
     .then((keys) => { api_keys = keys.split(",") })
     .catch((error) => console.error(`No api key found!!!: ${error}`));
 
-const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON"
+const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&outputsize=5000"
 let stop_requesting = false;
 const WAIT_TIME = 61_000; // milliseconds
 
@@ -31,9 +31,11 @@ const WAIT_TIME = 61_000; // milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    console.log(ticker_symbol, cache_is_valid(ticker_symbol))
-    if (cache_is_valid(ticker_symbol)) {
-        return get_cache(ticker_symbol).stock_data;
+    // console.log(ticker_symbol, cache_is_valid(ticker_symbol))
+    const valid_cache = await cache_is_valid(ticker_symbol);
+    if (valid_cache) {
+        const cache = await get_cache(ticker_symbol);
+        return cache.stock_data;
     }
     while (stop_requesting) {
         console.log("Too many requests, waiting for a minute to request " + ticker_symbol)

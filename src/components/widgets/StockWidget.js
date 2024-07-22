@@ -1,17 +1,19 @@
 import { fetch_widget_data } from "@/app/funcs/stock_api";
-import React, { Component } from "react";
-import BigStockWidget from "./BigStockWidget";
-import MiniStockWidget from "./MiniStockWidget";
-import MediumStockWidget from "./MediumStockWidget";
-import SmallStockWidget from "./SmallStockWidget";
+import { Component } from "react";
+import { DynamicStockWidget } from "./DynamicStockWidget";
 
+/**
+ * The StockWidget class is meant as a simple way to display stock data in a widget format
+ * All the logic is handled by the DynamicStockWidget, and the StockWidget is just a wrapper
+ * that fetches the data needed
+ */
 export default class StockWidget extends Component {
     constructor(props) {
         super(props);
         this.state = {
             symbol: props.symbol,
+            size: props.size,
             ticker_data: {},
-
         }
     }
 
@@ -26,16 +28,7 @@ export default class StockWidget extends Component {
     render() {
 
         return <>
-            {this.props.size === "mini" && <MiniStockWidget
-                {...this.state.ticker_data}
-            />}
-            {this.props.size === "small" && <SmallStockWidget
-                {...this.state.ticker_data}
-            />}
-            {this.props.size === "medium" && <MediumStockWidget
-                {...this.state.ticker_data} />}
-            {this.props.size === "big" &&
-                <BigStockWidget {...this.state.ticker_data} />}
+            <DynamicStockWidget {...this.state.ticker_data} size={this.state.size} />
         </>;
     }
 }
