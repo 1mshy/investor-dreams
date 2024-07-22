@@ -9,6 +9,15 @@ export function get_month_prices(historical_prices) {
     return historical_prices ? historical_prices.slice(-30) : [];
 }
 
+export function get_ytd_prices(historical_prices) {
+    const present_date = new Date();
+    const one_day = 1000 * 60 * 60 * 24;
+    const start_of_year = new Date(present_date.getFullYear(), 0, 0);
+    const diff = present_date - start_of_year;
+    const days_past = Math.floor(diff / one_day);
+    return historical_prices ? historical_prices.slice(-days_past) : [];
+}
+
 export function get_year_prices(historical_prices) {
     return historical_prices ? historical_prices.slice(-365) : [];
 }
@@ -24,6 +33,11 @@ export function get_ten_year_prices(historical_prices) {
 export function get_month_change(historical_prices) {
     const month_prices = get_month_prices(historical_prices);
     return month_prices.length > 0 ? month_prices[month_prices.length - 1] - month_prices[0] : 0;
+}
+
+export function get_ytd_change(historical_prices) {
+    const ytd_prices = get_ytd_prices(historical_prices);
+    return ytd_prices.length > 0 ? ytd_prices[ytd_prices.length - 1] - ytd_prices[0] : 0;
 }
 
 export function get_year_change(historical_prices) {
@@ -60,3 +74,4 @@ export function get_percent_change_ten_year(historical_prices) {
     const ten_year_prices = get_ten_year_prices(historical_prices);
     return percent_change(ten_year_prices[ten_year_prices.length - 1], ten_year_prices[0]);
 }
+
