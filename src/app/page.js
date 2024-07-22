@@ -16,7 +16,7 @@ const Home = () => {
     //         console.log("All windows:", response);
     //     });
     // });
-    const current_version = "1.0.2"
+    const current_version = "1.0.4"
     useEffect(() => {
         const set_version = retrieve("current_version")
         if (!set_version || set_version !== current_version) {

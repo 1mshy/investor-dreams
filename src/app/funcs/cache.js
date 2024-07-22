@@ -4,10 +4,9 @@
 
 import localforage from "localforage";
 
-export const DEFAULT_EXPIRATION = 5; // minutes
+export const DEFAULT_EXPIRATION = 10; // minutes
 
 /**
- * 
  * @param {string} key 
  * @param {Number} expiration - time in minutes
  */
@@ -31,7 +30,7 @@ export async function cache_is_valid(key) {
     const current_day = new Date().getDay();
     const outside_trading_hours = current_hour < 9 && current_hour > 16
         && current_day > 0 && current_day < 6;
-    return cache_validity //&& !outside_trading_hours;
+    return cache_validity //|| outside_trading_hours;
 }
 
 /**
@@ -43,7 +42,6 @@ export function set_cache(key, value) {
     complex_retrieve(key).then(item => {
         if (!item)
             item = create_cache_profile(key, DEFAULT_EXPIRATION)
-        console.log(item)
         const writable_value = {
             ...value,
             last_updated: Date.now(),
@@ -65,20 +63,30 @@ export function clear_cache() {
 }
 
 /**
- * basic wrappers around the localStorage API so that it can be changed if ever needed
+ * basic wrapper around the localStorage API
  */
 export function store(key, value) {
     localStorage.setItem(key, value)
 }
-
+/**
+ * basic wrapper around the localStorage API
+ */
 export function retrieve(key) {
     return localStorage.getItem(key)
 }
-
+/**
+ * Used to store objects, arrays, and other complex data types to a database
+ * @param {string} key 
+ * @param {object} value 
+ */
 export function complex_store(key, value) {
     localforage.setItem(key, value)
 }
+/**
+ * 
+ * @param {string} key 
+ * @returns {object}
+ */
 export async function complex_retrieve(key) {
-    const item = await localforage.getItem(key)
-    return item;
+    return await localforage.getItem(key)
 }
