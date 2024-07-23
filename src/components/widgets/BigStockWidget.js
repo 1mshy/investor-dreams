@@ -1,14 +1,13 @@
 "use client";
 
+import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_ten_year_prices, get_year_change, get_year_prices, get_ytd_change, get_ytd_prices } from "@/app/funcs/historical_pricing";
+import { get_ticker_info } from "@/app/funcs/stock_api";
 import PriceGraph from "@/components/PriceGraph";
-import PercentageFormat from "../PercentageFormat";
-import { get_five_year_prices, get_month_change, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_ten_year_prices, get_year_change, get_year_prices, get_ytd_change, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import ButtonPercentageFormat from "../ButtonPercentageFormat";
-import { useEffect, useState } from "react";
-import { get_index_info, get_ticker_info } from "@/app/funcs/stock_api";
 import { open } from "@tauri-apps/api/shell";
-import { ArrowBack } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { useEffect, useState } from "react";
+import ButtonPercentageFormat from "../ButtonPercentageFormat";
+import { Badge } from "@mui/material";
+import { MarketColouredBadge } from "@/app/mui/other";
 
 /**
  * @param {string} symbol
@@ -23,9 +22,6 @@ import { IconButton } from "@mui/material";
  *      It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_prices }) => {
-
-
-
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
 
@@ -51,7 +47,10 @@ const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_
             }}
         >
             <div className={"head"}>
-                <div className={"ticker_symbol"}>{symbol}</div>
+                <MarketColouredBadge >
+                    <div className={"ticker_symbol"}>{symbol}</div>
+                </MarketColouredBadge>
+
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
