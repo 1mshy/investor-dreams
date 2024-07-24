@@ -1,13 +1,12 @@
 "use client";
 
-import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_ten_year_prices, get_year_change, get_year_prices, get_ytd_change, get_ytd_prices } from "@/app/funcs/historical_pricing";
+import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
 import { get_ticker_info } from "@/app/funcs/stock_api";
+import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
 import { open } from "@tauri-apps/api/shell";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
-import { Badge } from "@mui/material";
-import { MarketColouredBadge } from "@/app/mui/other";
 
 /**
  * @param {string} symbol
@@ -32,8 +31,8 @@ const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_
     });
 
     const percent_change_month = get_percent_change_month(historical_prices);
-    const percent_change_ytd = get_ytd_change(historical_prices);
-    const percent_change_year = get_year_change(historical_prices);
+    const percent_change_ytd = get_percent_change_ytd(historical_prices);
+    const percent_change_year = get_percent_change_year(historical_prices);
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
