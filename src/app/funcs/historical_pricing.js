@@ -60,6 +60,11 @@ export function get_percent_change_month(historical_prices) {
     return percent_change(month_prices[month_prices.length - 1], month_prices[0]);
 }
 
+export function get_percent_change_ytd(historical_prices) {
+    const month_prices = get_ytd_prices(historical_prices);
+    return percent_change(month_prices[month_prices.length - 1], month_prices[0]);
+}
+
 export function get_percent_change_year(historical_prices) {
     const year_prices = get_year_prices(historical_prices);
     return percent_change(year_prices[year_prices.length - 1], year_prices[0]);
