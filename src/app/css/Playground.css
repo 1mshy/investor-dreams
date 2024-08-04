@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #2E3A47;
+    /* background-color: #2E3A47; */
 }
 
 .generic-header {
@@ -10,6 +10,6 @@
 }
 
 .playground-content {
-    flex-grow: 1;
+    flex-grow: 0;
     overflow: hidden; /* Prevents the playground content from scrolling */
 }
