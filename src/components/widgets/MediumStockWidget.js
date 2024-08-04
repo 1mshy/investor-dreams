@@ -10,6 +10,7 @@ import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import AddIcon from '@mui/icons-material/Add';
 import GeneralPopup from "../popups/GeneralPopup";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
+import CustomSector from "@/app/ui_components/popups/CustomSector";
 
 /**
  * @param {string} symbol
@@ -43,14 +44,16 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                         }}>
                             {is_favourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                         </IconButton>
-                        <IconButton onClick={(e) => {
+                        <CustomSector>
+                            <IconButton onClick={(e) => {
 
-                            e.stopPropagation();
-                            e.preventDefault();
-                            e.nativeEvent.stopImmediatePropagation();
-                        }}>
-                            <AddIcon />
-                        </IconButton>
+                                e.stopPropagation();
+                                e.preventDefault();
+                                e.nativeEvent.stopImmediatePropagation();
+                            }}>
+                                <AddIcon />
+                            </IconButton>
+                        </CustomSector>
                     </div>
                 </div>
                 <div className={"content"}>
