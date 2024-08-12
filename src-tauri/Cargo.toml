@@ -3,7 +3,7 @@ name = "app"
 version = "0.1.0"
 description = "Investring with dreams"
 authors = ["imshy"]
-license = ""
+license = "MIT"
 repository = "https://github.com/1mshy/investor-dreams"
 default-run = "app"
 edition = "2021"
@@ -12,17 +12,19 @@ rust-version = "1.60"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.2", features = [] }
+tauri-build = { version = "2.0.0-rc", features = [] }
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6.5", features = [ "shell-open"] }
+tauri = { version = "2.0.0-rc", features = [] }
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
 once_cell = "1.10.0"
 dotenv = "0.15.0"
 whoami = "1.5.1"
+window-vibrancy = "0.5.0"
+tauri-plugin-shell = "2.0.0-alpha.2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

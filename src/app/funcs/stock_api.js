@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core"
 import { delay } from "./tools";
 import { ticker_to_name } from "./scraper";
 import { cache_is_valid, set_cache, get_cache } from "./cache";
@@ -97,6 +97,11 @@ export async function get_index_info() {
     if (!all_data)
         all_data = await fetch("/json/index_data.json").then(response => response.json());
     return all_data;
+}
+
+export async function get_all_symbols() {
+    const data = await get_index_info();
+    return Object.keys(data);
 }
 
 export async function get_ticker_info(ticker) {
