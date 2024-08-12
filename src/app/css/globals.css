@@ -76,12 +76,13 @@ body {
   max-width: 100%;
   margin: 0;
   overflow: hidden;
+  background: transparent;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  /* color: rgb(var(--foreground-rgb)); */
   
-  background-color: #2E3A47;
+  /* background-color: #2E3A47; */
 }
 
 a {

@@ -136,6 +136,11 @@ function get_next_api_key() {
     return api_key;
 }
 
+export async function get_all_symbols() {
+    const data = await get_index_info();
+    return Object.keys(data);
+}
+
 /**
  * 
  * @param {object} stock_data 
