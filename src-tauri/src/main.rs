@@ -4,6 +4,8 @@ use std::env;
 
 use crate::requesting::get_index_info;
 use crate::sensitive_data::{get_api_keys, get_username, get_all_windows, get_current_monitor_info, set_base_size};
+use tauri::Manager;
+use window_vibrancy::{apply_blur, apply_vibrancy, NSVisualEffectMaterial};
 mod requesting;
 mod sensitive_data;
 mod sensitive_constants;
@@ -12,6 +14,19 @@ fn main() {
     dotenv::dotenv().ok();
 
     tauri::Builder::default()
+    .setup(|app| {
+        let window = app.get_window("main").unwrap();
+ 
+        #[cfg(target_os = "macos")]
+        apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
+          .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+ 
+        #[cfg(target_os = "windows")]
+        apply_blur(&window, Some((18, 18, 18, 125)))
+          .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
+ 
+        Ok(())
+      })
         .invoke_handler(tauri::generate_handler![
             get_api_keys,
             get_username,

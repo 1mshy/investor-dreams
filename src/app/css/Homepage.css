@@ -6,8 +6,8 @@
 
 .homepage-mainPage {
     /* background: linear-gradient(135deg, #0b0530, #070e3a); */
-    background-color: #2E3A47;
-    color: #ffffff;
+    /* background-color: #2E3A47; */
+    /* color: #ffffff; */
     display: flex;
     flex-direction: column;
 }

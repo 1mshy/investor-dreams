@@ -1,5 +1,6 @@
 "use client"
-import "@/app/css/Widgets.css";
+
+
 import { has_favourites, top_favourite_changes } from '@/app/funcs/favourites';
 import { get_sp_500_data } from '@/app/funcs/scraper';
 import StockWidget from '@/components/widgets/StockWidget';
@@ -8,8 +9,8 @@ import Link from 'next/link';
 import { Component } from 'react';
 
 import "@/app/css/Playground.css";
-import "../../css/Homepage.css";
-
+import "@/app/css/Homepage.css";
+import "@/app/css/Widgets.css";
 
 export default class Home extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ export default class Home extends Component {
 
     async componentDidMount() {
         // Only access browser-specific APIs here
+
         invoke("get_username").then((response) => {
             this.setState({ username: response });
         }).catch(error => {

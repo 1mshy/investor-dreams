@@ -11,6 +11,7 @@
     "version": "0.1.0"
   },
   "tauri": {
+    "macOSPrivateApi": true,
     "allowlist": {
       "all": false,
       "shell": {
@@ -60,7 +61,8 @@
         "height": 1080,
         "resizable": true,
         "title": "inverstor-dreams",
-        "width": 1920
+        "width": 1920,
+        "transparent": true
       }
     ]
   }
