@@ -4,7 +4,7 @@ use tauri::command;
 
 /**
  * This function sends a GET request to the provided URL and returns the response text.
- * 
+ *
  */
 async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let client = Client::new();

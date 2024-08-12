@@ -3,7 +3,7 @@ import "@/app/css/Widgets.css";
 import { has_favourites, top_favourite_changes } from '@/app/funcs/favourites';
 import { get_sp_500_data } from '@/app/funcs/scraper';
 import StockWidget from '@/components/widgets/StockWidget';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from "@tauri-apps/api/core"
 import Link from 'next/link';
 import { Component } from 'react';
 

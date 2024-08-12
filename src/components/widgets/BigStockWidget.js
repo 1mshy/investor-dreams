@@ -4,7 +4,7 @@ import { get_five_year_prices, get_month_prices, get_percent_change_five_year, g
 import { get_ticker_info } from "@/app/funcs/stock_api";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
-import { open } from "@tauri-apps/api/shell";
+import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
 

@@ -7,8 +7,8 @@ use crate::sensitive_constants;
 pub fn get_api_keys() -> String {
     let env_keys = env::var("API_KEY");
     let api_keys = match env_keys {
-        Ok(keys) =>  keys,
-        Err(_) => sensitive_constants::BUILD_API_KEYS.to_string()
+        Ok(keys) => keys,
+        Err(_) => sensitive_constants::BUILD_API_KEYS.to_string(),
     };
     return api_keys;
 }
@@ -34,25 +34,43 @@ pub async fn get_all_windows(application_window: tauri::Window) -> Result<Vec<St
  * {width: "", height: "", scale_factor: ""}
  */
 #[command]
-pub async fn get_current_monitor_info(application_window: tauri::Window) -> Result<HashMap<String, String>, String> {
-    let current_monitor = application_window.current_monitor().unwrap().expect("No monitor found");
+pub async fn get_current_monitor_info(
+    application_window: tauri::Window,
+) -> Result<HashMap<String, String>, String> {
+    let current_monitor = application_window
+        .current_monitor()
+        .unwrap()
+        .expect("No monitor found");
     let mut map: HashMap<String, String> = HashMap::new();
-    map.insert("width".to_string(), format!("{:?}", current_monitor.size().width));
-    map.insert("height".to_string(), format!("{:?}", current_monitor.size().height));
-    map.insert("scale_factor".to_string(), current_monitor.scale_factor().to_string());
+    map.insert(
+        "width".to_string(),
+        format!("{:?}", current_monitor.size().width),
+    );
+    map.insert(
+        "height".to_string(),
+        format!("{:?}", current_monitor.size().height),
+    );
+    map.insert(
+        "scale_factor".to_string(),
+        current_monitor.scale_factor().to_string(),
+    );
 
     Ok(map)
 }
 
 #[command]
 pub async fn set_base_size(application_window: tauri::Window) -> Result<u32, String> {
-    let current_monitor = application_window.current_monitor().unwrap().expect("No monitor found");
+    let current_monitor = application_window
+        .current_monitor()
+        .unwrap()
+        .expect("No monitor found");
     let current_width = current_monitor.size().width as f64;
     let current_height = current_monitor.size().height as f64;
     let scale_factor = current_monitor.scale_factor();
-    let new_width = (current_width/2.5 * scale_factor) as u32;
-    let new_height = (current_height/2.5 * scale_factor) as u32;
-    application_window.set_size(PhysicalSize::new(new_width, new_height)).unwrap();
+    let new_width = (current_width / 2.5 * scale_factor) as u32;
+    let new_height = (current_height / 2.5 * scale_factor) as u32;
+    application_window
+        .set_size(PhysicalSize::new(new_width, new_height))
+        .unwrap();
     Ok(new_width)
 }
-
