@@ -1,5 +1,5 @@
 
-import { invoke } from "@tauri-apps/api/core"
+import { invoke } from '@tauri-apps/api';
 import { load } from 'cheerio';
 import { complex_retrieve, complex_store, retrieve, store } from './cache';
 
