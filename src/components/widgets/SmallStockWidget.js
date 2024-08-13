@@ -3,6 +3,7 @@
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import PercentageFormat from "../PercentageFormat";
 import PriceGraph from "../PriceGraph";
+import { SoftPaper } from "@/app/mui/theme";
 
 /**
  * @param {string} symbol
@@ -16,7 +17,7 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
     const month_prices = get_month_prices(historical_prices)
     return (
         <>
-            <div className={"container"} onClick={onClick}>
+            <SoftPaper className={"container"} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div style={{ width: "100%" }}>
                         <div className={"ticker_symbol"}>{symbol}</div>
@@ -34,7 +35,7 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
                 <div className={"content"}>
                     <PriceGraph prices={month_prices} size={"full"} />
                 </div>
-            </div>
+            </SoftPaper>
         </>
     );
 };

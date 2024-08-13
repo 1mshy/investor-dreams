@@ -3,7 +3,7 @@
 import { Backdrop, Dialog } from '@mui/material';
 import { Transition } from '../../app/funcs/themes';
 import BigStockWidget from "./BigStockWidget";
-import { SoftPaper } from '@/app/mui/theme';
+import { SoftPaper, SolidPaper } from '@/app/mui/theme';
 
 /**
  * @param {string} symbol
@@ -27,7 +27,7 @@ const PopupWidget = ({ symbol, name, exchange, price, percent_change, date, hist
                 TransitionComponent={Transition}
                 maxWidth='lg'
                 fullWidth
-                PaperComponent={SoftPaper}
+                PaperComponent={SolidPaper}
                 PaperProps={{
                     sx: {
                         width: "100%",

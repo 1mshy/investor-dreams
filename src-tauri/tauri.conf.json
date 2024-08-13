@@ -31,7 +31,7 @@
         "icons/icon.ico",
         "icons/icon.png"
       ],
-      "identifier": "com.tauri.build",
+      "identifier": "imshy-investments",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
