@@ -183,8 +183,8 @@ export default class Playground extends Component {
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"}>
-                    <div className={"generic-header"}>
-                        <SoftPaper elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
+                    <div className={"generic-header"} >
+                        <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
                                 <MenuButton component={Link} href="/home" >
                                     Home

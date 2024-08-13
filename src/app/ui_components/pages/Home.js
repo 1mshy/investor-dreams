@@ -56,8 +56,8 @@ export default class Home extends Component {
     render() {
         const { username, top_3_changes, worst_3_changes, top_favs } = this.state;
         return (
-            <div className={"homepage-mainPage"}>
-                <div className={"homepage-header"}>
+            <div className={"homepage-mainPage"} >
+                <div className={"homepage-header"} data-tauri-drag-region>
                     <h1 className={"homepage-title"} style={{ display: "inline-flex" }}>To the moon {username} 🚀🚀</h1>
                     {/* <div style={{ display: "inline-flex" }}>
                         <StockSearch label="" variant="standard" fullWidth />
