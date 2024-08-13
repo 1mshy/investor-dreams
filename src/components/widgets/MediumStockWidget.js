@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import GeneralPopup from "../popups/GeneralPopup";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import CustomSector from "@/app/ui_components/popups/CustomSector";
+import { SoftPaper } from "@/app/mui/theme";
 
 /**
  * @param {string} symbol
@@ -28,7 +29,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
     const month_prices = get_month_prices(historical_prices);
     return (
         <>
-            <div className={"container"} style={{ width: "40rem" }} onClick={onClick}>
+            <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>
@@ -69,7 +70,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                         </div>
                     </div>
                 </div>
-            </div>
+            </SoftPaper>
         </>
     );
 };

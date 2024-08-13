@@ -1,5 +1,6 @@
 "use client";
 
+import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "../PercentageFormat";
 
 /**
@@ -13,7 +14,7 @@ import PercentageFormat from "../PercentageFormat";
 const MiniStockWidget = ({ symbol, name, price, percent_change, onClick }) => {
     return (
         <>
-            <div className={"container"} onClick={onClick}>
+            <SoftPaper className={"container"} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>
@@ -28,7 +29,7 @@ const MiniStockWidget = ({ symbol, name, price, percent_change, onClick }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </SoftPaper>
         </>
     );
 };
