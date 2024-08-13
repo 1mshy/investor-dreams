@@ -32,7 +32,7 @@ export const theme = createTheme({
 export const SoftPaper = styled(Paper)`
  background-color: rgba(30, 41, 59, 0.9) !important;
  color: #ffffff !important;
- border-radius: 1rem;
+ border-radius: 1rem !important; 
  padding: 1rem;
  overflow: hidden;
 `;
