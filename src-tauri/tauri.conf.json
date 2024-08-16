@@ -1,64 +1,14 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "productName": "investor-dreams",
+  "version": "0.0.1",
+  "identifier": "imshy-investments",
   "build": {
-    "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:3000",
-    "distDir": "../out"
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "investor-dreams",
-    "version": "0.1.0"
-  },
-  "tauri": {
-    "macOSPrivateApi": true,
-    "allowlist": {
-      "all": false,
-      "window": {
-        "all": true
-      
-      },
-      "shell": {
-        "open": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/icon.icns",
-        "icons/icon.ico",
-        "icons/icon.png"
-      ],
-      "identifier": "imshy-investments",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
-    },
-    "security": {
-      "csp": null
-    },
-    "updater": {
-      "active": false
-    },
+  "app": {
     "windows": [
       {
         "fullscreen": false,
@@ -69,9 +19,25 @@
         "transparent": true,
         "decorations": true,
         "titleBarStyle": "Overlay",
-        "hiddenTitle": true,
-        "fileDropEnabled": false
+        "hiddenTitle": true
       }
-    ]
+    ],
+    "macOSPrivateApi": true,
+    "withGlobalTauri": true,
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.icns",
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "publisher": "Luca Lapenna",
+    "category": "Utility",
+    "shortDescription": "Investment Screener"
   }
 }

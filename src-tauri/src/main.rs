@@ -7,28 +7,39 @@ use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
 use tauri::Manager;
-use window_vibrancy::{apply_blur, apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
+use window_vibrancy::{
+    apply_blur, apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState,
+};
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
 
-fn main() {
+// #[cfg_attr(mobile, tauri::mobile_entry_point)]
+
+pub fn main() {
+    println!("Starting Tauri App");
     dotenv::dotenv().ok();
 
     tauri::Builder::default()
-    .setup(|app| {
-        let window = app.get_window("main").unwrap();
- 
-        #[cfg(target_os = "macos")]
-        apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, Some(NSVisualEffectState::Active), Some(2.0))
-          .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
- 
-        #[cfg(target_os = "windows")]
-        apply_mica(&window, Some(true))
-          .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
- 
-        Ok(())
-      })
+        .setup(|app| {
+            let window = app.get_webview_window("main").unwrap();
+
+            #[cfg(target_os = "macos")]
+            apply_vibrancy(
+                &window,
+                NSVisualEffectMaterial::HudWindow,
+                Some(NSVisualEffectState::Active),
+                Some(2.0),
+            )
+            .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+
+            println!("Applying blur");
+            #[cfg(target_os = "windows")]
+            apply_mica(&window, Some(true))
+                .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             get_api_keys,
             get_username,
@@ -36,6 +47,7 @@ fn main() {
             get_all_windows,
             get_current_monitor_info,
             set_base_size,
+            requesting::request_deep
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

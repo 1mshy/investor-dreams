@@ -1,8 +1,7 @@
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { delay } from "./tools";
 import { ticker_to_name } from "./scraper";
 import { cache_is_valid, set_cache, get_cache } from "./cache";
-require('dotenv').config()
 let api_keys = []
 /**
  * data on stock tickers, not related to price
