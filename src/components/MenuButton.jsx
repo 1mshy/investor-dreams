@@ -1,6 +1,4 @@
-"use client"
-
-const { Button } = require("@mui/material");
+import {Button} from "@mui/material";
 
 const MenuButton = (props) => {
 

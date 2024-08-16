@@ -10,9 +10,9 @@ import { retrieve } from "@/app/funcs/cache";
 import localforage from "localforage";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import MenuButton from "@/components/MenuButton";
-import Link from "next/link";
 import PredictionPopup from "../popups/PredictionPopup";
 import { get_all_symbols } from "@/app/funcs/stock_api";
+import { Link } from "react-router-dom";
 
 export default class Predictions extends Component {
     constructor(props) {
@@ -49,7 +49,7 @@ export default class Predictions extends Component {
                 <div className={"generic-header"} data-tauri-drag-region>
                     <SoftPaper elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                         <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
-                            <MenuButton component={Link} href="/home" >
+                            <MenuButton component={Link} to="/home" >
                                 Home
                             </MenuButton>
                             {/* <TextField id='searchBar' label="Stock" variant='outlined' color='primary' /> */}

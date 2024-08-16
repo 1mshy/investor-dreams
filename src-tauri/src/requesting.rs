@@ -34,3 +34,20 @@ pub async fn get_index_info() -> String {
         Err(e) => format!("Error: {}", e),
     };
 }
+
+#[command]
+pub async fn request_deep() -> String {
+    let url = "https://api.nasdaq.com/api/quote/AAPL/chart?assetclass=stocks&fromdate=2000-08-16&todate=2024-08-16";
+    return match get_request(url).await {
+        Ok(response_text) => response_text,
+        Err(e) => format!("Error: {}", e),
+    };
+}
+    /*
+    Good to know apis:
+    https://api.nasdaq.com/api/quote/AAPL/summary?assetclass=stocks
+    news letters: 
+https://www.nasdaq.com/api/news/topic/articlebysymbol?q=AAPL|STOCKS&offset=0&limit=10&fallback=true
+    company profile: https://api.nasdaq.com/api/company/AAPL/company-profile
+
+     */

@@ -8,7 +8,6 @@ import {
 import { SoftPaper, theme } from '@/app/mui/theme';
 import { Stack, TextField, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import Link from 'next/link';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
 import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
@@ -19,6 +18,7 @@ import SectorSelect from '../misc/SectorSelect';
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
 import EasySelection from '../misc/EasySelection';
+import { Link } from 'react-router-dom';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -186,7 +186,7 @@ export default class Playground extends Component {
                     <div className={"generic-header"} >
                         <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
-                                <MenuButton component={Link} href="/home" >
+                                <MenuButton component={Link} to="/home" >
                                     Home
                                 </MenuButton>
                                 <SectorSelect set_sector={this.set_sector} />
