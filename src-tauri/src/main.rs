@@ -7,7 +7,7 @@ use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
 use tauri::Manager;
-use window_vibrancy::{apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
+use window_vibrancy::{apply_blur, apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
@@ -24,7 +24,7 @@ fn main() {
           .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
  
         #[cfg(target_os = "windows")]
-        apply_mica(&window, Some((18, 18, 18, 125)))
+        apply_mica(&window, Some(true))
           .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
  
         Ok(())
