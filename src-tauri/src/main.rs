@@ -8,7 +8,7 @@ use crate::sensitive_data::{
 };
 use tauri::Manager;
 use window_vibrancy::{
-    apply_blur, apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState,
+    apply_acrylic, apply_blur, apply_mica, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState
 };
 mod requesting;
 mod sensitive_constants;
@@ -35,7 +35,7 @@ pub fn main() {
 
             println!("Applying blur");
             #[cfg(target_os = "windows")]
-            apply_mica(&window, Some(true))
+            apply_acrylic(&window, Some((1,1,1,1)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
 
             Ok(())
