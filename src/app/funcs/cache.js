@@ -85,8 +85,12 @@ export function complex_store(key, value) {
 /**
  * 
  * @param {string} key 
+ * @param {Number} time - time in minutes
  * @returns {object}
  */
-export async function complex_retrieve(key) {
-    return await localforage.getItem(key)
+export async function complex_retrieve(key, time=undefined) {
+    const item =  await localforage.getItem(key)
+    if(!time) return item;
+    if(item && Date.now() - item["time_requested"] < time) return item;
+    return null;ß
 }
