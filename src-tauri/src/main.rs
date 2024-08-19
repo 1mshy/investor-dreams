@@ -7,7 +7,7 @@ use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
 use tauri::Manager;
-use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
+use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
@@ -42,10 +42,10 @@ pub fn main() {
             get_api_keys,
             get_username,
             get_index_info,
+            req_nasdaq_info,
             get_all_windows,
             get_current_monitor_info,
             set_base_size,
-            req_nasdaq_info,
             request_deep
         ])
         .run(tauri::generate_context!())

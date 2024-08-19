@@ -94,7 +94,7 @@ export async function fetch_widget_data(ticker_symbol) {
 */
 export async function get_index_info() {
     if (!all_data)
-        all_data = await fetch("/json/index_data.json").then(response => response.json());
+        all_data = await fetch("/json/global_stock_info.json").then(response => response.json());
     return all_data;
 }
 
