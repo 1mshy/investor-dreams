@@ -1,4 +1,4 @@
-use reqwest::{header, Client};
+use reqwest::{Client};
 use std::error::Error;
 use tauri::command;
 
@@ -28,7 +28,7 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
 
 /**
  * This function sends a GET request to the provided URL and returns the response text.
- * 
+ * made specially for json requests
  */
 async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let client = Client::new();
@@ -37,12 +37,12 @@ async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
         // Set headers to mimic a browser request
         .header(
             "User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0",
+            "PostmanRuntime/7.39.0"
         )
         .header(
             "Accept",
-            "application/json, text/plain, */*",
-        ).header("Host", "api.nasdaq.com")
+            "application/json",
+        )
         .header("Connection", "keep-alive")
         .send()
         .await?;
@@ -52,29 +52,12 @@ async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
 
 #[command]
 pub async fn req_nasdaq_info() -> String {
-    println!("Requesting nasdaq info");
     let url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true";
-    let client = Client::new();
-    let response = client
-        .get(url)
-        // Set headers to mimic a browser request
-        .header(
-            "User-Agent",
-            "PostmanRuntime/7.39.0"
-        )
-        // .header(
-        //     "Accept",
-        //     "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        // )
-        .header("Connection", "keep-alive")
-        .send()
-        .await;
-    let info = match response {
-        Ok(response_text) => response_text.json().await.unwrap(),
-        Err(e) => serde_json::json!({"error": format!("Error: {}", e)}),
+    let info = match json_get_request(url).await {
+        Ok(response_text) => response_text,
+        Err(e) => format!("Error: {}", e),
     };
-    println!("{}", info);
-    return "fsdfsdf".to_string();
+    return info;
 }
 
 #[command]
