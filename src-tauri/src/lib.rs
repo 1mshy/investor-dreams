@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![allow(unused_imports)]
 use std::env;
 
 use crate::requesting::{get_index_info, req_nasdaq_info, request_deep};
