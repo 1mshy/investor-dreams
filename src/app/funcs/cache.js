@@ -20,7 +20,7 @@ export function create_cache_profile(key, expiration) {
  * @param {string} key - key of the cached item
  * @returns {boolean} checks if the current cache of a key is valid: exists and in the proper time frame
  */
-export async function cache_is_valid(key) {
+export async function stock_cache_is_valid(key) {
     const item = await complex_retrieve(key);
     if (!item) return false;
     const now = Date.now();
@@ -33,15 +33,25 @@ export async function cache_is_valid(key) {
     return cache_validity //|| outside_trading_hours;
 }
 
+export async function cache_is_valid(key, item = null) {
+    if (!item)
+        item = await complex_retrieve(key);
+    if (!item) return false;
+    const now = Date.now();
+    const { last_updated, expiration } = item;
+    return now - last_updated < expiration * 60 * 1000 // minutes to miliseconds
+}
+
 /**
  * 
  * @param {string} key 
  * @param {Object} value 
+ * @param {Number} expiration time till expiration in minutes 
  */
-export function set_cache(key, value) {
+export function set_cache(key, value, expiration = DEFAULT_EXPIRATION) {
     complex_retrieve(key).then(item => {
         if (!item)
-            item = create_cache_profile(key, DEFAULT_EXPIRATION)
+            item = create_cache_profile(key, expiration)
         const writable_value = {
             ...value,
             last_updated: Date.now(),
@@ -54,6 +64,7 @@ export function set_cache(key, value) {
 
 export async function get_cache(key) {
     const item = await complex_retrieve(key);
+    if (!item || !cache_is_valid(key, item)) return null;
     return item;
 }
 
@@ -85,12 +96,9 @@ export function complex_store(key, value) {
 /**
  * 
  * @param {string} key 
- * @param {Number} time - time in minutes
  * @returns {object}
  */
-export async function complex_retrieve(key, time=undefined) {
-    const item =  await localforage.getItem(key)
-    if(!time) return item;
-    if(item && Date.now() - item["time_requested"] < time) return item;
-    return null;ß
+export async function complex_retrieve(key) {
+    return await localforage.getItem(key)
+
 }

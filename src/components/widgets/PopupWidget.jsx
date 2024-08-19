@@ -17,7 +17,8 @@ import { SoftPaper, SolidPaper } from '@/app/mui/theme';
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */
-const PopupWidget = ({ symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open }) => {
+const PopupWidget = (props) => {
+    const { symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open } = props;
 
     return (
         <Backdrop open={open} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
@@ -37,8 +38,7 @@ const PopupWidget = ({ symbol, name, exchange, price, percent_change, date, hist
                     }
                 }}
             >
-                <BigStockWidget symbol={symbol} name={name} exchange={exchange} price={price}
-                    percent_change={percent_change} date={date} historical_prices={historical_prices} />
+                <BigStockWidget {...props} />
             </Dialog>
         </Backdrop>
     );
