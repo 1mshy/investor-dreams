@@ -12,6 +12,7 @@ import GeneralPopup from "../popups/GeneralPopup";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import CustomSector from "@/app/ui_components/popups/CustomSector";
 import { SoftPaper } from "@/app/mui/theme";
+import { format_currency } from "@/app/funcs/tools";
 
 /**
  * @param {string} symbol
@@ -24,7 +25,9 @@ import { SoftPaper } from "@/app/mui/theme";
  * @param {string} size - "big" or "medium" or "mini"
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
-const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change_month, date, historical_prices, onClick }) => {
+const MediumStockWidget = (props) => {
+    const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick } = props;
+
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     const month_prices = get_month_prices(historical_prices);
     return (
@@ -66,6 +69,7 @@ const MediumStockWidget = ({ symbol, name, price, percent_change, percent_change
                             {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                         </div>
                         <div className={"date"}>
+                            {marketCap && <div className={"market-cap"}>MC: {format_currency(marketCap)}</div>}
                             {date}
                         </div>
                     </div>
