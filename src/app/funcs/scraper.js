@@ -62,8 +62,8 @@ export async function get_all_nasdaq_info() {
     const date_requested = data ? data["time_requested"] : false;
     // if (!data || Date.now() - date_requested > ten_minutes) {
     if (!data) {
-        console.log("Requesting top 500 company data from rust backend")
-        const json_data = await invoke('req_nasdaq_info')
+        const raw_json_data = await invoke('req_nasdaq_info')
+        const json_data = JSON.parse(raw_json_data);
         console.log(json_data);
         const all_data = json_data.data.rows; // array of objects
         let new_data = {};
@@ -91,7 +91,8 @@ export async function fetch_json(url) {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        mode: 'no-cors'
     }).then(res => res.json());
 }
 /**
