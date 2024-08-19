@@ -7,6 +7,7 @@ import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import { open } from "@tauri-apps/plugin-shell";
+import { format_currency } from "@/app/funcs/tools";
 
 /**
  * @param {string} symbol
@@ -20,7 +21,8 @@ import { open } from "@tauri-apps/plugin-shell";
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */
-const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_prices }) => {
+const BigStockWidget = (props) => {
+    const { symbol, name, price, percent_change, date, historical_prices, marketCap } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
 
@@ -35,6 +37,7 @@ const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_
     const percent_change_year = get_percent_change_year(historical_prices);
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
+
 
 
     return (
@@ -104,6 +107,8 @@ const BigStockWidget = ({ symbol, name, price, percent_change, date, historical_
                     <div className={"info-value"}>${historical_prices[historical_prices.length - 2]}</div>
                     <div className={"info-title"}>Currently</div>
                     <div className={"price"}>${price}</div>
+                    <div className={"info-title"}>Market Cap</div>
+                    <div className={"price"}>{format_currency(marketCap)}</div>
                 </div>
 
             </div>

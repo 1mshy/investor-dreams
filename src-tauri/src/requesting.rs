@@ -86,5 +86,4 @@ pub async fn request_deep() -> String {
     https://www.nasdaq.com/api/news/topic/articlebysymbol?q=AAPL|STOCKS&offset=0&limit=10&fallback=true
     company profile: https://api.nasdaq.com/api/company/AAPL/company-profile
     All companies today on the nasdaq: https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true
-    
      */

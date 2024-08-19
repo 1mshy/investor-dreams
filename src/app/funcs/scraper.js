@@ -1,7 +1,7 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
-import { complex_retrieve, complex_store, retrieve, store } from './cache';
+import { complex_retrieve, complex_store, get_cache, retrieve, set_cache, store } from './cache';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
@@ -9,6 +9,7 @@ import { complex_retrieve, complex_store, retrieve, store } from './cache';
  */
 async function request_top_companies() {
     const text = await invoke('get_index_info');
+    const nasdaq_info = await get_all_nasdaq_info();
     const $ = load(text);
     const data = {};
     $('table.table tbody tr').each((index, element) => {
@@ -23,7 +24,7 @@ async function request_top_companies() {
             const change = Number($(cells[5]).text().trim());
             const percent_change = Number($(cells[6]).text().trim().replace(/%(|)|\(|\)/g, "")); //replaces '%', '(', ')'
             if (!isNaN(ticker_symbol)) return;
-            data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change };
+            data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change, ...nasdaq_info[ticker_symbol] };
         }
     });
     data["time_requested"] = Date.now();
@@ -41,12 +42,6 @@ export async function get_sp_500_data() {
     if (!data || Date.now() - date_requested > ten_minutes) {
         console.log("Requesting top 500 company data from rust backend")
         data = await request_top_companies();
-        try{
-            console.log("TRYING")
-        const nasdaq_info = await get_all_nasdaq_info();
-        console.log(nasdaq_info);
-        }catch(e){
-        }
         complex_store(local_storage_key, data);
     }
     return data;
@@ -57,10 +52,7 @@ export async function get_sp_500_data() {
  */
 export async function get_all_nasdaq_info() {
     const local_storage_key = "NASDAQ_ALL_INFO_TODAY";
-    let data = await complex_retrieve(local_storage_key);
-    const ten_minutes = 1000 * 60 * 10;
-    const date_requested = data ? data["time_requested"] : false;
-    // if (!data || Date.now() - date_requested > ten_minutes) {
+    let data = await get_cache(local_storage_key);
     if (!data) {
         const raw_json_data = await invoke('req_nasdaq_info')
         const json_data = JSON.parse(raw_json_data);
@@ -71,7 +63,7 @@ export async function get_all_nasdaq_info() {
             new_data[stock.symbol] = stock;
         });
         data = new_data;
-        complex_store(local_storage_key, data);
+        set_cache(local_storage_key, data);
     }
     return data;
 }

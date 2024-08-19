@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { delay } from "./tools";
-import { ticker_to_name } from "./scraper";
-import { cache_is_valid, set_cache, get_cache } from "./cache";
+import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
+import { stock_cache_is_valid, set_cache, get_cache } from "./cache";
 let api_keys = []
 /**
  * data on stock tickers, not related to price
@@ -30,8 +30,8 @@ const WAIT_TIME = 61_000; // milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    // console.log(ticker_symbol, cache_is_valid(ticker_symbol))
-    const valid_cache = await cache_is_valid(ticker_symbol);
+    // console.log(ticker_symbol, stock_cache_is_valid(ticker_symbol))
+    const valid_cache = await stock_cache_is_valid(ticker_symbol);
     if (valid_cache) {
         const cache = await get_cache(ticker_symbol);
         return cache.stock_data;
@@ -63,6 +63,8 @@ export async function fetch_widget_data(ticker_symbol) {
     try {
         const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
         const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
+        const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
+        let nasdaq_ticker_info = nasdaq_info[ticker_symbol] ? nasdaq_info[ticker_symbol] : {};
         // this should never happen, but if it does we should log it
         if (ticker_data === undefined) {
             console.log("Error fetching data for " + ticker_symbol);
@@ -80,7 +82,8 @@ export async function fetch_widget_data(ticker_symbol) {
             percent_change: change.toFixed(2),
             percent_change_month: change_month.toFixed(2),
             date: date,
-            historical_prices: historical_prices
+            historical_prices: historical_prices,
+            ...nasdaq_ticker_info,
         };
     } catch (error) {
         console.log("Error fetching data for " + ticker_symbol + ": " + error.message);

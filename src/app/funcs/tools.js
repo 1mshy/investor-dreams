@@ -40,3 +40,17 @@ export function get_last(array, n) {
         .slice(0, n)
         .map(ticker_symbol => response[ticker_symbol]);
 }
+
+export function format_number(number) {
+    const formatting_suffixed = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "De", "UnDe", "DuDe", "TrDe", "QaDe", "QiDe", "SxDe", "SpDe", "OcDe", "NoDe", "Vi"]; // making sure it will be inflation proof :)
+    let usable_num = Number(number);
+    while (usable_num >= 1000) {
+        usable_num /= 1000;
+        formatting_suffixed.shift();
+    }
+    return `${usable_num.toFixed(2)}${formatting_suffixed[0]}`;
+}
+
+export function format_currency(number) {
+    return `$${format_number(number)}`;
+}
