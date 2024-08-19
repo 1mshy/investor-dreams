@@ -39,7 +39,7 @@ const BasePage = () => {
     //     });
     // });
     console.log("home page loading")
-    const current_version = "1.0.4"
+    const current_version = "1.0.3"
     useEffect(() => {
         const set_version = retrieve("current_version")
         if (!set_version || set_version !== current_version) {
