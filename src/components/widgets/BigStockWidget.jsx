@@ -1,13 +1,14 @@
 "use client";
 
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import { get_ticker_info } from "@/app/funcs/stock_api";
+import { get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import { open } from "@tauri-apps/plugin-shell";
-import { format_currency } from "@/app/funcs/tools";
+import { format_currency, unformat_number } from "@/app/funcs/tools";
+import PercentageFormat from "../PercentageFormat";
 
 /**
  * @param {string} symbol
@@ -22,7 +23,7 @@ import { format_currency } from "@/app/funcs/tools";
  *      It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
-    const { symbol, name, price, percent_change, date, historical_prices, marketCap } = props;
+    const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
 
@@ -39,7 +40,8 @@ const BigStockWidget = (props) => {
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
 
-
+    console.log(news)
+    console.log(technicals)
     return (
         <div className={"big"}
             onClick={(e) => {
@@ -56,6 +58,30 @@ const BigStockWidget = (props) => {
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
+                <div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
+                        <div className={"info-value"}>{technicals.FiftTwoWeekHighLow.value}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`(PE/FPE):`}</div>
+                        <div className={"info-value"}>{`${technicals.PERatio.value}/${technicals.ForwardPE1Yr.value}`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
+                        <div className={"info-value"}>{`${technicals.AnnualizedDividend.value} (${technicals.Yield.value})`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
+                        <div className={"info-value"}>
+                            <div className={"data-element"}>
+                                <div>{`${technicals.OneYrTarget.value}`}</div>
+                                (<PercentageFormat percent_change={percentage_change(unformat_number(technicals.OneYrTarget.value), Number(price))} />)
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
                 <PriceGraph prices={graph_prices} size={"big"} />
                 <div className={"price-data"}>
                     <div className={"price-change"}>
@@ -119,6 +145,16 @@ const BigStockWidget = (props) => {
                     </div>
                 </div>
                 <div className={""}>{ticker_info.summary}</div>
+                <div>
+                    {news.map((article, index) => {
+                        return <div key={index} className={"news-article"}>
+                            <a href={article.url
+                            } target="_blank" rel="noreferrer">
+                                {article.title}
+                            </a>
+                        </div>
+                    })}
+                </div>
             </div>}
         </div>
     );

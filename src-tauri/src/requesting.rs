@@ -4,33 +4,8 @@ use tauri::command;
 
 /**
  * This function sends a GET request to the provided URL and returns the response text.
- * 
  */
 async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
-    let client = Client::new();
-    let response = client
-        .get(url)
-        // Set headers to mimic a browser request
-        .header(
-            "User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0",
-        )
-        // .header(
-        //     "Accept",
-        //     "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        // )
-        .header("Connection", "keep-alive")
-        .send()
-        .await?;
-    let response_text = response.text().await?;
-    Ok(response_text)
-}
-
-/**
- * This function sends a GET request to the provided URL and returns the response text.
- * made specially for json requests
- */
-async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let client = Client::new();
     let response = client
         .get(url)
@@ -41,7 +16,7 @@ async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
         )
         .header(
             "Accept",
-            "application/json",
+            "*/*",
         )
         .header("Connection", "keep-alive")
         .send()
@@ -49,11 +24,22 @@ async fn json_get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let response_text = response.text().await?;
     Ok(response_text)
 }
+/**
+ * Get request that is open to the javascript to call
+ */
+#[command]
+pub async fn get_request_api(url: String) -> Result<String, String> {
+    match get_request(&url).await {
+        Ok(body) => Ok(body),
+        Err(e) => Err(format!("Failed to send GET request: {}", e)),
+    }
+}
+
 
 #[command]
 pub async fn req_nasdaq_info() -> String {
     let url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true";
-    let info = match json_get_request(url).await {
+    let info = match get_request(url).await {
         Ok(response_text) => response_text,
         Err(e) => format!("Error: {}", e),
     };

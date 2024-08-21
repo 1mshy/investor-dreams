@@ -20,7 +20,7 @@ const PercentageFormat = ({ percent_change, timeset }) => {
             {`${isPositive ? "+" : ""}${Number(percent_change).toFixed(2)}%`}
         </div>
         <div className={"term"}>
-           {timeset ? timeset : "D"}
+           {timeset ? timeset : ""}
         </div>
     </div>
 }

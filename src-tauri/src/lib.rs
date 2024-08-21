@@ -3,7 +3,7 @@
 #![allow(unused_imports)]
 use std::env;
 
-use crate::requesting::{get_index_info, req_nasdaq_info, request_deep};
+use crate::requesting::{get_index_info, req_nasdaq_info, request_deep, get_request_api};
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
@@ -47,7 +47,8 @@ pub fn main() {
             get_all_windows,
             get_current_monitor_info,
             set_base_size,
-            request_deep
+            request_deep,
+            get_request_api
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
