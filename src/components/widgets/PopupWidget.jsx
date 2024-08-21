@@ -18,7 +18,7 @@ import { SoftPaper, SolidPaper } from '@/app/mui/theme';
  *      It is large and includes the most detail out of all the stock widgets
  */
 const PopupWidget = (props) => {
-    const { symbol, name, exchange, price, percent_change, date, historical_prices, onClick, open } = props;
+    const { onClick, open } = props;
 
     return (
         <Backdrop open={open} onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>

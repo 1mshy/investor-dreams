@@ -46,6 +46,14 @@
     align-items: center;
 }
 
+.data-element {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .price {
     font-size: 1.9rem;
     font-weight: bold;
