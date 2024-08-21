@@ -1,5 +1,6 @@
 import { Badge } from "@mui/material";
 import { Component } from "react";
+import { is_market_open } from "../funcs/tools";
 
 
 export const get_badge_ = theme => ({
@@ -19,21 +20,15 @@ export function get_badge_colouring(colour) {
     }
 }
 
-export class MarketColouredBadge extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            colour: "green"
-        }
-    }
-
-
-
-    render() {
-        return <Badge color="secondary" badgeContent=" "
-            // classes={{ badge: get_badge_colouring(this.state.colour) }}
+export const MarketColouredBadge = (props) => {
+    return (
+        <Badge badgeContent=""
+            sx={{
+                '& .MuiBadge-badge': {
+                    backgroundColor: is_market_open() ? '#4caf50' : '#e74c3c', // Custom color
+                },
+            }}
         >
-            {this.props.children}
-        </Badge>
-    }
+            {props.children}
+        </Badge>)
 }

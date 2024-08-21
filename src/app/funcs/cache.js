@@ -26,11 +26,7 @@ export async function stock_cache_is_valid(key) {
     const now = Date.now();
     const { last_updated, expiration } = item;
     const cache_validity = now - last_updated < expiration * 60 * 1000 // minutes to miliseconds
-    const current_hour = new Date().getHours();
-    const current_day = new Date().getDay();
-    const outside_trading_hours = current_hour < 9 && current_hour > 16
-        && current_day > 0 && current_day < 6;
-    return cache_validity //|| outside_trading_hours;
+    return cache_validity;
 }
 
 export async function cache_is_valid(key, item = null) {
