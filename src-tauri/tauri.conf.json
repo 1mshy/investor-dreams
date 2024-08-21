@@ -39,5 +39,10 @@
     "publisher": "Luca Lapenna",
     "category": "Utility",
     "shortDescription": "Investment Screener"
+  },
+  "plugins": {
+    "shell": {
+      "allowedCommands": []
+    }
   }
 }

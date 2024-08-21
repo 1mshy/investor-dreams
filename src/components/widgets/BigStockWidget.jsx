@@ -39,9 +39,7 @@ const BigStockWidget = (props) => {
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
-
     console.log(news)
-    console.log(technicals)
     return (
         <div className={"big"}
             onClick={(e) => {
@@ -58,14 +56,18 @@ const BigStockWidget = (props) => {
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
-                <div>
+                <div className={"elements"}>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
-                        <div className={"info-value"}>{technicals.FiftTwoWeekHighLow.value}</div>
+                        <div className={"info-value"}>{`${technicals.FiftTwoWeekHighLow.value.replace("/", " / ")}`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.TodayHighLow.label}:`}</div>
+                        <div className={"info-value"}>{`${technicals.TodayHighLow.value.replace("/", " / ")}`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`(PE/FPE):`}</div>
-                        <div className={"info-value"}>{`${technicals.PERatio.value}/${technicals.ForwardPE1Yr.value}`}</div>
+                        <div className={"info-value"}>{`${technicals.PERatio.value} / ${technicals.ForwardPE1Yr.value}`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
