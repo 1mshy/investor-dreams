@@ -65,3 +65,12 @@ export function unformat_number(number) {
 export function format_currency(number) {
     return `$${format_number(number)}`;
 }
+
+
+export function is_market_open() {
+    const current_hour = new Date().getHours();
+    const current_day = new Date().getDay();
+    const outside_trading_hours = current_hour < 9 && current_hour > 16
+        && current_day > 0 && current_day < 6;
+    return !outside_trading_hours;
+}
