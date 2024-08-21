@@ -17,7 +17,8 @@ export default class CustomSector extends Component {
     }
 
     render() {
-        const { open, onClick } = this.props;
+        const { onClick } = this.props;
+        const { open } = this.state;
 
         return (
             <>
