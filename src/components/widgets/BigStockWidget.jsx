@@ -154,11 +154,12 @@ const BigStockWidget = (props) => {
             </div>
             {ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
-                    <div>
                         {"Summary"}
-                    </div>
                 </div>
                 <div className={""}>{ticker_info.summary}</div>
+                <div className={"info-title"} >
+                        {"LLM generated summary"}
+                </div>
                 <div>
                     {ollama_summary}
                 </div>
