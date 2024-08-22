@@ -139,22 +139,24 @@ export async function get_nasdaq_news_body(news, symbol) {
     divs.each((i, div) => {
         const possibilities = $(div).text().split("\n");
         for (let message of possibilities) {
-            const illegal_words = [" var ", "function(", "function (", "==", ".push", "document.", "googletag", "[0]"]
-
-            if (message.includes(` ${symbol} `)) {
-                if (message.length < 1000) {
-                    for (let illegal_word of illegal_words) {
-                        if (message.includes(illegal_word))
-                            continue;
-                    }
-                }
+            const illegal_words = [
+                " var ", "function(", "function (", "==", ".push", "document.", "googletag", "[0]"
+            ]
+            // for (let illegal_word of illegal_words) {
+            //     if (message.includes(illegal_word))
+            //         continue;
+            // }
+            console.log(message)
+            console.log(`${symbol}`)
+            if (message.length > 1000 && message.includes(`${symbol}`)) {
+                console.log(message)
                 paragraph_content += message.trim();
             }
+            // console.log(message)
         }
         paragraph_content += "\n"
     })
-    // NASDAQ_SCRAPED_STORAGE.setItem(key, paragraph_content);
-    console.log(paragraph_content)
+    await NASDAQ_SCRAPED_STORAGE.setItem(key, paragraph_content);
     return paragraph_content;
 }
 

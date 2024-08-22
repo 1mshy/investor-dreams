@@ -1,7 +1,7 @@
 "use client";
 
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import { get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
@@ -35,14 +35,15 @@ const BigStockWidget = (props) => {
             set_ticker_info(info);
         });
         console.log("SENDING REQUEST TO LLM")
-        // invoke("ollama_generate", {prompt: `Given the following news headlines, give me a summary of the most important things happening with ${symbol}: ${news.map(row => row.title)}`}).then((generated_summary) => {
-        // set_ollama_summary(generated_summary);
-        // });
-        get_all_news_bodies(news).then( bodies => {
-            console.log(bodies);
-        })
-
+        generate_summary();
     }, []);
+
+    const generate_summary = async () => {
+        const bodies = await get_all_news_bodies(news, symbol)
+        const prompt = `From the following information, find the most relevant details on the publicly traded company ${symbol}:\n${bodies}`
+        const generated_summary = await generate_ollama_message(prompt)
+        set_ollama_summary(generated_summary);
+    }
 
     const percent_change_month = get_percent_change_month(historical_prices);
     const percent_change_ytd = get_percent_change_ytd(historical_prices);
@@ -158,16 +159,6 @@ const BigStockWidget = (props) => {
                     </div>
                 </div>
                 <div className={""}>{ticker_info.summary}</div>
-                <div>
-                    {news.map((article, index) => {
-                        return <div key={index} className={"news-article"}>
-                            <a href={article.url
-                            } target="_blank" rel="noreferrer">
-                                {article.title}
-                            </a>
-                        </div>
-                    })}
-                </div>
                 <div>
                     {ollama_summary}
                 </div>

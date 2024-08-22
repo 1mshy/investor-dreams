@@ -74,3 +74,7 @@ export function is_market_open() {
         && current_day > 0 && current_day < 6;
     return !outside_trading_hours;
 }
+
+export function sha256(prompt) {
+    return crypto.createHash("sha256").update(prompt).digest("hex")
+}
