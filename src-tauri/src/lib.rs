@@ -12,6 +12,7 @@ use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSV
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
+pub mod ollama;
 
 // #[cfg_attr(mobile, tauri::mobile_entry_point)]
 

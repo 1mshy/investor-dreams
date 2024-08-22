@@ -2,6 +2,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import { complex_retrieve, complex_store, get_cache, retrieve, set_cache, store } from './cache';
+import localforage from 'localforage';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
@@ -105,3 +106,55 @@ export async function get_portfolio_weight(ticker_symbol) {
     const data = await get_sp_500_data();
     return data[ticker_symbol].portfolio_percent;
 }
+
+
+/**
+ * NASDAQ SCRAPING
+ */
+
+const NASDAQ_SCRAPED_STORAGE = localforage.createInstance({
+    name: "nasdaq_scraped_storage"
+})
+
+export async function get_all_news_bodies(news_list, symbol) {
+    let promises = [];
+    for (let news of news_list) {
+        promises.push(get_nasdaq_news_body(news, symbol));
+    }
+    const news_bodies = await Promise.all(promises)
+    return news_bodies.join('');
+}
+
+export async function get_nasdaq_news_body(news, symbol) {
+    const url = `https://www.nasdaq.com${news.url}`;
+    const key = `${symbol}_${news.url}`;
+    const cached_item = await NASDAQ_SCRAPED_STORAGE.getItem(key);
+    if (cached_item) return cached_item;
+    console.log('running nasdaq')
+    const base_html = await invoke("get_request_api", { url });
+    // console.log(base_html);
+    const $ = load(base_html);
+    const divs = $(".body__content")
+    let paragraph_content = `${news.title}:\n`
+    divs.each((i, div) => {
+        const possibilities = $(div).text().split("\n");
+        for (let message of possibilities) {
+            const illegal_words = [" var ", "function(", "function (", "==", ".push", "document.", "googletag", "[0]"]
+
+            if (message.includes(` ${symbol} `)) {
+                if (message.length < 1000) {
+                    for (let illegal_word of illegal_words) {
+                        if (message.includes(illegal_word))
+                            continue;
+                    }
+                }
+                paragraph_content += message.trim();
+            }
+        }
+        paragraph_content += "\n"
+    })
+    // NASDAQ_SCRAPED_STORAGE.setItem(key, paragraph_content);
+    console.log(paragraph_content)
+    return paragraph_content;
+}
+

@@ -7,19 +7,25 @@ use crate::requesting::{get_index_info, req_nasdaq_info, request_deep, get_reque
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
+use crate::ollama::{ollama_generate};
 use tauri::Manager;
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
+mod ollama;
 
+use once_cell::sync::Lazy;
+use ollama_rs::Ollama; // Import Ollama from the `ollama-rs` crate
 // #[cfg_attr(mobile, tauri::mobile_entry_point)]
 
 pub fn main() {
     println!("Starting Tauri App");
     dotenv::dotenv().ok();
+    let ollama_instance = Ollama::new("http://localhost".to_string(), 11434);
 
     tauri::Builder::default()
+    .manage(ollama_instance) // Manage the Ollama instance
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
 
@@ -48,7 +54,8 @@ pub fn main() {
             get_current_monitor_info,
             set_base_size,
             request_deep,
-            get_request_api
+            get_request_api,
+            ollama_generate
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

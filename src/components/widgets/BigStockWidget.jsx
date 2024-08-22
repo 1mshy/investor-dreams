@@ -9,6 +9,8 @@ import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import { open } from "@tauri-apps/plugin-shell";
 import { format_currency, unformat_number } from "@/app/funcs/tools";
 import PercentageFormat from "../PercentageFormat";
+import { invoke } from "@tauri-apps/api/core";
+import { get_all_news_bodies } from "@/app/funcs/scraper";
 
 /**
  * @param {string} symbol
@@ -26,12 +28,21 @@ const BigStockWidget = (props) => {
     const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
+    const [ollama_summary, set_ollama_summary] = useState("");
 
     useEffect(() => {
         get_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
         });
-    });
+        console.log("SENDING REQUEST TO LLM")
+        // invoke("ollama_generate", {prompt: `Given the following news headlines, give me a summary of the most important things happening with ${symbol}: ${news.map(row => row.title)}`}).then((generated_summary) => {
+        // set_ollama_summary(generated_summary);
+        // });
+        get_all_news_bodies(news).then( bodies => {
+            console.log(bodies);
+        })
+
+    }, []);
 
     const percent_change_month = get_percent_change_month(historical_prices);
     const percent_change_ytd = get_percent_change_ytd(historical_prices);
@@ -156,6 +167,9 @@ const BigStockWidget = (props) => {
                             </a>
                         </div>
                     })}
+                </div>
+                <div>
+                    {ollama_summary}
                 </div>
             </div>}
         </div>
