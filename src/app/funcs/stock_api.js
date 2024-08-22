@@ -13,7 +13,12 @@ let all_data = undefined;
  * @desc Get the api key from the backend
  */
 invoke("get_api_keys")
-    .then((keys) => { api_keys = keys.split(",") })
+    .then((keys) => { 
+        api_keys = keys.split(",");
+        if(Math.random() > 0.5) {
+            api_keys = api_keys.reverse();
+        }
+     })
     .catch((error) => console.error(`No api key found!!!: ${error}`));
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&outputsize=5000"
