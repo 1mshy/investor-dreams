@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
-import { delay } from "./tools";
+import { delay, sha256 } from "./tools";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
 import { stock_cache_is_valid, set_cache, get_cache } from "./cache";
+import localforage from "localforage";
 let api_keys = []
 /**
  * data on stock tickers, not related to price
@@ -270,4 +271,24 @@ export async function get_ticker_technicals(ticker) {
 
     set_cache(local_storage_key, parsed_news, 60);
     return parsed_news;
+}
+
+
+const OLLAMA_GENERATION = localforage.createInstance({
+    name: "ollama_generation"
+})
+
+/**
+ * Ollama wrapper
+ * @param {String} prompt 
+ * @returns {Promise<String>}
+ */
+export async function generate_ollama_message(prompt) {
+    const cached = await OLLAMA_GENERATION.getItem(prompt);
+    if (cached)
+        return cached
+
+    const generated = await invoke("ollama_generate", { prompt});
+    await OLLAMA_GENERATION.setItem(prompt, generated);
+    return generated;
 }
