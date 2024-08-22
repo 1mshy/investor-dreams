@@ -284,11 +284,15 @@ const OLLAMA_GENERATION = localforage.createInstance({
  * @returns {Promise<String>}
  */
 export async function generate_ollama_message(prompt) {
-    const cached = await OLLAMA_GENERATION.getItem(prompt);
+    const cached = await get_ollama_cached_generation(prompt);
     if (cached)
         return cached
 
     const generated = await invoke("ollama_generate", { prompt});
     await OLLAMA_GENERATION.setItem(prompt, generated);
     return generated;
+}
+
+export async function get_ollama_cached_generation(prompt) {
+    return OLLAMA_GENERATION.getItem(prompt);
 }
