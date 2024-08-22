@@ -1,7 +1,7 @@
 "use client";
 
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { generate_ollama_message, get_ollama_cached_generation, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { format_currency, unformat_number } from "@/app/funcs/tools";
 import PercentageFormat from "../PercentageFormat";
 import { invoke } from "@tauri-apps/api/core";
 import { get_all_news_bodies } from "@/app/funcs/scraper";
+import { Button, CircularProgress, InputAdornment } from "@mui/material";
 
 /**
  * @param {string} symbol
@@ -28,14 +29,13 @@ const BigStockWidget = (props) => {
     const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
+    const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
 
     useEffect(() => {
         get_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
         });
-        console.log("SENDING REQUEST TO LLM")
-        generate_summary();
     }, []);
 
     const generate_summary = async () => {
@@ -154,13 +154,29 @@ const BigStockWidget = (props) => {
             </div>
             {ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
-                        {"Summary"}
+                    {"Summary"}
                 </div>
                 <div className={""}>{ticker_info.summary}</div>
                 <div className={"info-title"} >
-                        {"LLM generated summary"}
+                    {"LLM generated summary"}
                 </div>
                 <div>
+                    {!ollama_summary && (
+                        <Button
+                            onClick={async () => {
+                                set_show_ollama_button(false);
+                                await generate_summary();
+                            }}
+                            disabled={!show_ollama_button}>
+                            {!show_ollama_button ? (<>
+                                    Generating...
+                                    <CircularProgress size={20} style={{ marginLeft: '10px' }} />
+                                </>
+                            ) : (
+                                "Generate Summary"
+                            )}
+                        </Button>
+                    )}
                     {ollama_summary}
                 </div>
             </div>}
