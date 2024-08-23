@@ -5,7 +5,7 @@ import { log } from './funcs/logger';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import Home from './ui_components/pages/Home';
 import Playground from './ui_components/pages/Playground';
-import Predictions from './ui_components/pages/Predictions';
+import Analysis from './ui_components/pages/Analysis';
 import NotFound from './not-found';
 import { ToastContainer } from 'react-toastify';
 
@@ -25,8 +25,8 @@ const BasePage = () => {
       element: <Playground />,
     },
     {
-      path: "/predictions",
-      element: <Predictions />,
+      path: "/analysis",
+      element: <Analysis />,
     },
   ]);
 
