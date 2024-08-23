@@ -44,7 +44,7 @@ export async function cache_is_valid(key, item = null) {
  * @param {Object} value 
  * @param {Number} expiration time till expiration in minutes 
  */
-export function set_cache(key, value, expiration = DEFAULT_EXPIRATION) {
+export function set_cache(key, value, expiration = DEFAULT_EXPIRATION, custom_forage = null) {
     complex_retrieve(key).then(item => {
         if (!item)
             item = create_cache_profile(key, expiration)
@@ -53,13 +53,13 @@ export function set_cache(key, value, expiration = DEFAULT_EXPIRATION) {
             last_updated: Date.now(),
             expiration: item.expiration
         };
-        complex_store(`${key}`, writable_value);
+        complex_store(`${key}`, writable_value, custom_forage=custom_forage);
     })
 
 }
 
-export async function get_cache(key) {
-    const item = await complex_retrieve(key);
+export async function get_cache(key, custom_forage = null) {
+    const item = await complex_retrieve(key, custom_forage);
     if (!item || !cache_is_valid(key, item)) return null;
     return item;
 }
@@ -86,7 +86,11 @@ export function retrieve(key) {
  * @param {string} key 
  * @param {object} value 
  */
-export function complex_store(key, value) {
+export function complex_store(key, value, custom_forage = null) {
+    console.log(custom_forage)
+    if (custom_forage) {
+        return custom_forage.setItem(key, value)
+    }
     localforage.setItem(key, value)
 }
 /**
@@ -94,7 +98,9 @@ export function complex_store(key, value) {
  * @param {string} key 
  * @returns {object}
  */
-export async function complex_retrieve(key) {
+export async function complex_retrieve(key, custom_forage = null) {
+    if (custom_forage) {
+        return await custom_forage.getItem(key)
+    }
     return await localforage.getItem(key)
-
 }

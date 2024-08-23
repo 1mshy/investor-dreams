@@ -240,32 +240,41 @@ export function set_api_key() {
  * NASDAQ APIS HERE
  */
 
+const NASDAQ_NEWS = localforage.createInstance({
+    name: "nasdaq_news_list"
+})
+
 /**
  * @param {String} ticker 
  * @returns {{"data":{"message":null,"rows":[{"ago":"1 hour ago","created":"Aug 21, 2024","id":22248436,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"aapl","primarytopic":"Markets|4006","publisher":"Validea","related_symbols":["aapl|stocks"],"title":"AAPL Factor-Based Stock Analysis","url":"/articles/aapl-factor-based-stock-analysis-22"},{"ago":"1 hour ago","created":"Aug 21, 2024","id":22249031,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"sdig","primarytopic":"Pre-Market|4291","publisher":"NASDAQ.com","related_symbols":["sdig|stocks","jd|stocks","nvda|stocks","sqqq|etf","aapl|stocks","tsll|etf","tgt|stocks","m|stocks","dell|stocks","nio|stocks","hd|stocks"],"title":"Pre-Market Most Active for Aug 21, 2024 :  SDIG, JD, NVDA, SQQQ, AAPL, TSLL, TGT, M, DELL, NIO, HD, F","url":"/articles/pre-market-most-active-aug-21-2024-sdig-jd-nvda-sqqq-aapl-tsll-tgt-m-dell-nio-hd-f"},{"ago":"3 hours ago","created":"Aug 21, 2024","id":22247771,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"","primarytopic":"Technology|4001","publisher":"Zacks","related_symbols":["jhml|etf","aapl|stocks","msft|stocks","nvda|stocks","spy|etf","ivv|etf"],"title":"Is John Hancock Multifactor Large Cap ETF (JHML) a Strong ETF Right Now?","url":"/articles/john-hancock-multifactor-large-cap-etf-jhml-strong-etf-right-now-0"},{"ago":"4 hours ago","created":"Aug 21, 2024","id":22247106,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"aapl","primarytopic":"Markets|4006","publisher":"The Motley Fool","related_symbols":["aapl|stocks","brk.a|stocks","brk.b|stocks","ko|stocks"],"title":"2 No-Brainer Warren Buffett Stocks to Buy Right Now","url":"/articles/2-no-brainer-warren-buffett-stocks-buy-right-now-3"},{"ago":"4 hours ago","created":"Aug 21, 2024","id":22247041,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"amd","primarytopic":"Markets|4006","publisher":"The Motley Fool","related_symbols":["amd|stocks","googl|stocks","msft|stocks","aapl|stocks","amzn|stocks","goog|stocks"],"title":"2 Artificial Intelligence (AI) Stocks to Buy After a Tech Market Sell-Off","url":"/articles/2-artificial-intelligence-ai-stocks-buy-after-tech-market-sell"},{"ago":"4 hours ago","created":"Aug 21, 2024","id":22246986,"image":"/2023/10/09/wall-street-brendan-mcdermid-reuters.jpeg","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"brk.b","primarytopic":"Markets|4006","publisher":"The Motley Fool","related_symbols":["brk.b|stocks","brk.a|stocks","bac|stocks","aapl|stocks","cvx|stocks","siri|stocks","ulta|stocks","oxy|stocks","cb|stocks","itocy|stocks","itocf|stocks","maruy|stocks","mitsy|stocks","lsxma|stocks","lsxmk|stocks","msbhf|stocks","mitsf|stocks"],"title":"Here Are All 45 Stocks Warren Buffett Holds for Berkshire Hathaway's $314 Billion Portfolio","url":"/articles/here-are-all-45-stocks-warren-buffett-holds-berkshire-hathaways-314-billion-portfolio"},{"ago":"5 hours ago","created":"Aug 21, 2024","id":22247201,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"","primarytopic":"Technology|4001","publisher":"Zacks","related_symbols":["aapl|stocks","ko|stocks","nvda|stocks","sgu|stocks","awre|stocks"],"title":"The Zacks Analyst Blog Highlights Apple, NVIDIA, Coca-Cola, Star Group and Aware","url":"/articles/zacks-analyst-blog-highlights-apple-nvidia-coca-cola-star-group-and-aware"},{"ago":"17 hours ago","created":"Aug 20, 2024","id":22245821,"image":"/barchart/Technology%2520abstract%2520by%2520TU%2520IS%2520via%2520iStock.jpg","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"","primarytopic":"Stocks|4301","publisher":"Barchart","related_symbols":["aapl|stocks","ttdky|stocks","tm|stocks","nsany|stocks","hmc|stocks","nvda|stocks","tsla|stocks"],"title":"1 Apple Supplier to Buy on Its Solid-State Battery Breakthrough","url":"/articles/1-apple-supplier-buy-its-solid-state-battery-breakthrough"},{"ago":"21 hours ago","created":"Aug 20, 2024","id":22244396,"image":"","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"","primarytopic":"Technology|4001","publisher":"Zacks","related_symbols":["ge|stocks","aapl|stocks","ko|stocks","pfe|stocks","nvda|stocks","tmo|stocks","sgu|stocks","awre|stocks"],"title":"Top Analyst Reports for Apple, NVIDIA \u0026 Coca-Cola","url":"/articles/top-analyst-reports-apple-nvidia-coca-cola"},{"ago":"22 hours ago","created":"Aug 20, 2024","id":22242766,"image":"/barchart/Double%2520explosure%2520with%2520businesss%2520charts%2520and%2520financial%2520district%2520of%2520megapolis%2520city%2520by%2520Golden%2520Dayz%2520via%2520Shutterstock.jpg","imagedomain":"https://www.nasdaq.com/sites/acquia.prod/files","primarysymbol":"","primarytopic":"Stocks|4301","publisher":"Barchart","related_symbols":["aapl|stocks","nke|stocks","arm|stocks","rig|stocks","ulta|stocks","brk.b|stocks","kmi|stocks"],"title":"5 'Buy'-Rated Stocks Billionaires Were Buying in Q2","url":"/articles/5-buy-rated-stocks-billionaires-were-buying-q2"}],"totalrecords":4997},"message":null,"status":{"rCode":200,"bCodeMessage":null,"developerMessage":null}}}
  */
 export async function get_ticker_news(ticker) {
-    const local_storage_key = "NADAQ_NEWS_" + ticker;
-    let cached_news = await get_cache(local_storage_key);
+    const local_storage_key = `${ticker}`;
+    let cached_news = await get_cache(local_storage_key, NASDAQ_NEWS);
     if (cached_news) {
         return cached_news;
     }
-    const amount_of_articles = 10;
+    const amount_of_articles = 15;
     const url = `https://www.nasdaq.com/api/news/topic/articlebysymbol?q=${ticker}|STOCKS&offset=0&limit=${amount_of_articles}&fallback=true`;
     const response = await invoke("get_request_api", { url: url });
     const news_data = await response;
     const parsed_news = JSON.parse(news_data);
-    set_cache(local_storage_key, parsed_news, 60);
+    set_cache(local_storage_key, parsed_news, 60, NASDAQ_NEWS);
     return parsed_news;
 }
+
+const NASDAQ_TECHNICALS = localforage.createInstance({
+    name: "nasdaq_technicals"
+})
+
 /**
  * 
  * @param {String} ticker 
- * @returns {{"data":{"symbol":"AAPL","summaryData":{"Exchange":{"label":"Exchange","value":"NASDAQ-GS"},"Sector":{"label":"Sector","value":"Technology"},"Industry":{"label":"Industry","value":"Computer Manufacturing"},"OneYrTarget":{"label":"1 Year Target","value":"$250.00"},"TodayHighLow":{"label":"Today's High/Low","value":"$227.0699/$225.91"},"ShareVolume":{"label":"Share Volume","value":"5,436,150"},"AverageVolume":{"label":"Average Volume","value":"67,622,607"},"PreviousClose":{"label":"Previous Close","value":"$226.51"},"FiftTwoWeekHighLow":{"label":"52 Week High/Low","value":"$237.23/$164.075"},"MarketCap":{"label":"Market Cap","value":"3,452,099,305,850"},"PERatio":{"label":"P/E Ratio","value":37.03},"ForwardPE1Yr":{"label":"Forward P/E 1 Yr.","value":"33.91"},"EarningsPerShare":{"label":"Earnings Per Share(EPS)","value":"$6.12"},"AnnualizedDividend":{"label":"Annualized Dividend","value":"$1.00"},"ExDividendDate":{"label":"Ex Dividend Date","value":"Aug 12, 2024"},"DividendPaymentDate":{"label":"Dividend Pay Date","value":"Aug 15, 2024"},"Yield":{"label":"Current Yield","value":"0.44%"}},"assetClass":"STOCKS","additionalData":null,"bidAsk":{"Bid * Size":{"label":"Bid * Size","value":"$227.05 * 206"},"Ask * Size":{"label":"Ask * Size","value":"$227.07 * 247"}}},"message":null,"status":{"rCode":200,"bCodeMessage":null,"developerMessage":null}}}
+ * @returns {Promise<{"data":{"symbol":"AAPL","summaryData":{"Exchange":{"label":"Exchange","value":"NASDAQ-GS"},"Sector":{"label":"Sector","value":"Technology"},"Industry":{"label":"Industry","value":"Computer Manufacturing"},"OneYrTarget":{"label":"1 Year Target","value":"$250.00"},"TodayHighLow":{"label":"Today's High/Low","value":"$227.0699/$225.91"},"ShareVolume":{"label":"Share Volume","value":"5,436,150"},"AverageVolume":{"label":"Average Volume","value":"67,622,607"},"PreviousClose":{"label":"Previous Close","value":"$226.51"},"FiftTwoWeekHighLow":{"label":"52 Week High/Low","value":"$237.23/$164.075"},"MarketCap":{"label":"Market Cap","value":"3,452,099,305,850"},"PERatio":{"label":"P/E Ratio","value":37.03},"ForwardPE1Yr":{"label":"Forward P/E 1 Yr.","value":"33.91"},"EarningsPerShare":{"label":"Earnings Per Share(EPS)","value":"$6.12"},"AnnualizedDividend":{"label":"Annualized Dividend","value":"$1.00"},"ExDividendDate":{"label":"Ex Dividend Date","value":"Aug 12, 2024"},"DividendPaymentDate":{"label":"Dividend Pay Date","value":"Aug 15, 2024"},"Yield":{"label":"Current Yield","value":"0.44%"}},"assetClass":"STOCKS","additionalData":null,"bidAsk":{"Bid * Size":{"label":"Bid * Size","value":"$227.05 * 206"},"Ask * Size":{"label":"Ask * Size","value":"$227.07 * 247"}}},"message":null,"status":{"rCode":200,"bCodeMessage":null,"developerMessage":null}}>}
  */
 export async function get_ticker_technicals(ticker) {
-    const local_storage_key = "NADAQ_TECHNICALS_" + ticker;
-    let cached_news = await get_cache(local_storage_key);
+    const local_storage_key = `${ticker}`;
+    let cached_news = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
     if (cached_news) {
         return cached_news;
     }
@@ -274,7 +283,7 @@ export async function get_ticker_technicals(ticker) {
     const news_data = await response;
     const parsed_news = JSON.parse(news_data);
 
-    set_cache(local_storage_key, parsed_news, 60);
+    set_cache(local_storage_key, parsed_news, 60, NASDAQ_TECHNICALS);
     return parsed_news;
 }
 
@@ -289,6 +298,9 @@ const OLLAMA_GENERATION = localforage.createInstance({
  * @returns {Promise<String>}
  */
 export async function generate_ollama_message(prompt) {
+    OLLAMA_GENERATION.keys().then(keys => {
+        console.log(keys)
+    })
     const cached = await get_ollama_cached_generation(prompt);
     if (cached)
         return cached

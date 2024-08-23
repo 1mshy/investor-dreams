@@ -130,7 +130,6 @@ export async function get_nasdaq_news_body(news, symbol) {
     const key = `${symbol}_${news.url}`;
     const cached_item = await NASDAQ_SCRAPED_STORAGE.getItem(key);
     if (cached_item) return cached_item;
-    console.log('running nasdaq')
     const base_html = await invoke("get_request_api", { url });
     // console.log(base_html);
     const $ = load(base_html);
@@ -146,10 +145,8 @@ export async function get_nasdaq_news_body(news, symbol) {
             //     if (message.includes(illegal_word))
             //         continue;
             // }
-            console.log(message)
-            console.log(`${symbol}`)
             if (message.length > 1000 && message.includes(`${symbol}`)) {
-                console.log(message)
+                // console.log(message)
                 paragraph_content += message.trim();
             }
             // console.log(message)

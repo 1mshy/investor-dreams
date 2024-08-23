@@ -78,3 +78,4 @@ export function is_market_open() {
 export function sha256(prompt) {
     return crypto.createHash("sha256").update(prompt).digest("hex")
 }
+
