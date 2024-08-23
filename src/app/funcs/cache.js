@@ -87,7 +87,6 @@ export function retrieve(key) {
  * @param {object} value 
  */
 export function complex_store(key, value, custom_forage = null) {
-    console.log(custom_forage)
     if (custom_forage) {
         return custom_forage.setItem(key, value)
     }

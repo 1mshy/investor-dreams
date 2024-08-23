@@ -13,12 +13,12 @@ let all_data = undefined;
  * @desc Get the api key from the backend
  */
 invoke("get_api_keys")
-    .then((keys) => { 
+    .then((keys) => {
         api_keys = keys.split(",");
-        if(Math.random() > 0.5) {
+        if (Math.random() > 0.5) {
             api_keys = api_keys.reverse();
         }
-     })
+    })
     .catch((error) => console.error(`No api key found!!!: ${error}`));
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&outputsize=5000"
@@ -153,7 +153,7 @@ function get_next_api_key() {
 
 export async function get_all_symbols() {
     const data = await get_index_info();
-    return Object.keys(data);
+    return Object.keys(data).map(ticker => ticker.replace("/", "."))
 }
 
 /**
@@ -256,8 +256,7 @@ export async function get_ticker_news(ticker) {
     }
     const amount_of_articles = 15;
     const url = `https://www.nasdaq.com/api/news/topic/articlebysymbol?q=${ticker}|STOCKS&offset=0&limit=${amount_of_articles}&fallback=true`;
-    const response = await invoke("get_request_api", { url: url });
-    const news_data = await response;
+    const news_data = await invoke("get_request_api", { url: url });
     const parsed_news = JSON.parse(news_data);
     set_cache(local_storage_key, parsed_news, 60, NASDAQ_NEWS);
     return parsed_news;
@@ -274,17 +273,20 @@ const NASDAQ_TECHNICALS = localforage.createInstance({
  */
 export async function get_ticker_technicals(ticker) {
     const local_storage_key = `${ticker}`;
-    let cached_news = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
-    if (cached_news) {
-        return cached_news;
+    let cached_technicals = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
+    if (cached_technicals) {
+        return cached_technicals;
     }
     const url = `https://api.nasdaq.com/api/quote/${ticker}/summary?assetclass=stocks`;
-    const response = await invoke("get_request_api", { url: url });
-    const news_data = await response;
-    const parsed_news = JSON.parse(news_data);
+    const technical_data = await invoke("get_request_api", { url: url });
+    const parsed_technicals = JSON.parse(technical_data);
 
-    set_cache(local_storage_key, parsed_news, 60, NASDAQ_TECHNICALS);
-    return parsed_news;
+    set_cache(local_storage_key, parsed_technicals, 60, NASDAQ_TECHNICALS);
+    return parsed_technicals;
+}
+
+export async function get_all_technical_data_keys() {
+    return NASDAQ_TECHNICALS.keys();
 }
 
 
@@ -305,7 +307,7 @@ export async function generate_ollama_message(prompt) {
     if (cached)
         return cached
 
-    const generated = await invoke("ollama_generate", { prompt});
+    const generated = await invoke("ollama_generate", { prompt });
     await OLLAMA_GENERATION.setItem(prompt, generated);
     return generated;
 }
