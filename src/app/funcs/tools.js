@@ -1,3 +1,5 @@
+import { invoke } from "@tauri-apps/api/core";
+
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -79,3 +81,19 @@ export function sha256(prompt) {
     return crypto.createHash("sha256").update(prompt).digest("hex")
 }
 
+
+/**
+ * Function to invoke a Tauri command with a timeout
+ * @param {String} command 
+ * @param {Object} args 
+ * @param {Number} timeout 
+ * @returns 
+ */
+export function invoke_with_timeout(command, args = {}, timeout = 7000) {
+    return Promise.race([
+      invoke(command, args),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Operation timed out')), timeout)
+      )
+    ]);
+  }

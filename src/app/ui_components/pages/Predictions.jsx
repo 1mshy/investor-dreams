@@ -1,5 +1,5 @@
 import { SoftPaper, theme } from "@/app/mui/theme";
-import { Autocomplete, Button, Select, Stack, TextField, ThemeProvider } from '@mui/material';
+import { Autocomplete, Button, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
 import { Component } from "react";
 
 import "@/app/css/Playground.css";
@@ -13,6 +13,7 @@ import { get_all_symbols, get_all_technical_data_keys, get_ticker_technicals } f
 import { Link } from "react-router-dom";
 import { delay } from "@/app/funcs/tools";
 import { get_state } from "@/app/funcs/states";
+import { toast, ToastContainer } from "react-toastify";
 
 export default class Predictions extends Component {
     constructor(props) {
@@ -43,7 +44,7 @@ export default class Predictions extends Component {
         this.predictions.setItem("AAPL", 180)
     }
 
-    async fetch_all_data(skip_cached=true) {
+    async fetch_all_data(skip_cached = true) {
         const { all_symbols } = this.state;
         const random_num_hash = `${Math.random()}_${Date.now()}`;
         let state = get_state();
@@ -52,23 +53,32 @@ export default class Predictions extends Component {
         let searched_symbols = new Set(await get_all_technical_data_keys())
         this.setState({ searched_symbols });
         for (let symbol of all_symbols) {
-            if(skip_cached && searched_symbols.has(symbol)) {
+            // skip if skip_cached is true and already cached
+            if (skip_cached && searched_symbols.has(symbol)) {
                 continue;
             }
-            const data = await get_ticker_technicals(symbol);
-            searched_symbols.add(symbol);
-            this.setState({ searched_symbols });
-            console.log(counter++)
-            if(state['getting_all_nums'] !== random_num_hash) {
+            try {
+                const data = await get_ticker_technicals(symbol);
+                searched_symbols.add(symbol);
+                this.setState({ searched_symbols, search_value: symbol });
+            }
+            catch (_) {
+                toast.error(`${symbol} failed to fetch`)
+            }
+            if (state['getting_all_nums'] !== random_num_hash) {
                 console.log("Stopping current fetch for technicals");
                 return;
             };
-            // await delay(1000);
         }
     }
 
+    async search_highest_price() {
+        // const all_keys = await get_all_technical_data_keys();
+
+    }
+
     render() {
-        const { all_symbols, search_value, searched_symbols} = this.state;
+        const { all_symbols, search_value, searched_symbols } = this.state;
 
         return <ThemeProvider theme={theme}>
             <div className={"playground"}>
@@ -94,19 +104,30 @@ export default class Predictions extends Component {
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Symbol" />}
                         /> */}
-                        <Button variant="standard" color="primary" onClick={this.fetch_all_data}>
-                            Add
-                        </Button>
+                        <Tooltip title={"Fetches all the missing data"}>
+                            <Button variant="standard" color="primary" onClick={() => {
+                                this.fetch_all_data(true)
+                            }}>
+                                Fetch Missing
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title={"Fetches all data that is out of date (NOT RECOMMENDED as this can take over an hour)"}>
+                            <Button variant="standard" color="primary" onClick={() => {
+                                this.fetch_all_data(false)
+                            }}>
+                                Fetch Up to date
+                            </Button>
+                        </Tooltip>
                     </Stack>
                 </div>
                 <PredictionPopup >
                     <h1>Click here to open popup</h1>
                 </PredictionPopup>
                 <div>
-                    {`Searched symbols: ${searched_symbols.size / all_symbols.length * 100}%`}
+                    {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}%`}
                 </div>
                 <div>
-                    
+                    {`Just got info on: ${search_value}`}
                 </div>
             </div>
         </ThemeProvider>

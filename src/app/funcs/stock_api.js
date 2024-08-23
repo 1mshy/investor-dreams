@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { delay, sha256 } from "./tools";
+import { delay, invoke_with_timeout, sha256 } from "./tools";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
 import { stock_cache_is_valid, set_cache, get_cache } from "./cache";
 import localforage from "localforage";
@@ -50,8 +50,8 @@ export async function request_ticker_data(ticker_symbol) {
     }
     console.log("requesting " + ticker_symbol)
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const response = await invoke_with_timeout("get_request_api", { url: url });
+    const data = JSON.parse(response);
     if (is_error(data)) {
         stop_requesting = true;
         return await request_ticker_data(ticker_symbol);
@@ -266,6 +266,11 @@ const NASDAQ_TECHNICALS = localforage.createInstance({
     name: "nasdaq_technicals"
 })
 
+export async function get_cached_ticker_technicals(ticker) {
+    const local_storage_key = `${ticker}`;
+    let cached_technicals = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
+    return cached_technicals;
+}
 /**
  * 
  * @param {String} ticker 
@@ -273,12 +278,11 @@ const NASDAQ_TECHNICALS = localforage.createInstance({
  */
 export async function get_ticker_technicals(ticker) {
     const local_storage_key = `${ticker}`;
-    let cached_technicals = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
-    if (cached_technicals) {
+    const cached_technicals = await get_cached_ticker_technicals(ticker);
+    if (cached_technicals)
         return cached_technicals;
-    }
     const url = `https://api.nasdaq.com/api/quote/${ticker}/summary?assetclass=stocks`;
-    const technical_data = await invoke("get_request_api", { url: url });
+    const technical_data = await invoke_with_timeout("get_request_api", { url: url });
     const parsed_technicals = JSON.parse(technical_data);
 
     set_cache(local_storage_key, parsed_technicals, 60, NASDAQ_TECHNICALS);
@@ -288,7 +292,6 @@ export async function get_ticker_technicals(ticker) {
 export async function get_all_technical_data_keys() {
     return NASDAQ_TECHNICALS.keys();
 }
-
 
 const OLLAMA_GENERATION = localforage.createInstance({
     name: "ollama_generation"

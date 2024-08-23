@@ -32,7 +32,10 @@ const MediumStockWidget = (props) => {
     const month_prices = get_month_prices(historical_prices);
     return (
         <>
-            <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={onClick}>
+            <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={() => {
+                if(!month_prices || !marketCap) return;
+                onClick();
+            }}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>
@@ -50,7 +53,6 @@ const MediumStockWidget = (props) => {
                         </IconButton>
                         <CustomSector>
                             <IconButton onClick={(e) => {
-
                                 e.stopPropagation();
                                 e.preventDefault();
                                 e.nativeEvent.stopImmediatePropagation();
