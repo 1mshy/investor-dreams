@@ -50,7 +50,7 @@ export async function request_ticker_data(ticker_symbol) {
     }
     console.log("requesting " + ticker_symbol)
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
-    const response = await invoke_with_timeout("get_request_api", { url: url });
+    const response = await invoke("get_request_api", { url: url });
     const data = JSON.parse(response);
     if (is_error(data)) {
         stop_requesting = true;
@@ -66,7 +66,6 @@ export async function request_ticker_data(ticker_symbol) {
  * @desc get information about the ticker symbol to create a stock widget
  */
 export async function fetch_widget_data(ticker_symbol) {
-    try {
         const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
         const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
         const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
@@ -98,9 +97,7 @@ export async function fetch_widget_data(ticker_symbol) {
             technicals: technicals,
             ...nasdaq_ticker_info,
         };
-    } catch (error) {
-        console.log("Error fetching data for " + ticker_symbol + ": " + error.message);
-    }
+
     return {};
 }
 /**
@@ -152,8 +149,8 @@ function get_next_api_key() {
 }
 
 export async function get_all_symbols() {
-    const data = await get_index_info();
-    return Object.keys(data).map(ticker => ticker.replace("/", "."))
+    const nasdaq_info = await get_all_nasdaq_info();
+    return Object.keys(nasdaq_info).map(ticker => ticker.replace("/", "."))
 }
 
 /**
@@ -220,13 +217,13 @@ function is_error(stock_data) {
 }
 
 /**
- *
- * @param first {number}
- * @param second {number}
- * @returns {number}
+ * 
+ * @param {Number} current 
+ * @param {Number} old 
+ * @returns {Number}
  */
-export function percentage_change(first, second) {
-    return (first - second) / second * 100;
+export function percentage_change(current, old) {
+    return (current - old) / old * 100;
 
 }
 
@@ -261,6 +258,20 @@ export async function get_ticker_news(ticker) {
     set_cache(local_storage_key, parsed_news, 60, NASDAQ_NEWS);
     return parsed_news;
 }
+
+export async function get_company_summary(ticker) {
+    const local_storage_key = `SUMMARY_${ticker}`;
+    let cached_summary = await get_cache(local_storage_key);
+    if (cached_summary) {
+        return cached_summary;
+    }
+    const url = `https://api.nasdaq.com/api/company/${ticker}/company-profile`;
+    const summary_data = await invoke("get_request_api", { url: url });
+    const parsed_summary = JSON.parse(summary_data);
+    set_cache(local_storage_key, parsed_summary, 60*24*7);
+    return parsed_summary;
+}
+
 
 const NASDAQ_TECHNICALS = localforage.createInstance({
     name: "nasdaq_technicals"

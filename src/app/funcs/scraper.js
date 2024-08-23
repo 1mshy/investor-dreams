@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import { complex_retrieve, complex_store, get_cache, retrieve, set_cache, store } from './cache';
 import localforage from 'localforage';
+import { get_company_summary, get_ticker_info } from './stock_api';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
@@ -49,7 +50,7 @@ export async function get_sp_500_data() {
 }
 /**
  * gets info on all known stocks using the nasdaq api
- * @returns {["symbol": "Symbol", "name": "Name","lastsale": "Last Sale","netchange": "Net Change","pctchange": "% Change","marketCap": "Market Cap","country": "Country","ipoyear": "IPO Year","volume": "Volume","sector": "Sector","industry": "Industry","url": "Url"]}
+ * @returns {Promise<["symbol": "Symbol", "name": "Name","lastsale": "Last Sale","netchange": "Net Change","pctchange": "% Change","marketCap": "Market Cap","country": "Country","ipoyear": "IPO Year","volume": "Volume","sector": "Sector","industry": "Industry","url": "Url"]>}
  */
 export async function get_all_nasdaq_info() {
     const local_storage_key = "NASDAQ_ALL_INFO_TODAY";
@@ -98,12 +99,14 @@ export async function get_lazy_percent_change(ticker_symbol) {
 }
 
 export async function ticker_to_name(ticker_symbol) {
-    const data = await get_sp_500_data();
-    return data[ticker_symbol].company;
+    const data = await get_company_summary();
+    if(!data["data"]) return "Unknown";
+    return data["data"]["CompanyName"]["value"];
 }
 
 export async function get_portfolio_weight(ticker_symbol) {
     const data = await get_sp_500_data();
+    if(!data[ticker_symbol]) return 0;
     return data[ticker_symbol].portfolio_percent;
 }
 
