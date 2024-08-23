@@ -9,9 +9,10 @@ import localforage from "localforage";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import MenuButton from "@/components/MenuButton";
 import PredictionPopup from "../popups/PredictionPopup";
-import { get_all_symbols, get_ticker_technicals } from "@/app/funcs/stock_api";
+import { get_all_symbols, get_all_technical_data_keys, get_ticker_technicals } from "@/app/funcs/stock_api";
 import { Link } from "react-router-dom";
 import { delay } from "@/app/funcs/tools";
+import { get_state } from "@/app/funcs/states";
 
 export default class Predictions extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ export default class Predictions extends Component {
 
         this.state = {
             all_symbols: ["AAPL", "TSLA", "AMZN", "GOOGL", "MSFT"],
-            searched_symbols: [],
+            searched_symbols: new Set(),
             search_value: "",
         }
 
@@ -42,15 +43,26 @@ export default class Predictions extends Component {
         this.predictions.setItem("AAPL", 180)
     }
 
-    async fetch_all_data() {
+    async fetch_all_data(skip_cached=true) {
         const { all_symbols } = this.state;
+        const random_num_hash = `${Math.random()}_${Date.now()}`;
+        let state = get_state();
+        state['getting_all_nums'] = random_num_hash; // used to make sure two instances of this function are not running at the same time.
         let counter = 0;
+        let searched_symbols = new Set(await get_all_technical_data_keys())
+        this.setState({ searched_symbols });
         for (let symbol of all_symbols) {
+            if(skip_cached && searched_symbols.has(symbol)) {
+                continue;
+            }
             const data = await get_ticker_technicals(symbol);
-            const searched_symbols = this.state.searched_symbols;
-            searched_symbols.push(symbol);
+            searched_symbols.add(symbol);
             this.setState({ searched_symbols });
             console.log(counter++)
+            if(state['getting_all_nums'] !== random_num_hash) {
+                console.log("Stopping current fetch for technicals");
+                return;
+            };
             // await delay(1000);
         }
     }
@@ -91,12 +103,10 @@ export default class Predictions extends Component {
                     <h1>Click here to open popup</h1>
                 </PredictionPopup>
                 <div>
-                        {searched_symbols.map((symbol) => {
-                            return <div key={symbol}>
-                                <h1>{symbol}</h1>
-                            </div>
-
-                        })}
+                    {`Searched symbols: ${searched_symbols.size / all_symbols.length * 100}%`}
+                </div>
+                <div>
+                    
                 </div>
             </div>
         </ThemeProvider>
