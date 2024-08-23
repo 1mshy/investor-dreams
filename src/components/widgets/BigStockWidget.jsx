@@ -51,6 +51,8 @@ const BigStockWidget = (props) => {
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
+    const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
+
     console.log(news)
     return (
         <div className={"big"}
@@ -68,7 +70,7 @@ const BigStockWidget = (props) => {
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
-                <div className={"elements"}>
+                {technicals && <div className={"elements"}>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
                         <div className={"info-value"}>{`${technicals.FiftTwoWeekHighLow.value.replace("/", " / ")}`}</div>
@@ -96,8 +98,9 @@ const BigStockWidget = (props) => {
                     </div>
 
                 </div>
+                }
                 <PriceGraph prices={graph_prices} size={"big"} />
-                <div className={"price-data"}>
+                {historical_prices && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
                         <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
@@ -109,7 +112,7 @@ const BigStockWidget = (props) => {
                     <div className={"date"}>
                         {date}
                     </div>
-                </div>
+                </div>}
 
             </div>
             <div className={"info"}>
@@ -144,7 +147,7 @@ const BigStockWidget = (props) => {
                 </div>
                 <div className={"info-section"}>
                     <div className={"info-title"}>Yesterday</div>
-                    <div className={"info-value"}>${historical_prices[historical_prices.length - 2]}</div>
+                    <div className={"info-value"}>${yesterday_price}</div>
                     <div className={"info-title"}>Currently</div>
                     <div className={"price"}>${price}</div>
                     <div className={"info-title"}>Market Cap</div>
@@ -169,9 +172,9 @@ const BigStockWidget = (props) => {
                             }}
                             disabled={!show_ollama_button}>
                             {!show_ollama_button ? (<>
-                                    Generating...
-                                    <CircularProgress size={20} style={{ marginLeft: '10px' }} />
-                                </>
+                                Generating...
+                                <CircularProgress size={20} style={{ marginLeft: '10px' }} />
+                            </>
                             ) : (
                                 "Generate Summary"
                             )}

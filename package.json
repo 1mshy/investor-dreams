@@ -29,6 +29,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.26.1",
+    "react-toastify": "^10.0.5",
     "selenium-webdriver": "^4.21.0",
     "styled-components": "^6.1.11",
     "tls": "^0.0.1"
