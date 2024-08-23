@@ -1,5 +1,5 @@
 "use client"
-import { get_index_stocks, get_lazy_percent_change, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
     get_index_info,
