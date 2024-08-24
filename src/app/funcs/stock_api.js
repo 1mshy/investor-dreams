@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { delay, invoke_with_timeout, sha256 } from "./tools";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { stock_cache_is_valid, set_cache, get_cache } from "./cache";
+import { stock_cache_is_valid, set_cache, get_cache, complex_retrieve } from "./cache";
 import localforage from "localforage";
 let api_keys = []
 /**
@@ -279,7 +279,7 @@ const NASDAQ_TECHNICALS = localforage.createInstance({
 
 export async function get_cached_ticker_technicals(ticker) {
     const local_storage_key = `${ticker}`;
-    let cached_technicals = await get_cache(local_storage_key, NASDAQ_TECHNICALS);
+    let cached_technicals = await complex_retrieve(local_storage_key, NASDAQ_TECHNICALS);
     return cached_technicals;
 }
 /**
