@@ -32,7 +32,9 @@ export async function stock_cache_is_valid(key) {
 export async function cache_is_valid(key, item = null) {
     if (!item)
         item = await complex_retrieve(key);
-    if (!item) return false;
+    if (!item) {
+        return false;
+    }
     const now = Date.now();
     const { last_updated, expiration } = item;
     return now - last_updated < expiration * 60 * 1000 // minutes to miliseconds
@@ -60,7 +62,8 @@ export function set_cache(key, value, expiration = DEFAULT_EXPIRATION, custom_fo
 
 export async function get_cache(key, custom_forage = null) {
     const item = await complex_retrieve(key, custom_forage);
-    if (!item || !cache_is_valid(key, item)) return null;
+    const valid_cache = await cache_is_valid(key, item);
+    if (!item || !valid_cache) return null;
     return item;
 }
 

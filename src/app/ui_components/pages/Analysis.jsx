@@ -57,7 +57,7 @@ export default class Analysis extends Component {
         let searched_symbols = new Set(await get_all_technical_data_keys());
         this.setState({ searched_symbols });
 
-        const CHUNK_SIZE = 20; // Number of symbols to fetch at once
+        const CHUNK_SIZE = 15; // Number of symbols to fetch at once
         let symbolChunks = [];
         // Split the symbols into chunks of size 3
         for (let i = 0; i < all_symbols.length; i += CHUNK_SIZE) {
@@ -91,7 +91,7 @@ export default class Analysis extends Component {
         for (let key of all_keys) {
             const data = await get_cached_ticker_technicals(key);
             // console.log(data)
-            if (!data["data"] || !data["data"]["summaryData"]) continue;
+            if (!data || !data["data"] || !data["data"]["summaryData"]) continue;
             const summaryData = data["data"]["summaryData"];
             const bid_ask_spread = data["data"]["bidAsk"]
             const bid_spread = unformat_number(bid_ask_spread["Bid * Size"]["value"].split("*")[0])
