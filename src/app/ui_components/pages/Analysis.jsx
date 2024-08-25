@@ -5,7 +5,7 @@ import { Component } from "react";
 import "@/app/css/Playground.css";
 import "@/app/css/Analysis.css"
 import "@/app/css/Homepage.css";
-import { retrieve } from "@/app/funcs/cache";
+import { cache_is_valid, retrieve } from "@/app/funcs/cache";
 import localforage from "localforage";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import MenuButton from "@/components/MenuButton";
@@ -57,19 +57,37 @@ export default class Analysis extends Component {
         let searched_symbols = new Set(await get_all_technical_data_keys());
         this.setState({ searched_symbols });
 
-        const CHUNK_SIZE = 15; // Number of symbols to fetch at once
-        let symbolChunks = [];
+        const CHUNK_SIZE = 20; // Number of symbols to fetch at once
+        let symbol_chunks = [];
         // Split the symbols into chunks of size 3
-        for (let i = 0; i < all_symbols.length; i += CHUNK_SIZE) {
-            symbolChunks.push(all_symbols.slice(i, i + CHUNK_SIZE));
+        for (let i = 0; i < all_symbols.length; i += 1) {
+            let chunk = [];
+            while (chunk.length < CHUNK_SIZE && i + chunk.length < all_symbols.length) {
+                const symbol = all_symbols[i];
+                if (skip_cached && searched_symbols.has(symbol)) {
+                    i++;
+                    continue;
+                }
+                if(!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol))) {
+                    console.log(`${symbol} is already cached and up to date`);
+                    i++;
+                    continue;
+                }
+                chunk.push(all_symbols[i++]);
+                console.log(chunk)
+            }
+            symbol_chunks.push(chunk);
         }
 
-        for (let chunk of symbolChunks) {
+        console.log(symbol_chunks)
+
+        for (let chunk of symbol_chunks) {
+            const start = Date.now();
             // Skip symbols if skip_cached is true and already cached
             let promises = chunk.map(async symbol => {
-                if (skip_cached && searched_symbols.has(symbol)) {
-                    return Promise.resolve(); // Skip cached symbols
-                }
+                // if (skip_cached && searched_symbols.has(symbol)) {
+                //     return Promise.resolve(); // Skip cached symbols
+                // }
                 return get_ticker_technicals(symbol).then(() => {
                     searched_symbols.add(symbol);
                     this.setState({ searched_symbols, search_value: symbol });
@@ -77,7 +95,10 @@ export default class Analysis extends Component {
                     toast.error(`${symbol} failed to fetch`);
                 });
             });
+            promises.push(delay(900)); // Delay between each chunk
             await Promise.all(promises); // Wait for all 3 requests to complete
+            const end = Date.now();
+            console.log(`Chunk took ${(end - start)/1000}s`);
             if (state['getting_all_nums'] !== random_num_hash) {
                 console.log("Stopping current fetch for technicals");
                 return;
