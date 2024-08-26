@@ -57,27 +57,31 @@ export default class Analysis extends Component {
         let searched_symbols = new Set(await get_all_technical_data_keys());
         this.setState({ searched_symbols });
 
-        const CHUNK_SIZE = 20; // Number of symbols to fetch at once
-        let symbol_chunks = [];
-        // Split the symbols into chunks of size 3
-        for (let i = 0; i < all_symbols.length; i += 1) {
-            let chunk = [];
-            while (chunk.length < CHUNK_SIZE && i + chunk.length < all_symbols.length) {
-                const symbol = all_symbols[i];
-                if (skip_cached && searched_symbols.has(symbol)) {
-                    i++;
-                    continue;
-                }
-                if(!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol))) {
-                    console.log(`${symbol} is already cached and up to date`);
-                    i++;
-                    continue;
-                }
-                chunk.push(all_symbols[i++]);
-                console.log(chunk)
+        const MAX_CHUNK_SIZE = 20; // Number of symbols to fetch at once
+        let symbol_chunks = []; // array of the chunks
+        let i = 0; // index in all_symbols
+        let chunk = []; // current chunk
+        const eval_chunks = () => {
+            if (chunk.length >= MAX_CHUNK_SIZE || (i >= all_symbols.length - 1 && chunk.length > 0)) {
+                symbol_chunks.push(chunk);
+                chunk = [];
             }
-            symbol_chunks.push(chunk);
         }
+        while (i < all_symbols.length) {
+            eval_chunks();
+            const symbol = all_symbols[i];
+            if (skip_cached && searched_symbols.has(symbol)) {
+                i++;
+                continue;
+            }
+            if (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol))) {
+                console.log(`${symbol} is already cached and up to date`);
+                i++;
+                continue;
+            }
+            chunk.push(all_symbols[i++]);
+        }
+        eval_chunks();
 
         console.log(symbol_chunks)
 
@@ -98,7 +102,7 @@ export default class Analysis extends Component {
             promises.push(delay(900)); // Delay between each chunk
             await Promise.all(promises); // Wait for all 3 requests to complete
             const end = Date.now();
-            console.log(`Chunk took ${(end - start)/1000}s`);
+            console.log(`Chunk took ${(end - start) / 1000}s`);
             if (state['getting_all_nums'] !== random_num_hash) {
                 console.log("Stopping current fetch for technicals");
                 return;
