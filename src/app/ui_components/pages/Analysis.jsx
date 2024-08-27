@@ -1,4 +1,4 @@
-import { SoftPaper, theme } from "@/app/mui/theme";
+import { BackGroundPaper, SoftPaper, theme } from "@/app/mui/theme";
 import { Autocomplete, Button, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
 import { Component } from "react";
 
@@ -26,6 +26,11 @@ export default class Analysis extends Component {
             searched_symbols: new Set(),
             search_value: "",
             filtered_tickers: [],
+            show_searching_options: false,
+            searching_options: {
+                min_market_cap: 1_000_000_000,
+                max_market_cap: 1_000_000_000_000_000,
+            }
         }
 
         this.predictions = localforage.createInstance({
@@ -34,6 +39,7 @@ export default class Analysis extends Component {
         this.predict = this.predict.bind(this);
         this.fetch_all_data = this.fetch_all_data.bind(this);
         this.search_highest_price = this.search_highest_price.bind(this);
+        this.toggle_searching_options = this.toggle_searching_options.bind(this);
     }
 
     async componentDidMount() {
@@ -110,7 +116,12 @@ export default class Analysis extends Component {
         }
     }
 
+    toggle_searching_options() {
+        this.setState({ show_searching_options: !this.state.show_searching_options });
+    }
+
     async search_highest_price() {
+        const { searching_options } = this.state;
         const all_keys = await get_all_technical_data_keys();
         const final_list = [];
         for (let key of all_keys) {
@@ -128,7 +139,7 @@ export default class Analysis extends Component {
 
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
 
-            if (market_cap < 10_000_000_000) continue;
+            if (market_cap < searching_options.min_market_cap) continue;
             final_list.push({ symbol: key, market_cap, current_price, price_target, percent_difference })
         }
         final_list.sort((a, b) => b.percent_difference - a.percent_difference);
@@ -139,7 +150,7 @@ export default class Analysis extends Component {
     }
 
     render() {
-        const { all_symbols, search_value, searched_symbols, filtered_tickers } = this.state;
+        const { all_symbols, search_value, searched_symbols, filtered_tickers, show_searching_options, searching_options} = this.state;
 
         return <ThemeProvider theme={theme}>
             <div className={"playground"}>
@@ -179,14 +190,29 @@ export default class Analysis extends Component {
                                 Fetch Up to date
                             </Button>
                         </Tooltip>
-                        <Button onClick={this.search_highest_price}>
+                        <Button onClick={this.toggle_searching_options}>
                             Search highest price
                         </Button>
+
                     </Stack>
                 </div>
-                <PredictionPopup >
+                {/* <PredictionPopup >
                     <h1>Click here to open popup</h1>
-                </PredictionPopup>
+                </PredictionPopup> */}
+                
+                {show_searching_options && <BackGroundPaper style={{padding: "2rem"}}>
+                    <Stack spacing={2} direction={"row"}>
+                        <Button onClick={() => {
+                            this.search_highest_price()
+                        }}>
+                            Search highest price
+                        </Button>
+                        <TextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} onChange={(e) => {
+                            this.setState({ searching_options: { ...searching_options, min_market_cap: e.target.value } })
+                        }
+                        } />
+                    </Stack>
+                </BackGroundPaper>}
                 <div>
                     {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}% (${searched_symbols.size}/${all_symbols.length})`}
                 </div>
@@ -194,7 +220,7 @@ export default class Analysis extends Component {
                     {`Just got info on: ${search_value}`}
                 </div>
                 <div className={"widgets-container"}>
-                    {filtered_tickers.slice(0, 100).map((data) => {
+                    {filtered_tickers.slice(0, 10).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}
                 </div>
