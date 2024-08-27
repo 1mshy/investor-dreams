@@ -16,6 +16,7 @@ import { delay, unformat_number } from "@/app/funcs/tools";
 import { get_state } from "@/app/funcs/states";
 import { toast, ToastContainer } from "react-toastify";
 import StockWidget from "@/components/widgets/StockWidget";
+import { CurrencyTextField } from "@/app/mui/other";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -30,6 +31,7 @@ export default class Analysis extends Component {
             searching_options: {
                 min_market_cap: 1_000_000_000,
                 max_market_cap: 1_000_000_000_000_000,
+                tickers_shown: 10,
             }
         }
 
@@ -81,7 +83,7 @@ export default class Analysis extends Component {
                 continue;
             }
             if (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol))) {
-                console.log(`${symbol} is already cached and up to date`);
+                // console.log(`${symbol} is already cached and up to date`);
                 i++;
                 continue;
             }
@@ -207,10 +209,21 @@ export default class Analysis extends Component {
                         }}>
                             Search highest price
                         </Button>
-                        <TextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} onChange={(e) => {
-                            this.setState({ searching_options: { ...searching_options, min_market_cap: e.target.value } })
-                        }
-                        } />
+                        <CurrencyTextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} on_change={(value) => {
+                            console.log(value)
+                            if(isNaN(value) || value < 0) return;
+                            this.setState({ searching_options: { ...searching_options, min_market_cap: Number(value) } })
+                        }} />
+                        <CurrencyTextField variant="standard" label="Max Market Cap" value={searching_options.max_market_cap} on_change={(value) => {
+                            if(isNaN(value) || value < 0) return;
+                            this.setState({ searching_options: { ...searching_options, max_market_cap: Number(value) } })
+                        }}/>
+                        <CurrencyTextField variant="standard" label="Tickers Shown" value={searching_options.tickers_shown} on_change={(value) => {
+                            if(isNaN(value) || value < 0) return;
+                            this.setState({ searching_options: { ...searching_options, tickers_shown: Number(value)/100 } })
+                        }} />
+                        
+
                     </Stack>
                 </BackGroundPaper>}
                 <div>
@@ -220,7 +233,7 @@ export default class Analysis extends Component {
                     {`Just got info on: ${search_value}`}
                 </div>
                 <div className={"widgets-container"}>
-                    {filtered_tickers.slice(0, 10).map((data) => {
+                    {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}
                 </div>
