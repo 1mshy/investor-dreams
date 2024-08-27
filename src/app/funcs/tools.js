@@ -73,7 +73,7 @@ export function is_market_open() {
     const current_hour = new Date().getHours();
     const current_day = new Date().getDay();
     const outside_trading_hours = current_hour < 9 || current_hour >= 16
-        || (current_day > 0 && current_day < 6);
+        || (current_day <= 0 && current_day >= 6);
     return !outside_trading_hours;
 }
 
@@ -91,9 +91,9 @@ export function sha256(prompt) {
  */
 export function invoke_with_timeout(command, args = {}, timeout = 7000) {
     return Promise.race([
-      invoke(command, args),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Operation timed out')), timeout)
-      )
+        invoke(command, args),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Operation timed out')), timeout)
+        )
     ]);
-  }
+}
