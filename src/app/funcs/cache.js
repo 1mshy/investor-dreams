@@ -29,12 +29,13 @@ export async function stock_cache_is_valid(key) {
     return cache_validity;
 }
 
-export async function cache_is_valid(key, item = null) {
-    if (!item)
+export async function cache_is_valid(key, item = "nothing") {
+    // it is possible to have two identical keys that point to different caches
+    // thus it is important that when the item is passed as a parameter it should know if it is a cache object or nothing
+    if (item === "nothing")
         item = await complex_retrieve(key);
-    if (!item) {
+    if (!item)
         return false;
-    }
     const now = Date.now();
     const { last_updated, expiration } = item;
     return now - last_updated < expiration * 60 * 1000 // minutes to miliseconds
@@ -55,7 +56,7 @@ export function set_cache(key, value, expiration = DEFAULT_EXPIRATION, custom_fo
             last_updated: Date.now(),
             expiration: item.expiration
         };
-        complex_store(`${key}`, writable_value, custom_forage=custom_forage);
+        complex_store(`${key}`, writable_value, custom_forage = custom_forage);
     })
 
 }

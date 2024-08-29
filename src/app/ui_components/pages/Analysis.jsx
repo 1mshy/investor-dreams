@@ -1,5 +1,5 @@
 import { BackGroundPaper, SoftPaper, theme } from "@/app/mui/theme";
-import { Autocomplete, Button, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
+import { Autocomplete, Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
 import { Component } from "react";
 
 import "@/app/css/Playground.css";
@@ -32,6 +32,8 @@ export default class Analysis extends Component {
                 min_market_cap: 1_000_000_000,
                 max_market_cap: 1_000_000_000_000_000,
                 tickers_shown: 10,
+                sort_by: "market_cap",
+                reverse: false,
             }
         }
 
@@ -62,7 +64,7 @@ export default class Analysis extends Component {
         const random_num_hash = `${Math.random()}_${Date.now()}`;
         let state = get_state();
         state['getting_all_nums'] = random_num_hash; // used to ensure two instances of this function are not running simultaneously.
-        let searched_symbols = new Set(await get_all_technical_data_keys());
+        let searched_symbols = skip_cached ? new Set(await get_all_technical_data_keys()) : new Set();
         this.setState({ searched_symbols });
 
         const MAX_CHUNK_SIZE = 20; // Number of symbols to fetch at once
@@ -78,12 +80,8 @@ export default class Analysis extends Component {
         while (i < all_symbols.length) {
             eval_chunks();
             const symbol = all_symbols[i];
-            if (skip_cached && searched_symbols.has(symbol)) {
-                i++;
-                continue;
-            }
-            if (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol))) {
-                // console.log(`${symbol} is already cached and up to date`);
+            if ((skip_cached && searched_symbols.has(symbol)) || (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol)))) {
+                searched_symbols.add(symbol);
                 i++;
                 continue;
             }
@@ -110,12 +108,13 @@ export default class Analysis extends Component {
             promises.push(delay(900)); // Delay between each chunk
             await Promise.all(promises); // Wait for all 3 requests to complete
             const end = Date.now();
-            console.log(`Chunk took ${(end - start) / 1000}s`);
+            // console.log(`Chunk took ${(end - start) / 1000}s`);
             if (state['getting_all_nums'] !== random_num_hash) {
                 console.log("Stopping current fetch for technicals");
                 return;
             }
         }
+        this.setState({ searched_symbols });
     }
 
     toggle_searching_options() {
@@ -136,15 +135,18 @@ export default class Analysis extends Component {
             const ask_spread = unformat_number(bid_ask_spread["Ask * Size"]["value"].split("*")[0])
             const current_price = (bid_spread + ask_spread) / 2;
             const price_target = unformat_number(summaryData["OneYrTarget"]["value"])
+            const pe_ratio = unformat_number(summaryData["PERatio"]["value"])
+            const forward_pe_ratio = unformat_number(summaryData["ForwardPE1Yr"]["value"])
+            const divided_yield = unformat_number(summaryData["Yield"]["value"])
             if (bid_spread === 0 || ask_spread === 0 || current_price === 0 || price_target === 0) continue;
-            const percent_difference = percentage_change(price_target, current_price)
-
+            const target_percent_difference = percentage_change(price_target, current_price)
+            // console.log(pe_ratio)
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
-
-            if (market_cap < searching_options.min_market_cap) continue;
-            final_list.push({ symbol: key, market_cap, current_price, price_target, percent_difference })
+            if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
+            final_list.push({ symbol: key, market_cap, current_price, price_target, target_percent_difference, pe_ratio, forward_pe_ratio, divided_yield });
         }
-        final_list.sort((a, b) => b.percent_difference - a.percent_difference);
+        final_list.sort((a, b) => b[searching_options.sort_by] - a[searching_options.sort_by]);
+        if (searching_options.reverse) final_list.reverse();
         this.setState({ filtered_tickers: final_list })
         console.log(final_list);
         console.log(final_list[0])
@@ -152,7 +154,7 @@ export default class Analysis extends Component {
     }
 
     render() {
-        const { all_symbols, search_value, searched_symbols, filtered_tickers, show_searching_options, searching_options} = this.state;
+        const { all_symbols, search_value, searched_symbols, filtered_tickers, show_searching_options, searching_options } = this.state;
 
         return <ThemeProvider theme={theme}>
             <div className={"playground"}>
@@ -193,7 +195,7 @@ export default class Analysis extends Component {
                             </Button>
                         </Tooltip>
                         <Button onClick={this.toggle_searching_options}>
-                            Search highest price
+                            Analysis Options
                         </Button>
 
                     </Stack>
@@ -201,29 +203,54 @@ export default class Analysis extends Component {
                 {/* <PredictionPopup >
                     <h1>Click here to open popup</h1>
                 </PredictionPopup> */}
-                
-                {show_searching_options && <BackGroundPaper style={{padding: "2rem"}}>
+
+                {show_searching_options && <BackGroundPaper style={{ padding: "2rem" }}>
                     <Stack spacing={2} direction={"row"}>
                         <Button onClick={() => {
                             this.search_highest_price()
                         }}>
-                            Search highest price
+                            Load
                         </Button>
                         <CurrencyTextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} on_change={(value) => {
                             console.log(value)
-                            if(isNaN(value) || value < 0) return;
+                            if (isNaN(value) || value < 0) return;
                             this.setState({ searching_options: { ...searching_options, min_market_cap: Number(value) } })
                         }} />
                         <CurrencyTextField variant="standard" label="Max Market Cap" value={searching_options.max_market_cap} on_change={(value) => {
-                            if(isNaN(value) || value < 0) return;
+                            if (isNaN(value) || value < 0) return;
                             this.setState({ searching_options: { ...searching_options, max_market_cap: Number(value) } })
-                        }}/>
-                        <CurrencyTextField variant="standard" label="Tickers Shown" value={searching_options.tickers_shown} on_change={(value) => {
-                            if(isNaN(value) || value < 0) return;
-                            this.setState({ searching_options: { ...searching_options, tickers_shown: Number(value)/100 } })
                         }} />
-                        
+                        <TextField variant="standard" label="Tickers Shown" value={searching_options.tickers_shown} onChange={(e) => {
+                            const value = e.target.value;
+                            if (isNaN(value) || value < 0) return;
+                            this.setState({ searching_options: { ...searching_options, tickers_shown: Number(value) } })
+                        }} />
 
+                        <FormControl>
+                            <InputLabel id="demo-simple-select-label">Sorting</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={searching_options.sort_by}
+                                label="Sort by"
+                                onChange={(e) => {
+                                    this.setState({ searching_options: { ...searching_options, sort_by: e.target.value } })
+                                }}
+                            >
+                                <MenuItem value={"market_cap"}>Market Cap</MenuItem>
+                                <MenuItem value={"target_percent_difference"}>Price target %</MenuItem>
+                                <MenuItem value={"pe_ratio"}>PE ratio</MenuItem>
+                                <MenuItem value={"forward_pe_ratio"}>FPE ratio</MenuItem>
+                                <MenuItem value={"divided_yield"}>Divided Yield</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControl>
+                            Reverse:
+                            <Checkbox label="Reverse" value={searching_options.reverse} onChange={() => {
+                                this.setState({ searching_options: { ...searching_options, reverse: !searching_options.reverse } })
+                            }} />
+                        </FormControl>
                     </Stack>
                 </BackGroundPaper>}
                 <div>
