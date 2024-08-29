@@ -71,7 +71,6 @@ export async function fetch_widget_data(ticker_symbol) {
         const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
         const nasdaq_news = await get_ticker_news(ticker_symbol);
         const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
-        console.log(nasdaq_technicals)
 
         const news = await nasdaq_news.data && await nasdaq_news.data.rows ? await nasdaq_news.data.rows : [];
         const technicals = await nasdaq_technicals.data && await nasdaq_technicals.data.summaryData ? await nasdaq_technicals.data.summaryData : {};
@@ -292,10 +291,8 @@ export async function get_cached_ticker_technicals(ticker) {
 export async function get_ticker_technicals(ticker) {
     const local_storage_key = `${ticker}`;
     const cached_technicals = await get_cached_ticker_technicals(ticker);
-    console.log(cached_technicals)
     const is_cache_valid = await cache_is_valid(local_storage_key, cached_technicals);
-    console.log(is_cache_valid)
-    if (!!is_cache_valid)
+    if (is_cache_valid)
         return cached_technicals;
     const url = `https://api.nasdaq.com/api/quote/${ticker}/summary?assetclass=stocks`;
     const technical_data = await invoke_with_timeout("get_request_api", { url: url });

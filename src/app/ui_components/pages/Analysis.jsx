@@ -17,6 +17,7 @@ import { get_state } from "@/app/funcs/states";
 import { toast, ToastContainer } from "react-toastify";
 import StockWidget from "@/components/widgets/StockWidget";
 import { CurrencyTextField } from "@/app/mui/other";
+import { get_all_nasdaq_info } from "@/app/funcs/scraper";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -60,7 +61,7 @@ export default class Analysis extends Component {
     }
 
     async fetch_all_data(skip_cached = true) {
-        const { all_symbols } = this.state;
+        const all_symbols = await get_all_symbols();
         const random_num_hash = `${Math.random()}_${Date.now()}`;
         let state = get_state();
         state['getting_all_nums'] = random_num_hash; // used to ensure two instances of this function are not running simultaneously.
@@ -124,21 +125,18 @@ export default class Analysis extends Component {
     async search_highest_price() {
         const { searching_options } = this.state;
         const all_keys = await get_all_technical_data_keys();
+        const all_nasdaq_info = await get_all_nasdaq_info();
         const final_list = [];
         for (let key of all_keys) {
             const data = await get_cached_ticker_technicals(key);
-            // console.log(data)
-            if (!data || !data["data"] || !data["data"]["summaryData"]) continue;
+            if (!data || !data["data"] || !data["data"]["summaryData"] || !all_nasdaq_info[key]) continue;
             const summaryData = data["data"]["summaryData"];
-            const bid_ask_spread = data["data"]["bidAsk"]
-            const bid_spread = unformat_number(bid_ask_spread["Bid * Size"]["value"].split("*")[0])
-            const ask_spread = unformat_number(bid_ask_spread["Ask * Size"]["value"].split("*")[0])
-            const current_price = (bid_spread + ask_spread) / 2;
+            const current_price = unformat_number(all_nasdaq_info[key]["lastsale"])
             const price_target = unformat_number(summaryData["OneYrTarget"]["value"])
             const pe_ratio = unformat_number(summaryData["PERatio"]["value"])
             const forward_pe_ratio = unformat_number(summaryData["ForwardPE1Yr"]["value"])
             const divided_yield = unformat_number(summaryData["Yield"]["value"])
-            if (bid_spread === 0 || ask_spread === 0 || current_price === 0 || price_target === 0) continue;
+            if (current_price === 0 || price_target === 0) continue;
             const target_percent_difference = percentage_change(price_target, current_price)
             // console.log(pe_ratio)
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
