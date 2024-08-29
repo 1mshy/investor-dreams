@@ -61,7 +61,8 @@ export function format_number(number) {
  * @returns {Number}
  */
 export function unformat_number(number) {
-    return Number(number.replace(/[^\d.-]/g, ""));
+    if(!number) return 0;
+    return Number(`${number}`.replace(/[^\d.-]/g, ""));
 }
 
 export function format_currency(number) {

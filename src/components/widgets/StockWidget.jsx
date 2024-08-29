@@ -26,7 +26,6 @@ export default class StockWidget extends Component {
     }
 
     render() {
-
         return <>
             <DynamicStockWidget {...this.state.ticker_data} size={this.state.size} />
         </>;

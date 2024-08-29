@@ -86,7 +86,7 @@ export const CurrencyTextField = (props) => {
 
     return (
         <TextField
-            // {...props}
+            {...props}
             value={value}
             onChange={handle_value_change}
             InputProps={{
