@@ -27,10 +27,11 @@ Note: if you want the build to have the api keys inside (to eleminate the need f
 git update-index --assume-unchanged src-tauri/src/sensitive_constants.rs
 ```
 
-Example of how it looks after 7th commit
-![this is how it looks](static/investing_ss.png)
+## Homepage:
+![this is how it looks](static/homepage.png)
 
+## Playground:
+![this is how it looks](static/playground.png)
 
-Or with 500 stocks:
-![500 stockls](static/500.jpeg)
-
+## Analysis:
+![this is how it looks](static/analysis.png)
