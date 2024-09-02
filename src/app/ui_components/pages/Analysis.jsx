@@ -168,6 +168,12 @@ export default class Analysis extends Component {
                 </div>
                 <div className="">
                     <h1>Predictions</h1>
+                    <div>
+                        {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}% (${searched_symbols.size}/${all_symbols.length})`}
+                    </div>
+                    <div>
+                        {`Just got info on: ${search_value}`}
+                    </div>
                     <Stack spacing={2} direction={"row"}>
                         {/* <Autocomplete
                             disablePortal
@@ -251,12 +257,7 @@ export default class Analysis extends Component {
                         </FormControl>
                     </Stack>
                 </BackGroundPaper>}
-                <div>
-                    {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}% (${searched_symbols.size}/${all_symbols.length})`}
-                </div>
-                <div>
-                    {`Just got info on: ${search_value}`}
-                </div>
+
                 <div className={"widgets-container"}>
                     {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
