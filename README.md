@@ -28,10 +28,10 @@ git update-index --assume-unchanged src-tauri/src/sensitive_constants.rs
 ```
 
 ## Homepage:
-![this is how it looks](static/homepage.png)
+![Homepage](static/homepage.png)
 
 ## Playground:
-![this is how it looks](static/playground.png)
+![Playground](static/playground.png)
 
 ## Analysis:
-![this is how it looks](static/analysis.png)
+![Analysis](static/analysis.png)
