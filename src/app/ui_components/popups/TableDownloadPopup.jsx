@@ -1,12 +1,9 @@
-import { Backdrop, Button, DialogContent, DialogContentText } from "@mui/material";
-import React, { Component } from "react";
-
-
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+import { Backdrop, Button, DialogContent } from "@mui/material";
+import { Component } from "react";
 import { Transition } from "@/app/funcs/themes";
-import { invoke } from "@tauri-apps/api/core";
 import { upload_json } from "@/app/funcs/tools";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 
 class TableDownloadPopup extends Component {
     constructor(props) {
@@ -59,9 +56,9 @@ class TableDownloadPopup extends Component {
                             Click on any of the tables to download them:
 
                             {downloadable_stores.map((table, index) => {
-                                return <div>
+                                if(!table.db) return <></>;
+                                return <div key={`${index}_${this.state.open}`}>
                                     <Button key={index} onClick={async () => {
-                                        console.log(table)
                                         const keys = await table.keys();
                                         const data = await Promise.all(keys.map(async key => {
                                             const value = await table.getItem(key);
@@ -73,7 +70,6 @@ class TableDownloadPopup extends Component {
                                         });
                                         const filename = `${table._dbInfo.db.name}.json`;
                                         upload_json(json_table, filename);
-
                                     }}>
                                         {`${table._dbInfo.db.name}`}
                                     </Button>
