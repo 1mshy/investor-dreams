@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -101,12 +102,21 @@ export function invoke_with_timeout(command, args = {}, timeout = 7000) {
 
 
 export function upload_json(json_data, filename) {
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-        JSON.stringify(json_data)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = filename;
+    const jsonContent = JSON.stringify(json_data)
+    // console.log(filename)
+    // console.log(jsonContent)
 
-    link.click();
+    invoke("save_json_file", {filename, jsonContent}).then((result) => {
+        toast.success(result)
+    })
+
+
+    // const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+    //     JSON.stringify(json_data)
+    // )}`;
+    // const link = document.createElement("a");
+    // link.href = jsonString;
+    // link.download = filename;
+
+    // link.click();
 }

@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { delay, invoke_with_timeout, sha256 } from "./tools";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { stock_cache_is_valid, set_cache, get_cache, complex_retrieve, cache_is_valid } from "./cache";
+import { stock_cache_is_valid, set_cache, get_cache, complex_retrieve, cache_is_valid, STOCK_CACHE } from "./cache";
 import localforage from "localforage";
 let api_keys = []
 /**
@@ -39,7 +39,7 @@ export async function request_ticker_data(ticker_symbol) {
     // console.log(ticker_symbol, stock_cache_is_valid(ticker_symbol))
     const valid_cache = await stock_cache_is_valid(ticker_symbol);
     if (valid_cache) {
-        const cache = await get_cache(ticker_symbol);
+        const cache = await get_cache(ticker_symbol, STOCK_CACHE);
         return cache.stock_data;
     }
     while (stop_requesting) {
@@ -56,7 +56,7 @@ export async function request_ticker_data(ticker_symbol) {
         stop_requesting = true;
         return await request_ticker_data(ticker_symbol);
     }
-    set_cache(ticker_symbol, { stock_data: data });
+    set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
     return data;
 }
 
@@ -301,6 +301,10 @@ export async function get_ticker_technicals(ticker) {
     return parsed_technicals;
 }
 
+export async function get_all_historical_keys() {
+    return STOCK_CACHE.keys();
+}
+
 export async function get_all_technical_data_keys() {
     return NASDAQ_TECHNICALS.keys();
 }
@@ -312,14 +316,21 @@ export async function clear_all_technical_data() {
     return NASDAQ_TECHNICALS.clear();
 }
 
-export async function get_all_technical_data() {
+export async function export_all_historical_data() {
+    const keys = await get_all_historical_keys();
+    const all_data = await Promise.all(keys.map(key => complex_retrieve(key, STOCK_CACHE)));
+    return all_data;
+}
+
+export async function export_all_technical_data() {
     const keys = await get_all_technical_data_keys();
     const all_technicals = await Promise.all(keys.map(key => get_cached_ticker_technicals(key)));
     return all_technicals;
 }
 
 const OLLAMA_GENERATION = localforage.createInstance({
-    name: "ollama_generation"
+    name: "ollama_generation",
+    storeName: "ollama_generation"
 })
 
 /**

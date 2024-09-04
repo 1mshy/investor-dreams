@@ -8,7 +8,7 @@ import "@/app/css/Playground.css";
 import { cache_is_valid } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
 import { get_state } from "@/app/funcs/states";
-import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change } from "@/app/funcs/stock_api";
+import { clear_all_technical_data, get_all_symbols, export_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change, export_all_historical_data } from "@/app/funcs/stock_api";
 import { delay, unformat_number, upload_json } from "@/app/funcs/tools";
 import { CurrencyTextField } from "@/app/mui/other";
 import MenuButton from "@/components/MenuButton";
@@ -47,6 +47,7 @@ export default class Analysis extends Component {
     }
 
     async componentDidMount() {
+        console.log(Array.from(localforage._dbInfo.db.objectStoreNames))
         const all_symbols = await get_all_symbols();
         this.setState({ all_symbols }, async () => {
             if (get_state()['getting_all_nums']) {
@@ -151,7 +152,7 @@ export default class Analysis extends Component {
     }
 
     async upload_technical_data() {
-        const technical_data = await get_all_technical_data();
+        const technical_data = await export_all_historical_data();
         upload_json(technical_data, "technical_data.json");
     }
 

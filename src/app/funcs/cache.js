@@ -16,12 +16,17 @@ export function create_cache_profile(key, expiration) {
         last_updated: 0
     };
 }
+
+export const STOCK_CACHE = localforage.createInstance({
+    name: "stock_cache"
+});
+
 /**
  * @param {string} key - key of the cached item
  * @returns {boolean} checks if the current cache of a key is valid: exists and in the proper time frame
  */
 export async function stock_cache_is_valid(key) {
-    const item = await complex_retrieve(key);
+    const item = await complex_retrieve(key, STOCK_CACHE);
     if (!item) return false;
     const now = Date.now();
     const { last_updated, expiration } = item;
