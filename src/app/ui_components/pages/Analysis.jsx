@@ -1,15 +1,11 @@
 import { BackGroundPaper, SoftPaper, theme } from "@/app/mui/theme";
 import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
 import { Component } from "react";
-
-import "@/app/css/Analysis.css";
-import "@/app/css/Homepage.css";
-import "@/app/css/Playground.css";
 import { cache_is_valid, STOCK_CACHE } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
 import { get_state } from "@/app/funcs/states";
-import { clear_all_technical_data, get_all_symbols, export_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change, export_all_historical_data, NASDAQ_TECHNICALS, NASDAQ_NEWS } from "@/app/funcs/stock_api";
-import { delay, unformat_number, upload_json } from "@/app/funcs/tools";
+import { clear_all_technical_data, get_all_symbols, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS, percentage_change } from "@/app/funcs/stock_api";
+import { delay, unformat_number } from "@/app/funcs/tools";
 import { CurrencyTextField } from "@/app/mui/other";
 import MenuButton from "@/components/MenuButton";
 import StockWidget from "@/components/widgets/StockWidget";
@@ -17,9 +13,11 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import localforage from "localforage";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import PredictionPopup from "../popups/PredictionPopup";
-import DefaultPopup from "../popups/DefaultPopup";
 import TableDownloadPopup from "../popups/TableDownloadPopup";
+
+import "@/app/css/Analysis.css";
+import "@/app/css/Homepage.css";
+import "@/app/css/Playground.css";
 
 export default class Analysis extends Component {
     constructor(props) {
