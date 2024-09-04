@@ -8,12 +8,14 @@ use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
 use crate::ollama::{ollama_generate};
+use crate::tools::{save_json_file};
 use tauri::Manager;
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
 mod ollama;
+mod tools;
 
 use once_cell::sync::Lazy;
 use ollama_rs::Ollama; // Import Ollama from the `ollama-rs` crate
@@ -55,7 +57,8 @@ pub fn main() {
             set_base_size,
             request_deep,
             get_request_api,
-            ollama_generate
+            ollama_generate,
+            save_json_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
