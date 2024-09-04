@@ -18,7 +18,7 @@ export function create_cache_profile(key, expiration) {
 }
 
 export const STOCK_CACHE = localforage.createInstance({
-    name: "stock_cache"
+    name: "historical_stock_data"
 });
 
 /**

@@ -238,7 +238,7 @@ export function set_api_key() {
  * NASDAQ APIS HERE
  */
 
-const NASDAQ_NEWS = localforage.createInstance({
+export const NASDAQ_NEWS = localforage.createInstance({
     name: "nasdaq_news_list"
 })
 
@@ -274,7 +274,7 @@ export async function get_company_summary(ticker) {
 }
 
 
-const NASDAQ_TECHNICALS = localforage.createInstance({
+export const NASDAQ_TECHNICALS = localforage.createInstance({
     name: "nasdaq_technicals"
 })
 
@@ -329,8 +329,7 @@ export async function export_all_technical_data() {
 }
 
 const OLLAMA_GENERATION = localforage.createInstance({
-    name: "ollama_generation",
-    storeName: "ollama_generation"
+    name: "ollama_prompt_generations"
 })
 
 /**

@@ -105,7 +105,7 @@ export function upload_json(json_data, filename) {
     const jsonContent = JSON.stringify(json_data)
     // console.log(filename)
     // console.log(jsonContent)
-
+    toast.warn("Writing file to downloads folder, please wait...")
     invoke("save_json_file", {filename, jsonContent}).then((result) => {
         toast.success(result)
     })

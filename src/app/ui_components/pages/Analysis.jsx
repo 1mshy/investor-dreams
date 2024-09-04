@@ -5,10 +5,10 @@ import { Component } from "react";
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
-import { cache_is_valid } from "@/app/funcs/cache";
+import { cache_is_valid, STOCK_CACHE } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
 import { get_state } from "@/app/funcs/states";
-import { clear_all_technical_data, get_all_symbols, export_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change, export_all_historical_data } from "@/app/funcs/stock_api";
+import { clear_all_technical_data, get_all_symbols, export_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change, export_all_historical_data, NASDAQ_TECHNICALS, NASDAQ_NEWS } from "@/app/funcs/stock_api";
 import { delay, unformat_number, upload_json } from "@/app/funcs/tools";
 import { CurrencyTextField } from "@/app/mui/other";
 import MenuButton from "@/components/MenuButton";
@@ -17,6 +17,9 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import localforage from "localforage";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import PredictionPopup from "../popups/PredictionPopup";
+import DefaultPopup from "../popups/DefaultPopup";
+import TableDownloadPopup from "../popups/TableDownloadPopup";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -24,6 +27,7 @@ export default class Analysis extends Component {
 
         this.state = {
             all_symbols: ["AAPL", "TSLA", "AMZN", "GOOGL", "MSFT"],
+            downloadable_stores: [STOCK_CACHE, NASDAQ_TECHNICALS, NASDAQ_NEWS,],
             searched_symbols: new Set(),
             search_value: "",
             filtered_tickers: [],
@@ -47,7 +51,6 @@ export default class Analysis extends Component {
     }
 
     async componentDidMount() {
-        console.log(Array.from(localforage._dbInfo.db.objectStoreNames))
         const all_symbols = await get_all_symbols();
         this.setState({ all_symbols }, async () => {
             if (get_state()['getting_all_nums']) {
@@ -150,14 +153,9 @@ export default class Analysis extends Component {
         console.log(final_list[0])
         console.log("finished")
     }
-
-    async upload_technical_data() {
-        const technical_data = await export_all_historical_data();
-        upload_json(technical_data, "technical_data.json");
-    }
-
     render() {
-        const { all_symbols, search_value, searched_symbols, filtered_tickers, show_searching_options, searching_options } = this.state;
+        const { all_symbols, search_value, searched_symbols, filtered_tickers, downloadable_stores,
+            show_searching_options, searching_options } = this.state;
 
         return <ThemeProvider theme={theme}>
             <div className={"playground"}>
@@ -206,10 +204,10 @@ export default class Analysis extends Component {
                         <Button onClick={this.toggle_searching_options}>
                             Analysis Options
                         </Button>
-                            <div style={{flex: 1, paddingRight: "1rem"}}>
-                        <Button onClick={clear_all_technical_data} style={{float: "right"}}>
-                            Clear Cache
-                        </Button>
+                        <div style={{ flex: 1, paddingRight: "1rem" }}>
+                            <Button onClick={clear_all_technical_data} style={{ float: "right" }}>
+                                Clear Cache
+                            </Button>
                         </div>
 
                     </Stack>
@@ -266,17 +264,16 @@ export default class Analysis extends Component {
                             }} />
                         </FormControl>
 
-                        <div style={{flex: 1}}>
-                        <Button onClick={this.upload_technical_data} style={{float: "right"}}>
-                            Download Data
-                        </Button>
-                    </div>
+                        <div style={{ flex: 1 }}>
+                            <TableDownloadPopup downloadable_stores={downloadable_stores}>
+                                <Button style={{ float: "right" }}>
+                                    Download Data
+                                </Button>
+                            </TableDownloadPopup>
+                        </div>
                     </Stack>
-                    
-                   
                 </BackGroundPaper>}
-
-                <div className={"widgets-container"} style={{height: "auto"}}>
+                <div className={"widgets-container"} style={{ height: "auto" }}>
                     {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}
