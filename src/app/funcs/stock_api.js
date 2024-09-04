@@ -304,6 +304,19 @@ export async function get_ticker_technicals(ticker) {
 export async function get_all_technical_data_keys() {
     return NASDAQ_TECHNICALS.keys();
 }
+/**
+ * Deletes all keys in the technical data cache
+ * @returns {Promise<void>}
+ */
+export async function clear_all_technical_data() {
+    return NASDAQ_TECHNICALS.clear();
+}
+
+export async function get_all_technical_data() {
+    const keys = await get_all_technical_data_keys();
+    const all_technicals = await Promise.all(keys.map(key => get_cached_ticker_technicals(key)));
+    return all_technicals;
+}
 
 const OLLAMA_GENERATION = localforage.createInstance({
     name: "ollama_generation"

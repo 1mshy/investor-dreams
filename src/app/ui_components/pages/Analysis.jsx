@@ -1,23 +1,22 @@
 import { BackGroundPaper, SoftPaper, theme } from "@/app/mui/theme";
-import { Autocomplete, Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
+import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
 import { Component } from "react";
 
-import "@/app/css/Playground.css";
-import "@/app/css/Analysis.css"
+import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
-import { cache_is_valid, retrieve } from "@/app/funcs/cache";
-import localforage from "localforage";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import MenuButton from "@/components/MenuButton";
-import PredictionPopup from "../popups/PredictionPopup";
-import { get_all_symbols, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change } from "@/app/funcs/stock_api";
-import { Link } from "react-router-dom";
-import { delay, unformat_number } from "@/app/funcs/tools";
-import { get_state } from "@/app/funcs/states";
-import { toast, ToastContainer } from "react-toastify";
-import StockWidget from "@/components/widgets/StockWidget";
-import { CurrencyTextField } from "@/app/mui/other";
+import "@/app/css/Playground.css";
+import { cache_is_valid } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
+import { get_state } from "@/app/funcs/states";
+import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, percentage_change } from "@/app/funcs/stock_api";
+import { delay, unformat_number, upload_json } from "@/app/funcs/tools";
+import { CurrencyTextField } from "@/app/mui/other";
+import MenuButton from "@/components/MenuButton";
+import StockWidget from "@/components/widgets/StockWidget";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import localforage from "localforage";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -151,6 +150,11 @@ export default class Analysis extends Component {
         console.log("finished")
     }
 
+    async upload_technical_data() {
+        const technical_data = await get_all_technical_data();
+        upload_json(technical_data, "technical_data.json");
+    }
+
     render() {
         const { all_symbols, search_value, searched_symbols, filtered_tickers, show_searching_options, searching_options } = this.state;
 
@@ -201,6 +205,11 @@ export default class Analysis extends Component {
                         <Button onClick={this.toggle_searching_options}>
                             Analysis Options
                         </Button>
+                            <div style={{flex: 1, paddingRight: "1rem"}}>
+                        <Button onClick={clear_all_technical_data} style={{float: "right"}}>
+                            Clear Cache
+                        </Button>
+                        </div>
 
                     </Stack>
                 </div>
@@ -255,10 +264,18 @@ export default class Analysis extends Component {
                                 this.setState({ searching_options: { ...searching_options, reverse: !searching_options.reverse } })
                             }} />
                         </FormControl>
+
+                        <div style={{flex: 1}}>
+                        <Button onClick={this.upload_technical_data} style={{float: "right"}}>
+                            Download Data
+                        </Button>
+                    </div>
                     </Stack>
+                    
+                   
                 </BackGroundPaper>}
 
-                <div className={"widgets-container"}>
+                <div className={"widgets-container"} style={{height: "auto"}}>
                     {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}
