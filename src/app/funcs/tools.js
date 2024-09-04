@@ -61,7 +61,7 @@ export function format_number(number) {
  * @returns {Number}
  */
 export function unformat_number(number) {
-    if(!number) return 0;
+    if (!number) return 0;
     return Number(`${number}`.replace(/[^\d.-]/g, ""));
 }
 
@@ -97,4 +97,16 @@ export function invoke_with_timeout(command, args = {}, timeout = 7000) {
             setTimeout(() => reject(new Error('Operation timed out')), timeout)
         )
     ]);
+}
+
+
+export function upload_json(json_data, filename) {
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+        JSON.stringify(json_data)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = filename;
+
+    link.click();
 }
