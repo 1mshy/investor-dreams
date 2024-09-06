@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PriceGraph from "@/components/PriceGraph";
-import PercentageFormat from "../PercentageFormat";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { IconButton } from "@mui/material";
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
-import AddIcon from '@mui/icons-material/Add';
-import GeneralPopup from "../popups/GeneralPopup";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
-import CustomSector from "@/app/ui_components/popups/CustomSector";
-import { SoftPaper } from "@/app/mui/theme";
 import { format_currency } from "@/app/funcs/tools";
+import { SoftPaper } from "@/app/mui/theme";
+import CustomSector from "@/app/ui_components/popups/CustomSector";
+import PriceGraph from "@/components/PriceGraph";
+import AddIcon from '@mui/icons-material/Add';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { IconButton } from "@mui/material";
+import { useState } from "react";
+import PercentageFormat from "../PercentageFormat";
 
 /**
  * @param {string} symbol
@@ -33,7 +32,7 @@ const MediumStockWidget = (props) => {
     return (
         <>
             <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={() => {
-                if(!month_prices || !marketCap) return;
+                if(!month_prices) return;
                 onClick();
             }}>
                 <div className={"widget-header"}>
