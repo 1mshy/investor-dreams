@@ -90,8 +90,8 @@ export default class Analysis extends Component {
             chunk.push(all_symbols[i++]);
         }
         eval_chunks();
-
-        console.log(symbol_chunks)
+        console.log(JSON.stringify(all_symbols))
+        // console.log(symbol_chunks)
 
         for (let chunk of symbol_chunks) {
             const start = Date.now();
@@ -213,8 +213,8 @@ export default class Analysis extends Component {
                 {/* <PredictionPopup >
                     <h1>Click here to open popup</h1>
                 </PredictionPopup> */}
-
-                {show_searching_options && <BackGroundPaper style={{ padding: "2rem" }}>
+        
+                {show_searching_options && <BackGroundPaper style={{ padding: "1rem", minHeight: "4rem", flex: 1}}>
                     <Stack spacing={2} direction={"row"}>
                         <Button onClick={() => {
                             this.search_highest_price()
@@ -271,7 +271,7 @@ export default class Analysis extends Component {
                         </div>
                     </Stack>
                 </BackGroundPaper>}
-                <div className={"widgets-container"} style={{ height: "auto" }}>
+                <div className={"widgets-container"} style={{ height: "auto", flex: 7 }}>
                     {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}

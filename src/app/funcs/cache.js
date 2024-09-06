@@ -3,6 +3,7 @@
  */
 
 import localforage from "localforage";
+import { NASDAQ_NEWS, NASDAQ_TECHNICALS } from "./stock_api";
 
 export const DEFAULT_EXPIRATION = 10; // minutes
 
@@ -76,6 +77,9 @@ export async function get_cache(key, custom_forage = null) {
 export function clear_cache() {
     localStorage.clear();
     localforage.clear();
+    // STOCK_CACHE.clear();
+    // NASDAQ_NEWS.clear();
+    // NASDAQ_TECHNICALS.clear();
 }
 
 /**

@@ -24,7 +24,6 @@ class TableDownloadPopup extends Component {
     render() {
         const { open } = this.state;
         const { downloadable_stores } = this.props;
-        console.log(downloadable_stores[0])
         return (
             <>
                 <Backdrop open={open} invisible={true}>
@@ -37,26 +36,15 @@ class TableDownloadPopup extends Component {
                         fullWidth
                         style={{ zIndex: 100 }}
                         onKeyDown={this.submit}
-                        PaperProps={{
-                            sx: {
-                                width: 600,
-                                maxHeight: 300
-                            }
-                        }}
                     >
                         <DialogTitle id="responsive-dialog-title">
                             {"Table Downloads"}
                         </DialogTitle>
-                        <DialogContent PaperProps={{
-                            sx: {
-                                width: 600,
-                                maxHeight: 300
-                            }
-                        }}>
+                        <DialogContent>
                             Click on any of the tables to download them:
 
                             {downloadable_stores.map((table, index) => {
-                                if(!table.db) return <></>;
+                                if(!table._config.name) return <div key={`${index}_${this.state.open}`}/>;
                                 return <div key={`${index}_${this.state.open}`}>
                                     <Button key={index} onClick={async () => {
                                         const keys = await table.keys();
@@ -68,10 +56,11 @@ class TableDownloadPopup extends Component {
                                         data.forEach(({ key, value }) => {
                                             json_table[key] = value;
                                         });
-                                        const filename = `${table._dbInfo.db.name}.json`;
+                                        // const filename = `${table._dbInfo.db.name}.json`;
+                                        const filename = `${table._config.name}.json`;
                                         upload_json(json_table, filename);
                                     }}>
-                                        {`${table._dbInfo.db.name}`}
+                                        {`${table._config.name}`}
                                     </Button>
                                 </div>
                             })}
