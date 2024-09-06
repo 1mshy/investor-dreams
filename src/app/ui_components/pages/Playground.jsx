@@ -2,7 +2,7 @@
 import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
-    get_index_info,
+    get_all_static_ticker_info,
     get_all_sectors
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
@@ -92,8 +92,9 @@ export default class Playground extends Component {
      */
     set_sector(sector) {
         get_all_sectors().then(sectors => {
+            console.log(sectors)
             if (sectors.includes(sector)) {
-                get_index_info().then((data) => {
+                get_all_static_ticker_info().then((data) => {
                     get_sp_500_data().then(sp_500_data => {
                         let tickers_in_sector = [];
                         for (const ticker in sp_500_data) {
