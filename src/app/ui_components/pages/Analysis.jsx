@@ -199,7 +199,7 @@ export default class Analysis extends Component {
                                 Fetch Missing
                             </Button>
                         </Tooltip>
-                        <Tooltip title={"Fetches all data that is out of date (NOT RECOMMENDED as this can take over an hour)"}>
+                        <Tooltip title={"Fetches all data + the ones that are out of date"}>
                             <Button onClick={() => {
                                 this.fetch_all_data(false)
                             }}>

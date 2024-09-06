@@ -47,7 +47,7 @@ pub async fn req_nasdaq_info() -> String {
 }
 
 #[command]
-pub async fn get_index_info() -> String {
+pub async fn get_all_static_ticker_info() -> String {
     let url = "https://www.slickcharts.com/sp500";
     return match get_request(url).await {
         Ok(response_text) => response_text,

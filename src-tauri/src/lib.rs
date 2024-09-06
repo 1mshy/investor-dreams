@@ -3,7 +3,7 @@
 #![allow(unused_imports)]
 use std::env;
 
-use crate::requesting::{get_index_info, req_nasdaq_info, request_deep, get_request_api};
+use crate::requesting::{get_all_static_ticker_info, req_nasdaq_info, request_deep, get_request_api};
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
@@ -43,7 +43,7 @@ pub fn main() {
         .invoke_handler(tauri::generate_handler![
             get_api_keys,
             get_username,
-            get_index_info,
+            get_all_static_ticker_info,
             req_nasdaq_info,
             get_all_windows,
             get_current_monitor_info,

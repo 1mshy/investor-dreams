@@ -10,7 +10,7 @@ import { get_company_summary, get_ticker_info } from './stock_api';
  * @returns {Promise<Object<string, {number: number, company: string, portfolio_percent: string, current_price:number, change:number, percent_change:number}>}
  */
 async function request_top_companies() {
-    const text = await invoke('get_index_info');
+    const text = await invoke('get_all_static_ticker_info');
     const nasdaq_info = await get_all_nasdaq_info();
     const $ = load(text);
     const data = {};
