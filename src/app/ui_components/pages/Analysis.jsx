@@ -44,7 +44,7 @@ export default class Analysis extends Component {
         });
         this.predict = this.predict.bind(this);
         this.fetch_all_data = this.fetch_all_data.bind(this);
-        this.search_highest_price = this.search_highest_price.bind(this);
+        this.sort_all_tickers = this.sort_all_tickers.bind(this);
         this.toggle_searching_options = this.toggle_searching_options.bind(this);
     }
 
@@ -123,7 +123,7 @@ export default class Analysis extends Component {
         this.setState({ show_searching_options: !this.state.show_searching_options });
     }
 
-    async search_highest_price() {
+    async sort_all_tickers() {
         const { searching_options } = this.state;
         const all_keys = await get_all_technical_data_keys();
         const all_nasdaq_info = await get_all_nasdaq_info();
@@ -137,12 +137,19 @@ export default class Analysis extends Component {
             const pe_ratio = unformat_number(summaryData["PERatio"]["value"])
             const forward_pe_ratio = unformat_number(summaryData["ForwardPE1Yr"]["value"])
             const divided_yield = unformat_number(summaryData["Yield"]["value"])
+            const net_change = unformat_number(all_nasdaq_info[key]["netchange"])
+            const percent_change = unformat_number(all_nasdaq_info[key]["pctchange"])
             if (current_price === 0 || price_target === 0) continue;
             const target_percent_difference = percentage_change(price_target, current_price)
             // console.log(pe_ratio)
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
             if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
-            final_list.push({ symbol: key, market_cap, current_price, price_target, target_percent_difference, pe_ratio, forward_pe_ratio, divided_yield });
+            const final_data = {
+                symbol: key, market_cap, current_price, price_target, percent_change, net_change,
+                target_percent_difference, pe_ratio, forward_pe_ratio, divided_yield
+            }
+            final_list.push(final_data);
+            // this.setState({ filtered_tickers: final_list })
         }
         final_list.sort((a, b) => b[searching_options.sort_by] - a[searching_options.sort_by]);
         if (searching_options.reverse) final_list.reverse();
@@ -213,11 +220,11 @@ export default class Analysis extends Component {
                 {/* <PredictionPopup >
                     <h1>Click here to open popup</h1>
                 </PredictionPopup> */}
-        
-                {show_searching_options && <BackGroundPaper style={{ padding: "1rem", minHeight: "4rem", flex: 1}}>
+
+                {show_searching_options && <BackGroundPaper style={{ padding: "1rem", minHeight: "4rem", flex: 1 }}>
                     <Stack spacing={2} direction={"row"}>
                         <Button onClick={() => {
-                            this.search_highest_price()
+                            this.sort_all_tickers()
                         }}>
                             Load
                         </Button>
@@ -252,6 +259,9 @@ export default class Analysis extends Component {
                                 <MenuItem value={"pe_ratio"}>PE ratio</MenuItem>
                                 <MenuItem value={"forward_pe_ratio"}>FPE ratio</MenuItem>
                                 <MenuItem value={"divided_yield"}>Divided Yield</MenuItem>
+
+                                <MenuItem value={"percent_change"}>Daily percent change</MenuItem>
+                                <MenuItem value={"net_change"}>Daily net change</MenuItem>
                             </Select>
                         </FormControl>
 
