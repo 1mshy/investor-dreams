@@ -1,5 +1,5 @@
 "use client"
-import { get_all_nasdaq_info, get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_all_nasdaq_info, get_index_stocks, get_market_cap, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
     get_all_static_ticker_info,
@@ -42,7 +42,7 @@ export default class Playground extends Component {
         this.set_tickers = this.set_tickers.bind(this);
 
         this.sorting_content = {
-            "Weight": () => { this.set_sorting("Weight") },
+            "Market Cap": () => { this.set_sorting("MarketCap") },
             "Volitility": () => { this.set_sorting("Volitility") },
             "Bullish": () => { this.set_sorting("Bullish") },
             "Bearish": () => { this.set_sorting("Bearish") },
@@ -110,17 +110,17 @@ export default class Playground extends Component {
         console.log(sort_method)
         this.setState({ sort_method })
         switch (sort_method) {
-            case "Weight": {
-                const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const weight = await get_portfolio_weight(ticker_symbol);
-                    return { ticker_symbol, weight };
+            case "MarketCap": {
+                const market_cap_promises = ticker_symbols.map(async (ticker_symbol) => {
+                    const market_cap = await get_market_cap(ticker_symbol);
+                    return { ticker_symbol, market_cap };
                 });
                 // collect and wait for all the promises in the array to resolve
-                const weights = await Promise.all(weight_promises);
+                const caps = await Promise.all(market_cap_promises);
                 // sort by highest weight
-                const sorted_by_weight = weights.sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight)).map(item => item.ticker_symbol);
+                const sorted_by_market_cap = caps.sort((a, b) => Math.abs(b.market_cap) - Math.abs(a.market_cap)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_weight);
+                await this.set_tickers(sorted_by_market_cap);
                 break;
             }
             case "Volitility": {
@@ -130,9 +130,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_weight = changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).map(item => item.ticker_symbol);
+                const sorted_by_volitility = changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_weight);
+                await this.set_tickers(sorted_by_volitility);
                 break;
             }
             case "Bullish": {
@@ -142,9 +142,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_weight = changes.sort((a, b) => b.change - a.change).map(item => item.ticker_symbol);
+                const sorted_by_bulls = changes.sort((a, b) => b.change - a.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_weight);
+                await this.set_tickers(sorted_by_bulls);
                 break;
             }
             case "Bearish": {
@@ -154,9 +154,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_weight = changes.sort((a, b) => a.change - b.change).map(item => item.ticker_symbol);
+                const sorted_by_bears = changes.sort((a, b) => a.change - b.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_weight);
+                await this.set_tickers(sorted_by_bears);
                 break;
             }
 
