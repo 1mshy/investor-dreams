@@ -120,10 +120,12 @@ export async function get_ticker_info(ticker) {
  */
 export async function get_all_sectors() {
     let sectors = [];
-    const data = await get_all_static_ticker_info();
-    Object.keys(data).forEach(key => {
-        if (!sectors.includes(data[key]["sector"])) {
-            sectors.push(data[key]["sector"]);
+    const data = await get_all_nasdaq_info();
+    console.log(data)
+    Object.keys(data).forEach(ticker => {
+        const sector = data[ticker]["sector"];
+        if (sector && !sectors.includes(sector)) {
+            sectors.push(sector);
         }
     });
     sectors = sectors.filter(item => item !== undefined && item !== null && item !== "")
