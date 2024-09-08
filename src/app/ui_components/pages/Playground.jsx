@@ -1,5 +1,5 @@
 "use client"
-import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_all_nasdaq_info, get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
     get_all_static_ticker_info,
@@ -55,19 +55,18 @@ export default class Playground extends Component {
      */
     async set_tickers(ticker_symbols, func) {
         this.setState({ ticker_symbols });
-        get_sp_500_data().then(async sp_500_data => {
-            let stock_data = this.state.stock_data;
-            ticker_symbols.forEach(async (ticker_symbol) => {
-                if (!sp_500_data[ticker_symbol]) return; // checks if stock exists in the large dataset
-                const { symbol, company, current_price, change, percent_change } = sp_500_data[ticker_symbol];
-                stock_data[ticker_symbol] = {
-                    symbol: symbol,
-                    name: company,
-                    price: current_price,
-                    change: change,
-                    percent_change: percent_change,
-                };
-            });
+        const sp_500_data = await get_sp_500_data();
+        let stock_data = this.state.stock_data;
+        ticker_symbols.forEach(async (ticker_symbol) => {
+            if (!sp_500_data[ticker_symbol]) return; // checks if stock exists in the large dataset
+            const { symbol, company, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+            stock_data[ticker_symbol] = {
+                symbol: symbol,
+                name: company,
+                price: current_price,
+                change: change,
+                percent_change: percent_change,
+            };
 
             if (typeof window !== 'undefined') {
                 let stock_data = this.state.stock_data;
@@ -90,24 +89,20 @@ export default class Playground extends Component {
      * sets the sector/industry filter
      * @param {string} sector 
      */
-    set_sector(sector) {
-        get_all_sectors().then(sectors => {
-            console.log(sectors)
-            if (sectors.includes(sector)) {
-                get_all_static_ticker_info().then((data) => {
-                    get_sp_500_data().then(sp_500_data => {
-                        let tickers_in_sector = [];
-                        for (const ticker in sp_500_data) {
-                            if (data[ticker] && data[ticker].sector === sector) {
-                                tickers_in_sector.push(ticker);
-                            }
-                        };
-
-                        this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
-                    });
-                });
+    async set_sector(sector) {
+        const sectors = await get_all_sectors();
+        if (!sectors.includes(sector)) {
+            return;
+        }
+        const sp_500_data = await get_sp_500_data();
+        const nasdaq_data = await get_all_nasdaq_info();
+        let tickers_in_sector = [];
+        for (const ticker in sp_500_data) {
+            if (nasdaq_data[ticker] && nasdaq_data[ticker].sector === sector) {
+                tickers_in_sector.push(ticker);
             }
-        })
+        };
+        this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
     };
 
     async set_sorting(sort_method) {
