@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import localforage from "localforage";
 import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { delay, invoke_with_timeout } from "./tools";
+import { delay, invoke_with_timeout, unformat_number } from "./tools";
 let api_keys = []
 /**
  * data on stock tickers, not related to price
@@ -156,6 +156,17 @@ export async function get_all_symbols() {
     delete nasdaq_info["last_updated"];
     delete nasdaq_info["expiration"];
     return Object.keys(nasdaq_info).map(ticker => ticker.replace("/", "."))
+}
+/**
+ * 
+ * @param {String} ticker_symbol 
+ * @returns {Number}
+ */
+export async function get_market_cap(ticker_symbol) {
+    const all_tickers = await get_all_nasdaq_info();
+    const ticker_info = all_tickers[ticker_symbol];
+    if(!ticker_info) return 0;
+    return unformat_number(ticker_info["marketCap"]);
 }
 
 /**
