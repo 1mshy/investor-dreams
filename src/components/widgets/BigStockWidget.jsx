@@ -54,6 +54,7 @@ const BigStockWidget = (props) => {
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
 
     console.log(news)
+    console.log("running big stock widget")
     return (
         <div className={"big"}
             onClick={(e) => {
