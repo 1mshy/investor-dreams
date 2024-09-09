@@ -7,14 +7,14 @@ import PopupWidget from './PopupWidget';
 import SmallStockWidget from './SmallStockWidget';
 
 /**
- * @param {string} symbol
- * @param {string} name
- * @param {string} exchange
- * @param {number} price
- * @param {number} percent_change
- * @param {string} date
+ * @param {String} symbol
+ * @param {String} name
+ * @param {String} exchange
+ * @param {Number} price
+ * @param {Number} percent_change
+ * @param {String} date
  * @param {Array<number>} historical_prices
- * @param {string} size - "big" or "medium" or "mini"
+ * @param {String} size - "big" or "medium" or "mini"
  * @desc this stock widget is able to combine all the stock widgets into one, making them transitionable
  * @example you can open a big stock widget from a mini stock widget by clicking on it
  */

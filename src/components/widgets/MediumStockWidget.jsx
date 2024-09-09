@@ -14,14 +14,14 @@ import { useState } from "react";
 import PercentageFormat from "../PercentageFormat";
 
 /**
- * @param {string} symbol
- * @param {string} name
- * @param {number} price
- * @param {number} percent_change
- * @param {string} date
+ * @param {String} symbol
+ * @param {String} name
+ * @param {Number} price
+ * @param {Number} percent_change
+ * @param {String} date
  * @param {Array<number>} historical_prices
  * @param {function} onClick
- * @param {string} size - "big" or "medium" or "mini"
+ * @param {String} size - "big" or "medium" or "mini"
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
 const MediumStockWidget = (props) => {

@@ -14,14 +14,14 @@ import { get_all_news_bodies } from "@/app/funcs/scraper";
 import { Button, CircularProgress, InputAdornment } from "@mui/material";
 
 /**
- * @param {string} symbol
- * @param {string} name
- * @param {string} exchange
- * @param {number} price
- * @param {number} percent_change
- * @param {string} date
+ * @param {String} symbol
+ * @param {String} name
+ * @param {String} exchange
+ * @param {Number} price
+ * @param {Number} percent_change
+ * @param {String} date
  * @param {Array<number>} historical_prices
- * @param {string} size - "big" or "medium" or "mini"
+ * @param {String} size - "big" or "medium" or "mini"
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */

@@ -5,8 +5,8 @@ import "../app/css/Formatting.css"
 
 /**
  * 
- * @param {number} percent_change change in percent that will be shown
- * @param {string} timeset the time period that the percentage change is over 
+ * @param {Number} percent_change change in percent that will be shown
+ * @param {String} timeset the time period that the percentage change is over 
  * @desc affects colour if positive or negative (green or red) and adds + or - to the percentage
  */
 const PercentageFormat = ({ percent_change, timeset }) => {

@@ -4,10 +4,10 @@ import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "../PercentageFormat";
 
 /**
- * @param {string} symbol
- * @param {string} name
- * @param {number} price
- * @param {number} percent_change
+ * @param {String} symbol
+ * @param {String} name
+ * @param {Number} price
+ * @param {Number} percent_change
  * @param {function} onClick
  * @desc Smallest stock widget, only shows necceary information
  */

@@ -7,8 +7,8 @@ import PercentageFormat from './PercentageFormat';
 
 /**
  * 
- * @param {number} percent_change change in percent that will be shown
- * @param {string} timeset the time period that the percentage change is over 
+ * @param {Number} percent_change change in percent that will be shown
+ * @param {String} timeset the time period that the percentage change is over 
  * @param {function} func the function that will be called when the button is clicked
  * @desc wrapper for percentage format that has a button around it
  */
