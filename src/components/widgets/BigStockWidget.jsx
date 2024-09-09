@@ -79,7 +79,7 @@ const BigStockWidget = (props) => {
 
                 <div className={"company_name"}>{name}</div>
             </div>
-            <div className={"content"}>
+            <div className={"content"} data-tauri-drag-region>
                 {technicals && <div className={"elements"}>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
