@@ -36,7 +36,7 @@ const WAIT_TIME = 61_000; // milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
-    if(api_keys.length === 0) {
+    if (api_keys.length === 0) {
         console.log("Cannot request ticker data as there is not api keys available")
         return;
     }
@@ -70,37 +70,37 @@ export async function request_ticker_data(ticker_symbol) {
  * @desc get information about the ticker symbol to create a stock widget
  */
 export async function fetch_widget_data(ticker_symbol) {
-        const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
-        const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
-        const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
-        const nasdaq_news = await get_ticker_news(ticker_symbol);
-        const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
+    const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
+    const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
+    const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
+    const nasdaq_news = await get_ticker_news(ticker_symbol);
+    const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
 
-        const news = await nasdaq_news.data && await nasdaq_news.data.rows ? await nasdaq_news.data.rows : [];
-        const technicals = await nasdaq_technicals.data && await nasdaq_technicals.data.summaryData ? await nasdaq_technicals.data.summaryData : {};
-        let nasdaq_ticker_info = nasdaq_info[ticker_symbol] ? nasdaq_info[ticker_symbol] : {};
-        // this should never happen, but if it does we should log it
-        if (ticker_data === undefined) {
-            console.log("Error fetching data for " + ticker_symbol);
-            return;
-        }
-        const price = current_price_from_data(ticker_data);
-        const change = change_from_data(ticker_data);
-        const change_month = monthly_change_from_data(ticker_data);
-        const date = last_date_from_data(ticker_data);
-        const historical_prices = get_list_prices(ticker_data);
-        return {
-            symbol: ticker_symbol,
-            name: company_name,
-            price: price.toFixed(2),
-            percent_change: change.toFixed(2),
-            percent_change_month: change_month.toFixed(2),
-            date: date,
-            historical_prices: historical_prices,
-            news: news,
-            technicals: technicals,
-            ...nasdaq_ticker_info,
-        };
+    const news = await nasdaq_news.data && await nasdaq_news.data.rows ? await nasdaq_news.data.rows : [];
+    const technicals = await nasdaq_technicals.data && await nasdaq_technicals.data.summaryData ? await nasdaq_technicals.data.summaryData : {};
+    let nasdaq_ticker_info = nasdaq_info[ticker_symbol] ? nasdaq_info[ticker_symbol] : {};
+    // this should never happen, but if it does we should log it
+    if (ticker_data === undefined) {
+        console.log("Error fetching data for " + ticker_symbol);
+        return;
+    }
+    const price = current_price_from_data(ticker_data);
+    const change = change_from_data(ticker_data);
+    const change_month = monthly_change_from_data(ticker_data);
+    const date = last_date_from_data(ticker_data);
+    const historical_prices = get_list_prices(ticker_data);
+    return {
+        symbol: ticker_symbol,
+        name: company_name,
+        price: price.toFixed(2),
+        percent_change: change.toFixed(2),
+        percent_change_month: change_month.toFixed(2),
+        date: date,
+        historical_prices: historical_prices,
+        news: news,
+        technicals: technicals,
+        ...nasdaq_ticker_info,
+    };
 }
 /**
  * @returns {Promise<{}>}
@@ -165,9 +165,28 @@ export async function get_all_symbols() {
 export async function get_market_cap(ticker_symbol) {
     const all_tickers = await get_all_nasdaq_info();
     const ticker_info = all_tickers[ticker_symbol];
-    if(!ticker_info) return 0;
+    if (!ticker_info) return 0;
     console.log(ticker_info)
     return unformat_number(ticker_info["marketCap"]);
+}
+/**
+ * Get all nasdaq ticker sortd by one of the possible sorting methods
+ * Sort method possible values: "symbol,name,lastsale,netchange,pctchange,marketCap,country,ipoyear,volume,sector,industry,url"
+ * @returns {Promise<[String]>}
+ */
+export async function nasdaq_sorted_by(sort_method = "marketCap") {
+    const all_tickers = await get_all_nasdaq_info();
+    const tickers = Object.keys(all_tickers);
+    const tickers_with_market_cap = tickers.map(ticker => {
+        let value = all_tickers[ticker][sort_method];
+        if (!value) { value = 0 }
+        if (!isNaN(value)) { unformat_number(value) }
+        return {
+            ticker: ticker,
+            sort_method: unformat_number(all_tickers[ticker][sort_method])
+        }
+    });
+    return tickers_with_market_cap.sort((a, b) => b.sort_method - a.sort_method);
 }
 
 /**
@@ -285,7 +304,7 @@ export async function get_company_summary(ticker) {
     const url = `https://api.nasdaq.com/api/company/${ticker}/company-profile`;
     const summary_data = await invoke("get_request_api", { url: url });
     const parsed_summary = JSON.parse(summary_data);
-    set_cache(local_storage_key, parsed_summary, 60*24*7);
+    set_cache(local_storage_key, parsed_summary, 60 * 24 * 7);
     return parsed_summary;
 }
 
