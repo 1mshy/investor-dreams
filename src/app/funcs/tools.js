@@ -48,6 +48,9 @@ export function format_currency(number) {
     return `$${format_number(number)}`;
 }
 
+export function format_percentage(number) {
+    return `${number.toFixed(2)}%`;
+}
 
 export function is_market_open() {
     const current_hour = new Date().getHours();
