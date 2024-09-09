@@ -182,10 +182,10 @@ export default class Playground extends Component {
         const { stock_data, ticker_symbols, sort_method } = this.state;
         return (
             <ThemeProvider theme={theme}>
-                <div className={"playground"}>
+                <div className={"playground"} >
                     <div className={"generic-header"} >
                         <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
-                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
+                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} data-tauri-drag-region>
                                 <MenuButton component={Link} to="/home" >
                                     Home
                                 </MenuButton>
@@ -195,7 +195,7 @@ export default class Playground extends Component {
                             </Grid2>
                         </SoftPaper>
                     </div>
-                    <div className={"playground-content"}>
+                    <div className={"playground-content"} >
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
                             {ticker_symbols.map(ticker_symbol => {
                                 return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={ticker_symbol} />

@@ -281,7 +281,7 @@ export default class Analysis extends Component {
                         </div>
                     </Stack>
                 </BackGroundPaper>}
-                <div className={"widgets-container"} style={{ height: "auto", flex: 7 }}>
+                <div className={"widgets-container"} data-tauri-drag-region style={{ height: "auto", flex: 7 }}>
                     {filtered_tickers.slice(0, searching_options.tickers_shown).map((data) => {
                         return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
                     })}

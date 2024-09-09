@@ -66,7 +66,7 @@ export default class Home extends Component {
                         {/* <Button onClick={clear_application_data}>Clear Application Data</Button> */}
                     </div>
                 </div>
-                <div className={"homepage-content"}>
+                <div className={"homepage-content"} data-tauri-drag-region>
                     {/* <div className={"widgets-container"}> */}
                     {has_favourites() &&
                         <div className={"homepage-columns"}>
