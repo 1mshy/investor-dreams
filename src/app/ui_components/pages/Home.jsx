@@ -3,11 +3,11 @@ import { get_sp_500_data } from '@/app/funcs/scraper';
 import StockWidget from '@/components/widgets/StockWidget';
 import { Component } from 'react';
 
-import "@/app/css/Playground.css";
 import "@/app/css/Homepage.css";
+import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import { Link } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
+import { Link } from 'react-router-dom';
 
 export default class Home extends Component {
     constructor(props) {
