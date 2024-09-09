@@ -5,7 +5,7 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * 
- * @param {string} percent 
+ * @param {String} percent 
  * @returns {Number}
  */
 export function percent_to_decimal(percent) {
@@ -15,7 +15,7 @@ export function percent_to_decimal(percent) {
 /**
  * 
  * @param {Number} decimal 
- * @returns {string}
+ * @returns {String}
  */
 export function decimal_to_percent(decimal) {
     return (decimal * 100).toFixed(2) + "%";
@@ -23,8 +23,8 @@ export function decimal_to_percent(decimal) {
 
 /**
  * gets the lowest n values from an array
- * @param {[number]} array 
- * @param {number} n 
+ * @param {[Number]} array 
+ * @param {Number} n 
  */
 export function get_first(array, n) {
     return array
@@ -34,8 +34,8 @@ export function get_first(array, n) {
 }
 /**
  * gets last n values from an array
- * @param {[number]} array 
- * @param {number} n 
+ * @param {[Number]} array 
+ * @param {Number} n 
  * @returns 
  */
 export function get_last(array, n) {
@@ -63,7 +63,7 @@ export function format_number(number) {
  */
 export function unformat_number(number) {
     if (!number) return 0;
-    return Number(`${number}`.replace(/[^\d.-]/g, ""));
+    return Number(`${Number}`.replace(/[^\d.-]/g, ""));
 }
 
 export function format_currency(number) {
