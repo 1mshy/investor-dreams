@@ -54,6 +54,7 @@ export default class Playground extends Component {
      * @param {[string]} ticker_symbols 
      */
     async set_tickers(ticker_symbols, func) {
+        console.log("setting tickers")
         this.setState({ ticker_symbols });
         const sp_500_data = await get_sp_500_data();
         let stock_data = this.state.stock_data;
@@ -75,7 +76,8 @@ export default class Playground extends Component {
                     stock_data[ticker_symbol] = data;
                     this.setState({ stock_data });
                 }))
-                if(func) func();
+                if(func) 
+                    await func();
 
                 // for (const ticker_symbol of ticker_symbols) {
                 //     const data = await fetch_widget_data(ticker_symbol);
@@ -91,6 +93,9 @@ export default class Playground extends Component {
      * @param {string} sector 
      */
     async set_sector(sector) {
+        console.log(
+            "setting sector"
+        )
         const sectors = await get_all_sectors();
         if (!sectors.includes(sector)) {
             return;
@@ -103,11 +108,12 @@ export default class Playground extends Component {
                 tickers_in_sector.push(ticker);
             }
         };
-        this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
+        await this.set_tickers(tickers_in_sector, async () => await this.set_sorting(this.state.sort_method)).then(_ => { });
     };
 
     async set_sorting(sort_method) {
         const { ticker_symbols, stock_data } = this.state;
+        console.log("sorting tickers")
         console.log(sort_method)
         this.setState({ sort_method })
         switch (sort_method) {
@@ -172,7 +178,9 @@ export default class Playground extends Component {
     async componentDidMount() {
         // get the top companies
         const ticker_symbols = await get_index_stocks();
-        this.set_tickers(ticker_symbols.slice(0, 12), () => this.set_sorting(this.state.sort_method));
+        console.log(ticker_symbols)
+        const nasdaq_info =  await get_all_nasdaq_info();
+        await this.set_tickers(ticker_symbols.slice(0, 12), async () => await this.set_sorting(this.state.sort_method));
     }
 
     render() {
@@ -195,8 +203,8 @@ export default class Playground extends Component {
                     </div>
                     <div className={"playground-content"}>
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
-                            {ticker_symbols.map(ticker_symbol => {
-                                return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={ticker_symbol} />
+                            {ticker_symbols.map((ticker_symbol, index) => {
+                                return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={`${ticker_symbol}_${index}`} />
                             })}
                         </div>
                     </div>
