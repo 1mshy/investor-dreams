@@ -36,6 +36,10 @@ const WAIT_TIME = 61_000; // milliseconds
  * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
+    if(api_keys.length === 0) {
+        console.log("Cannot request ticker data as there is not api keys available")
+        return;
+    }
     // console.log(ticker_symbol, stock_cache_is_valid(ticker_symbol))
     const valid_cache = await stock_cache_is_valid(ticker_symbol);
     if (valid_cache) {
@@ -328,7 +332,7 @@ export async function export_all_technical_data() {
     return all_technicals;
 }
 
-const OLLAMA_GENERATION = localforage.createInstance({
+export const OLLAMA_GENERATION = localforage.createInstance({
     name: "ollama_prompt_generations"
 })
 
