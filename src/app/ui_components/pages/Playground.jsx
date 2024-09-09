@@ -87,7 +87,7 @@ export default class Playground extends Component {
 
     /**
      * sets the sector/industry filter
-     * @param {string} sector 
+     * @param {String} sector 
      */
     set_sector(sector) {
         get_all_sectors().then(sectors => {

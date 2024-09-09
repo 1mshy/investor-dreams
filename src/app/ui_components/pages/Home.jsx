@@ -23,31 +23,23 @@ export default class Home extends Component {
     async componentDidMount() {
         // Only access browser-specific APIs here
         console.log("getting username")
-        invoke("get_username").then((response) => {
-            this.setState({ username: response });
-        }).catch(error => {
-            console.error("Failed to fetch username:", error);
-        });
-        // TODO algorithm to get top 3 changes
-        get_sp_500_data().then((response) => {
-            const changes = Object.keys(response)
-                .sort((a, b) => response[b].percent_change - response[a].percent_change);
-            console.log(response)
-            const top3 = changes
-                .slice(0, 3)
-                .map((ticker_symbol) => response[ticker_symbol]);
-            const bottom3 = changes
-                .slice(changes.length - 4, changes.length - 1)
-                .map(ticker_symbol => response[ticker_symbol])
-                .reverse();
-            // console.log(top_3_changes)
-            this.setState({ top_3_changes: top3 });
-            this.setState({ worst_3_changes: bottom3 });
-        })
+        const username = await invoke("get_username")
+        this.setState({ username });
 
-        top_favourite_changes().then(top_favs => {
-            this.setState({ top_favs });
-        });
+        // TODO algorithm to get top 3 changes
+        const response = await get_sp_500_data()
+        const changes = Object.keys(response)
+            .sort((a, b) => response[b].percent_change - response[a].percent_change);
+        console.log(response)
+        const top3 = changes
+            .slice(0, 3)
+            .map((ticker_symbol) => response[ticker_symbol]);
+        const bottom3 = changes
+            .slice(changes.length - 4, changes.length - 1)
+            .map(ticker_symbol => response[ticker_symbol])
+            .reverse();
+        const top_favs = await top_favourite_changes()
+        this.setState({ top_favs, top_3_changes: top3, worst_3_changes: bottom3 });
     }
 
     render() {
@@ -60,8 +52,8 @@ export default class Home extends Component {
                         <StockSearch label="" variant="standard" fullWidth />
                     </div> */}
                     <div className={"homepage-nav"} >
-                    <Link to="/playground" className={"homepage-navButton"}>Playground</Link>
-                    <Link to="/analysis" className={"homepage-navButton"}>Analysis</Link>
+                        <Link to="/playground" className={"homepage-navButton"}>Playground</Link>
+                        <Link to="/analysis" className={"homepage-navButton"}>Analysis</Link>
                         {/* <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
                             href={{

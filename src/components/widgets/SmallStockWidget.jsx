@@ -6,10 +6,10 @@ import PriceGraph from "../PriceGraph";
 import { SoftPaper } from "@/app/mui/theme";
 
 /**
- * @param {string} symbol
- * @param {string} name
- * @param {number} price
- * @param {number} percent_change
+ * @param {String} symbol
+ * @param {String} name
+ * @param {Number} price
+ * @param {Number} percent_change
  * @param {function} onClick
  * Small stock WIdget includes the same info as the mini, but includes a small graph of the month's pricing
  */
