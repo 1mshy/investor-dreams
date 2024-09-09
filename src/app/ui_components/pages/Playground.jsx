@@ -1,12 +1,11 @@
-"use client"
 import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
-    get_all_static_ticker_info,
-    get_all_sectors
+    get_all_sectors,
+    get_all_static_ticker_info
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
-import { Stack, TextField, ThemeProvider } from '@mui/material';
+import { Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
 import MenuButton from '../../../components/MenuButton';
@@ -17,8 +16,8 @@ import SectorSelect from '../misc/SectorSelect';
  */
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import EasySelection from '../misc/EasySelection';
 import { Link } from 'react-router-dom';
+import EasySelection from '../misc/EasySelection';
 
 export default class Playground extends Component {
     constructor(props) {

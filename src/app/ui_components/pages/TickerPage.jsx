@@ -1,6 +1,3 @@
-// src/app/tickers/page.js
-'use client';
-
 import { ThemeProvider } from '@mui/material';
 import { Component } from 'react';
 import { SoftPaper, theme } from '../../mui/theme';
