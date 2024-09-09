@@ -160,12 +160,13 @@ export async function get_all_symbols() {
 /**
  * 
  * @param {String} ticker_symbol 
- * @returns {Number}
+ * @returns {Promise<Number>}
  */
 export async function get_market_cap(ticker_symbol) {
     const all_tickers = await get_all_nasdaq_info();
     const ticker_info = all_tickers[ticker_symbol];
     if(!ticker_info) return 0;
+    console.log(ticker_info)
     return unformat_number(ticker_info["marketCap"]);
 }
 
