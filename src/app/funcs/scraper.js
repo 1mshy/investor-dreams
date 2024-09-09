@@ -4,7 +4,6 @@ import { load } from 'cheerio';
 import { complex_retrieve, complex_store, get_cache, retrieve, set_cache, store } from './cache';
 import localforage from 'localforage';
 import { get_company_summary, get_ticker_info } from './stock_api';
-import { unformat_number } from './tools';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
@@ -109,16 +108,6 @@ export async function get_portfolio_weight(ticker_symbol) {
     const data = await get_sp_500_data();
     if(!data[ticker_symbol]) return 0;
     return data[ticker_symbol].portfolio_percent;
-}
-
-/**
- * @param {String} ticker_symbol 
- * @returns {Promise<Number>} market cap of the stock
- */
-export async function get_market_cap(ticker_symbol) {
-    const all_data = await get_all_nasdaq_info();
-    if(!all_data[ticker_symbol]) return 0;
-    return unformat_number(all_data[ticker_symbol].marketCap);
 }
 
 

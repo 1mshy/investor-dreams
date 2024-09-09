@@ -120,12 +120,10 @@ export async function get_ticker_info(ticker) {
  */
 export async function get_all_sectors() {
     let sectors = [];
-    const data = await get_all_nasdaq_info();
-    console.log(data)
-    Object.keys(data).forEach(ticker => {
-        const sector = data[ticker]["sector"];
-        if (sector && !sectors.includes(sector)) {
-            sectors.push(sector);
+    const data = await get_all_static_ticker_info();
+    Object.keys(data).forEach(key => {
+        if (!sectors.includes(data[key]["sector"])) {
+            sectors.push(data[key]["sector"]);
         }
     });
     sectors = sectors.filter(item => item !== undefined && item !== null && item !== "")
@@ -297,7 +295,7 @@ export async function get_ticker_technicals(ticker) {
     if (is_cache_valid)
         return cached_technicals;
     const url = `https://api.nasdaq.com/api/quote/${ticker}/summary?assetclass=stocks`;
-    const technical_data = await invoke("get_request_api", { url: url });
+    const technical_data = await invoke_with_timeout("get_request_api", { url: url });
     const parsed_technicals = JSON.parse(technical_data);
     set_cache(local_storage_key, parsed_technicals, 60, NASDAQ_TECHNICALS);
     return parsed_technicals;
