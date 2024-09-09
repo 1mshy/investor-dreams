@@ -30,7 +30,6 @@ export default class Home extends Component {
         const response = await get_sp_500_data()
         const changes = Object.keys(response)
             .sort((a, b) => response[b].percent_change - response[a].percent_change);
-        console.log(response)
         const top3 = changes
             .slice(0, 3)
             .map((ticker_symbol) => response[ticker_symbol]);
