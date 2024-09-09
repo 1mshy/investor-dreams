@@ -41,7 +41,7 @@ export function format_number(number) {
  */
 export function unformat_number(number) {
     if (!number) return 0;
-    return Number(number.replace("$", "").replace(",", "").replace("'", ""));
+    return Number(`${number}`.replace("$", "").replace(",", "").replace("'", ""));
 }
 
 export function format_currency(number) {
@@ -87,7 +87,7 @@ export function upload_json(json_data, filename) {
     // console.log(filename)
     // console.log(jsonContent)
     toast.warn("Writing file to downloads folder, please wait...")
-    invoke("save_json_file", {filename, jsonContent}).then((result) => {
+    invoke("save_json_file", { filename, jsonContent }).then((result) => {
         toast.success(result)
     })
 
