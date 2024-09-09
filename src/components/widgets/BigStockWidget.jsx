@@ -7,7 +7,7 @@ import PriceGraph from "@/components/PriceGraph";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import { open } from "@tauri-apps/plugin-shell";
-import { format_currency, format_percentage, unformat_number } from "@/app/funcs/tools";
+import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
 import PercentageFormat from "../PercentageFormat";
 import { invoke } from "@tauri-apps/api/core";
 import { get_all_news_bodies } from "@/app/funcs/scraper";
@@ -56,15 +56,13 @@ const BigStockWidget = (props) => {
     const unformatted_price = unformat_number(price);
     const price_target_change = percentage_change(unformatted_target, unformatted_price)
 
-    let dividend_amount = technicals.AnnualizedDividend.value;
-    if(dividend_amount === "N/A") {
-        dividend_amount = "$0";
+    let dividend_amount = unformat_number(technicals.AnnualizedDividend.value);
+    if(dividend_amount === 0) {
         if(technicals.SpecialDividendAmount && technicals.SpecialDividendAmount.value !== "N/A") {
             dividend_amount = unformat_number(technicals.SpecialDividendAmount.value) * 4;
         }
     }
-    const dividend_yield = dividend_amount && dividend_amount!== "N/A" ? unformat_number(dividend_amount) / unformatted_price * 100 : "N/A";
-
+    const dividend_yield = dividend_amount / unformatted_price * 100;
 
     return (
         <div className={"big"}
@@ -97,7 +95,7 @@ const BigStockWidget = (props) => {
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
-                        <div className={"info-value"}>{`${dividend_amount} (${format_percentage(dividend_yield)})`}</div>
+                        <div className={"info-value"}>{`$${format_number(dividend_amount)} (${format_percentage(dividend_yield)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
