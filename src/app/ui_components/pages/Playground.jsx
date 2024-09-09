@@ -70,11 +70,12 @@ export default class Playground extends Component {
 
             if (typeof window !== 'undefined') {
                 let stock_data = this.state.stock_data;
-                Promise.all(ticker_symbols.map(async (ticker_symbol) => {
+                await Promise.all(ticker_symbols.map(async (ticker_symbol) => {
                     const data = await fetch_widget_data(ticker_symbol);
                     stock_data[ticker_symbol] = data;
                     this.setState({ stock_data });
-                })).then(func)
+                }))
+                if(func) func();
 
                 // for (const ticker_symbol of ticker_symbols) {
                 //     const data = await fetch_widget_data(ticker_symbol);
@@ -175,6 +176,7 @@ export default class Playground extends Component {
     }
 
     render() {
+        console.log("reloading")
         const { stock_data, ticker_symbols, sort_method } = this.state;
         return (
             <ThemeProvider theme={theme}>

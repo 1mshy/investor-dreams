@@ -24,7 +24,7 @@ export const STOCK_CACHE = localforage.createInstance({
 
 /**
  * @param {string} key - key of the cached item
- * @returns {boolean} checks if the current cache of a key is valid: exists and in the proper time frame
+ * @returns {Promise<Boolean>} checks if the current cache of a key is valid: exists and in the proper time frame
  */
 export async function stock_cache_is_valid(key) {
     const item = await complex_retrieve(key, STOCK_CACHE);

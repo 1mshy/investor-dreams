@@ -117,6 +117,7 @@ export async function get_portfolio_weight(ticker_symbol) {
  */
 export async function get_market_cap(ticker_symbol) {
     const all_data = await get_all_nasdaq_info();
+    if(!all_data[ticker_symbol]) return 0;
     return unformat_number(all_data[ticker_symbol].marketCap);
 }
 
