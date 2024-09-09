@@ -27,6 +27,7 @@ export function decimal_to_percent(decimal) {
  * @returns {String}
  */
 export function format_number(number) {
+    if(isNaN(number)) return 0;
     const formatting_suffixed = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "De", "UnDe", "DuDe", "TrDe", "QaDe", "QiDe", "SxDe", "SpDe", "OcDe", "NoDe", "Vi"]; // making sure it will be inflation proof :)
     let usable_num = Number(number);
     while (usable_num >= 1000) {
@@ -43,13 +44,21 @@ export function unformat_number(number) {
     if (!number) return 0;
     return Number(`${number}`.replace("$", "").replace(",", "").replace("'", ""));
 }
-
+/**
+ * 
+ * @param {Number} number 
+ * @returns {String}
+ */
 export function format_currency(number) {
     return `$${format_number(number)}`;
 }
-
+/**
+ * 
+ * @param {Number} number 
+ * @returns {String}
+ */
 export function format_percentage(number) {
-    return `${number.toFixed(2)}%`;
+    return `${unformat_number(number).toFixed(2)}%`;
 }
 
 export function is_market_open() {
@@ -59,7 +68,11 @@ export function is_market_open() {
         || (current_day <= 0 && current_day >= 6);
     return !outside_trading_hours;
 }
-
+/**
+ * 
+ * @param {String} prompt 
+ * @returns {String} hash
+ */
 export function sha256(prompt) {
     return crypto.createHash("sha256").update(prompt).digest("hex")
 }
