@@ -22,28 +22,6 @@ export function decimal_to_percent(decimal) {
 }
 
 /**
- * gets the lowest n values from an array
- * @param {[Number]} array 
- * @param {Number} n 
- */
-export function get_first(array, n) {
-    return array
-        .slice(changes.length - 1 - n, changes.length - 1)
-        .map(ticker_symbol => response[ticker_symbol])
-        .reverse();
-}
-/**
- * gets last n values from an array
- * @param {[Number]} array 
- * @param {Number} n 
- * @returns 
- */
-export function get_last(array, n) {
-    return array
-        .slice(0, n)
-        .map(ticker_symbol => response[ticker_symbol]);
-}
-/**
  * 
  * @param {Number} number 
  * @returns {String}
@@ -63,7 +41,10 @@ export function format_number(number) {
  */
 export function unformat_number(number) {
     if (!number) return 0;
-    return Number(`${Number}`.replace(/[^\d.-]/g, ""));
+    console.log("made it: " + number)
+    // return Number(`${Number}`.replace(/[^\d.-]/g, ""));
+    return Number(number.replace("$", "").replace(",", "").replace("'", ""));
+    // return Number(number.replace(/\$\'\,/g, ''));
 }
 
 export function format_currency(number) {

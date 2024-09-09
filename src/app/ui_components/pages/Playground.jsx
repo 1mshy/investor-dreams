@@ -2,7 +2,8 @@ import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/f
 import {
     fetch_widget_data,
     get_all_sectors,
-    get_all_static_ticker_info
+    get_all_static_ticker_info,
+    get_market_cap
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
 import { Stack, ThemeProvider } from '@mui/material';
@@ -116,7 +117,7 @@ export default class Playground extends Component {
         switch (sort_method) {
             case "Weight": {
                 const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const weight = await get_portfolio_weight(ticker_symbol);
+                    const weight = await get_market_cap(ticker_symbol);
                     return { ticker_symbol, weight };
                 });
                 // collect and wait for all the promises in the array to resolve

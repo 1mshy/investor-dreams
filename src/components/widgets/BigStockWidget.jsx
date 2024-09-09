@@ -52,8 +52,14 @@ const BigStockWidget = (props) => {
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
+    const unformatted_target = unformat_number(technicals.OneYrTarget.value)
+    const unformatted_price = unformat_number(price);
+    const price_target_change = percentage_change(unformat_number(technicals.OneYrTarget.value), unformat_number(price))
+    console.log(price)
+    console.log(technicals.OneYrTarget.value)
+    console.log(unformatted_target)
+    console.log(unformatted_price)
 
-    console.log(news)
     return (
         <div className={"big"}
             onClick={(e) => {
@@ -92,7 +98,7 @@ const BigStockWidget = (props) => {
                         <div className={"info-value"}>
                             <div className={"data-element"}>
                                 <div>{`${technicals.OneYrTarget.value}`}</div>
-                                (<PercentageFormat percent_change={percentage_change(unformat_number(technicals.OneYrTarget.value), Number(price))} />)
+                                (<PercentageFormat percent_change={price_target_change} />)
                             </div>
                         </div>
                     </div>
