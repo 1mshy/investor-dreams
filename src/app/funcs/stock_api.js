@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
-import { delay, invoke_with_timeout, sha256 } from "./tools";
-import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { stock_cache_is_valid, set_cache, get_cache, complex_retrieve, cache_is_valid, STOCK_CACHE } from "./cache";
 import localforage from "localforage";
+import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
+import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
+import { delay, invoke_with_timeout } from "./tools";
 let api_keys = []
 /**
  * data on stock tickers, not related to price

@@ -1,9 +1,9 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
-import { complex_retrieve, complex_store, get_cache, retrieve, set_cache, store } from './cache';
 import localforage from 'localforage';
-import { get_company_summary, get_ticker_info } from './stock_api';
+import { complex_retrieve, complex_store, get_cache, set_cache } from './cache';
+import { get_company_summary } from './stock_api';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
