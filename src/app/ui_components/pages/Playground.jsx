@@ -1,5 +1,5 @@
 "use client"
-import { get_all_nasdaq_info, get_index_stocks, get_market_cap, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_index_stocks, get_portfolio_weight, get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
     get_all_static_ticker_info,
@@ -42,7 +42,7 @@ export default class Playground extends Component {
         this.set_tickers = this.set_tickers.bind(this);
 
         this.sorting_content = {
-            "Market Cap": () => { this.set_sorting("MarketCap") },
+            "Weight": () => { this.set_sorting("Weight") },
             "Volitility": () => { this.set_sorting("Volitility") },
             "Bullish": () => { this.set_sorting("Bullish") },
             "Bearish": () => { this.set_sorting("Bearish") },
@@ -54,30 +54,28 @@ export default class Playground extends Component {
      * @param {[string]} ticker_symbols 
      */
     async set_tickers(ticker_symbols, func) {
-        console.log("setting tickers")
         this.setState({ ticker_symbols });
-        const sp_500_data = await get_sp_500_data();
-        let stock_data = this.state.stock_data;
-        ticker_symbols.forEach(async (ticker_symbol) => {
-            if (!sp_500_data[ticker_symbol]) return; // checks if stock exists in the large dataset
-            const { symbol, company, current_price, change, percent_change } = sp_500_data[ticker_symbol];
-            stock_data[ticker_symbol] = {
-                symbol: symbol,
-                name: company,
-                price: current_price,
-                change: change,
-                percent_change: percent_change,
-            };
+        get_sp_500_data().then(async sp_500_data => {
+            let stock_data = this.state.stock_data;
+            ticker_symbols.forEach(async (ticker_symbol) => {
+                if (!sp_500_data[ticker_symbol]) return; // checks if stock exists in the large dataset
+                const { symbol, company, current_price, change, percent_change } = sp_500_data[ticker_symbol];
+                stock_data[ticker_symbol] = {
+                    symbol: symbol,
+                    name: company,
+                    price: current_price,
+                    change: change,
+                    percent_change: percent_change,
+                };
+            });
 
             if (typeof window !== 'undefined') {
                 let stock_data = this.state.stock_data;
-                await Promise.all(ticker_symbols.map(async (ticker_symbol) => {
+                Promise.all(ticker_symbols.map(async (ticker_symbol) => {
                     const data = await fetch_widget_data(ticker_symbol);
                     stock_data[ticker_symbol] = data;
                     this.setState({ stock_data });
-                }))
-                if(func) 
-                    await func();
+                })).then(func)
 
                 // for (const ticker_symbol of ticker_symbols) {
                 //     const data = await fetch_widget_data(ticker_symbol);
@@ -92,42 +90,42 @@ export default class Playground extends Component {
      * sets the sector/industry filter
      * @param {string} sector 
      */
-    async set_sector(sector) {
-        console.log(
-            "setting sector"
-        )
-        const sectors = await get_all_sectors();
-        if (!sectors.includes(sector)) {
-            return;
-        }
-        const sp_500_data = await get_sp_500_data();
-        const nasdaq_data = await get_all_nasdaq_info();
-        let tickers_in_sector = [];
-        for (const ticker in sp_500_data) {
-            if (nasdaq_data[ticker] && nasdaq_data[ticker].sector === sector) {
-                tickers_in_sector.push(ticker);
+    set_sector(sector) {
+        get_all_sectors().then(sectors => {
+            console.log(sectors)
+            if (sectors.includes(sector)) {
+                get_all_static_ticker_info().then((data) => {
+                    get_sp_500_data().then(sp_500_data => {
+                        let tickers_in_sector = [];
+                        for (const ticker in sp_500_data) {
+                            if (data[ticker] && data[ticker].sector === sector) {
+                                tickers_in_sector.push(ticker);
+                            }
+                        };
+
+                        this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
+                    });
+                });
             }
-        };
-        await this.set_tickers(tickers_in_sector, async () => await this.set_sorting(this.state.sort_method)).then(_ => { });
+        })
     };
 
     async set_sorting(sort_method) {
         const { ticker_symbols, stock_data } = this.state;
-        console.log("sorting tickers")
         console.log(sort_method)
         this.setState({ sort_method })
         switch (sort_method) {
-            case "MarketCap": {
-                const market_cap_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const market_cap = await get_market_cap(ticker_symbol);
-                    return { ticker_symbol, market_cap };
+            case "Weight": {
+                const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
+                    const weight = await get_portfolio_weight(ticker_symbol);
+                    return { ticker_symbol, weight };
                 });
                 // collect and wait for all the promises in the array to resolve
-                const caps = await Promise.all(market_cap_promises);
+                const weights = await Promise.all(weight_promises);
                 // sort by highest weight
-                const sorted_by_market_cap = caps.sort((a, b) => Math.abs(b.market_cap) - Math.abs(a.market_cap)).map(item => item.ticker_symbol);
+                const sorted_by_weight = weights.sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_market_cap);
+                await this.set_tickers(sorted_by_weight);
                 break;
             }
             case "Volitility": {
@@ -137,9 +135,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_volitility = changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).map(item => item.ticker_symbol);
+                const sorted_by_weight = changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_volitility);
+                await this.set_tickers(sorted_by_weight);
                 break;
             }
             case "Bullish": {
@@ -149,9 +147,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_bulls = changes.sort((a, b) => b.change - a.change).map(item => item.ticker_symbol);
+                const sorted_by_weight = changes.sort((a, b) => b.change - a.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_bulls);
+                await this.set_tickers(sorted_by_weight);
                 break;
             }
             case "Bearish": {
@@ -161,9 +159,9 @@ export default class Playground extends Component {
                 });
                 const changes = await Promise.all(change_promises);
                 // sort by highest weight
-                const sorted_by_bears = changes.sort((a, b) => a.change - b.change).map(item => item.ticker_symbol);
+                const sorted_by_weight = changes.sort((a, b) => a.change - b.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                await this.set_tickers(sorted_by_bears);
+                await this.set_tickers(sorted_by_weight);
                 break;
             }
 
@@ -178,13 +176,10 @@ export default class Playground extends Component {
     async componentDidMount() {
         // get the top companies
         const ticker_symbols = await get_index_stocks();
-        console.log(ticker_symbols)
-        const nasdaq_info =  await get_all_nasdaq_info();
-        await this.set_tickers(ticker_symbols.slice(0, 12), async () => await this.set_sorting(this.state.sort_method));
+        this.set_tickers(ticker_symbols.slice(0, 12), () => this.set_sorting(this.state.sort_method));
     }
 
     render() {
-        console.log("reloading")
         const { stock_data, ticker_symbols, sort_method } = this.state;
         return (
             <ThemeProvider theme={theme}>
@@ -203,8 +198,8 @@ export default class Playground extends Component {
                     </div>
                     <div className={"playground-content"}>
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
-                            {ticker_symbols.map((ticker_symbol, index) => {
-                                return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={`${ticker_symbol}_${index}`} />
+                            {ticker_symbols.map(ticker_symbol => {
+                                return <DynamicStockWidget {...stock_data[ticker_symbol]} size={"medium"} key={ticker_symbol} />
                             })}
                         </div>
                     </div>

@@ -26,9 +26,9 @@ import PercentageFormat from "../PercentageFormat";
  */
 const MediumStockWidget = (props) => {
     const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick } = props;
+
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     const month_prices = get_month_prices(historical_prices);
-    console.log("relaoding medium");
     return (
         <>
             <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={() => {
