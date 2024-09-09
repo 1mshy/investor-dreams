@@ -126,3 +126,9 @@
     align-items: center;
     margin-bottom: 1rem;
 }
+
+.head {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: max-content;
+}

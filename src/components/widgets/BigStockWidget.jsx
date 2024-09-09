@@ -1,17 +1,16 @@
-"use client";
-
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import { generate_ollama_message, get_ollama_cached_generation, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { get_all_news_bodies } from "@/app/funcs/scraper";
+import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
+import { Button, CircularProgress } from "@mui/material";
+import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
-import { open } from "@tauri-apps/plugin-shell";
-import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
 import PercentageFormat from "../PercentageFormat";
-import { invoke } from "@tauri-apps/api/core";
-import { get_all_news_bodies } from "@/app/funcs/scraper";
-import { Button, CircularProgress, InputAdornment } from "@mui/material";
+
+import "@/app/css/Widgets.css";
 
 /**
  * @param {String} symbol
@@ -65,7 +64,7 @@ const BigStockWidget = (props) => {
     const dividend_yield = dividend_amount / unformatted_price * 100;
 
     return (
-        <div className={"big"}
+        <div className={"big"} data-tauri-drag-region
             onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -79,7 +78,7 @@ const BigStockWidget = (props) => {
 
                 <div className={"company_name"}>{name}</div>
             </div>
-            <div className={"content"} data-tauri-drag-region>
+            <div className={"content"} >
                 {technicals && <div className={"elements"}>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
