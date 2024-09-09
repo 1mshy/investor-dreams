@@ -41,10 +41,7 @@ export function format_number(number) {
  */
 export function unformat_number(number) {
     if (!number) return 0;
-    console.log("made it: " + number)
-    // return Number(`${Number}`.replace(/[^\d.-]/g, ""));
     return Number(number.replace("$", "").replace(",", "").replace("'", ""));
-    // return Number(number.replace(/\$\'\,/g, ''));
 }
 
 export function format_currency(number) {

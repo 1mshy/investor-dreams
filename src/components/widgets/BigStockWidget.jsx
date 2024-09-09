@@ -54,11 +54,11 @@ const BigStockWidget = (props) => {
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
     const unformatted_target = unformat_number(technicals.OneYrTarget.value)
     const unformatted_price = unformat_number(price);
-    const price_target_change = percentage_change(unformat_number(technicals.OneYrTarget.value), unformat_number(price))
-    console.log(price)
-    console.log(technicals.OneYrTarget.value)
-    console.log(unformatted_target)
-    console.log(unformatted_price)
+    const price_target_change = percentage_change(unformatted_target, unformatted_price)
+
+    const dividend_amount = technicals.AnnualizedDividend.value !== "N/A" ? technicals.AnnualizedDividend.value : technicals.SpecialDividendAmount.value;
+    const dividend_yield = dividend_amount && dividend_amount!== "N/A" ? unformat_number(dividend_amount) / unformatted_price * 100 : "N/A";
+
 
     return (
         <div className={"big"}
@@ -91,7 +91,7 @@ const BigStockWidget = (props) => {
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
-                        <div className={"info-value"}>{`${technicals.AnnualizedDividend.value} (${technicals.Yield.value})`}</div>
+                        <div className={"info-value"}>{`${dividend_amount} (${dividend_yield})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
