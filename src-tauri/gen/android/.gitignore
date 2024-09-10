@@ -18,4 +18,5 @@ key.properties
 /.tauri
 /tauri.settings.gradle
 
-/keysore.properties
+/.keystore
+/keystore.properties
