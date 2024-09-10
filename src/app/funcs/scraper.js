@@ -65,7 +65,7 @@ export async function get_all_nasdaq_info() {
             new_data[clean_ticker(stock.symbol)] = stock;
         });
         data = new_data;
-        set_cache(local_storage_key, data);
+        set_cache(local_storage_key, data, 2);
     }
     return data;
 }
