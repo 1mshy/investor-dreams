@@ -35,7 +35,7 @@
     "tls": "^0.0.1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": ">=2.0.0-rc.0",
+    "@tauri-apps/cli": "^2.0.0-rc.13",
     "@vitejs/plugin-react": "^4.2.1",
     "vite": "^5.3.1"
   }
