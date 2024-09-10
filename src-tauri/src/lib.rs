@@ -1,5 +1,3 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(unused_imports)]
 use std::env;
 
@@ -19,9 +17,9 @@ mod tools;
 
 use once_cell::sync::Lazy;
 use ollama_rs::Ollama; // Import Ollama from the `ollama-rs` crate
-// #[cfg_attr(mobile, tauri::mobile_entry_point)]
 
-pub fn main() {
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
     println!("Starting Tauri App");
     dotenv::dotenv().ok();
     let ollama_instance = Ollama::new("http://localhost".to_string(), 11434);
