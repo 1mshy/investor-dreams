@@ -20,6 +20,7 @@ import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
 import { Link } from 'react-router-dom';
 import EasySelection from '../misc/EasySelection';
+import { retrieve, store } from '@/app/funcs/cache';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ export default class Playground extends Component {
         this.state = {
             stock_data: {},
             ticker_symbols: [],
-            sort_method: "Volitility", // Weight, Volitility, Bullish, Bearish
+            sort_method: this.get_sorting_method(), // Weight, Volitility, Bullish, Bearish
             add_sector_menu: false,
             create_sector_popup: false,
         };
@@ -43,11 +44,17 @@ export default class Playground extends Component {
         this.set_tickers = this.set_tickers.bind(this);
 
         this.sorting_content = {
-            "Market Cap": () => { this.set_sorting("MarketCap") },
+            "MarketCap": () => { this.set_sorting("MarketCap") },
             "Volitility": () => { this.set_sorting("Volitility") },
             "Bullish": () => { this.set_sorting("Bullish") },
             "Bearish": () => { this.set_sorting("Bearish") },
         }
+    }
+
+    get_sorting_method() {
+        const default_sort = "Volitility";
+        const stored_sort = retrieve("sort_method");
+        return stored_sort ? stored_sort : default_sort;
     }
 
     /**
@@ -114,6 +121,7 @@ export default class Playground extends Component {
         const { ticker_symbols, stock_data } = this.state;
         console.log(sort_method)
         this.setState({ sort_method })
+        store("sort_method", sort_method);
         switch (sort_method) {
             case "MarketCap": {
                 const weight_promises = ticker_symbols.map(async (ticker_symbol) => {
