@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import localforage from 'localforage';
 import { complex_retrieve, complex_store, get_cache, set_cache } from './cache';
-import { get_company_summary } from './stock_api';
+import { clean_ticker, get_company_summary } from './stock_api';
 
 /**
  * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
@@ -62,7 +62,7 @@ export async function get_all_nasdaq_info() {
         const all_data = json_data.data.rows; // array of objects
         let new_data = {};
         all_data.forEach((stock) => {
-            new_data[stock.symbol] = stock;
+            new_data[clean_ticker(stock.symbol)] = stock;
         });
         data = new_data;
         set_cache(local_storage_key, data);

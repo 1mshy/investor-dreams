@@ -51,6 +51,8 @@ const BigStockWidget = (props) => {
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
+
+    console.log(technicals.OneYrTarget.value)
     const unformatted_target = unformat_number(technicals.OneYrTarget.value)
     const unformatted_price = unformat_number(price);
     const price_target_change = percentage_change(unformatted_target, unformatted_price)
@@ -91,6 +93,10 @@ const BigStockWidget = (props) => {
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`(PE/FPE):`}</div>
                         <div className={"info-value"}>{`${technicals.PERatio.value} / ${technicals.ForwardPE1Yr.value}`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`(EPS/TTP):`}</div>
+                        <div className={"info-value"}>{`${technicals.EarningsPerShare.value} (${format_percentage(unformat_number(technicals.EarningsPerShare.value)/unformatted_price*100)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
