@@ -42,7 +42,7 @@ export function format_number(number) {
  */
 export function unformat_number(number) {
     if (!number) return 0;
-    return Number(`${number}`.replace("$", "").replace(",", "").replace("'", ""));
+    return Number(`${number}`.replace("$", "").replace(",", "").replace("'", "").replace("%", ""));
 }
 /**
  * 

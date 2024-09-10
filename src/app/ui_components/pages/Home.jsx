@@ -8,6 +8,7 @@ import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
 import { invoke } from '@tauri-apps/api/core';
 import { Link } from 'react-router-dom';
+import { nasdaq_sorted_by } from '@/app/funcs/stock_api';
 
 export default class Home extends Component {
     constructor(props) {
@@ -39,6 +40,14 @@ export default class Home extends Component {
             .reverse();
         const top_favs = await top_favourite_changes()
         this.setState({ top_favs, top_3_changes: top3, worst_3_changes: bottom3 });
+
+        const top_500 = (await nasdaq_sorted_by("marketCap")).slice(0, 500)
+        const top_500_change = (await nasdaq_sorted_by("pctchange", top_500.map(item => item.ticker)));
+        const top_3_change = top_500_change.slice(0, 3);
+        const bottom_3_change = top_500_change.slice(top_500_change.length - 4, top_500_change.length - 1).reverse();
+        console.log(top_500)
+        console.log(top_3_change)
+        console.log(bottom_3_change)
     }
 
     render() {

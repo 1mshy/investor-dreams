@@ -3,7 +3,8 @@ import {
     fetch_widget_data,
     get_all_sectors,
     get_all_static_ticker_info,
-    get_market_cap
+    get_market_cap,
+    nasdaq_sorted_by
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
 import { Stack, ThemeProvider } from '@mui/material';
@@ -174,8 +175,9 @@ export default class Playground extends Component {
      */
     async componentDidMount() {
         // get the top companies
-        const ticker_symbols = await get_index_stocks();
-        this.set_tickers(ticker_symbols.slice(0, 12), () => this.set_sorting(this.state.sort_method));
+        const top_20_by_market_cap = (await nasdaq_sorted_by("marketCap")).slice(0,20);
+        this.set_tickers(top_20_by_market_cap, () => this.set_sorting(this.state.sort_method));
+
     }
 
     render() {
