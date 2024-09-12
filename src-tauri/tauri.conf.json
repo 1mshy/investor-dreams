@@ -1,7 +1,7 @@
 {
   "productName": "investor-dreams",
   "version": "0.0.1",
-  "identifier": "imshy.investments",
+  "identifier": "imshy-investments",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
