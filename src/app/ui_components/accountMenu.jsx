@@ -1,9 +1,9 @@
 import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { invoke } from '@tauri-apps/api/core';
 import * as React from 'react';
+import Box from '@mui/material/Box';
 
 class AccountMenu extends React.Component {
   constructor(props) {

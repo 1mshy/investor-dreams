@@ -1,6 +1,6 @@
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies } from "@/app/funcs/scraper";
-import { clean_ticker, generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
@@ -25,13 +25,11 @@ import "@/app/css/Widgets.css";
  *      It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
-    const { name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
+    const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
-
-    const symbol = clean_ticker(props.symbol);
 
     useEffect(() => {
         get_ticker_info(symbol).then((info) => {

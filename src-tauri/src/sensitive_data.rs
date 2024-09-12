@@ -52,7 +52,6 @@ pub async fn set_base_size(application_window: tauri::Window) -> Result<u32, Str
     let scale_factor = current_monitor.scale_factor();
     let new_width = (current_width/2.5 * scale_factor) as u32;
     let new_height = (current_height/2.5 * scale_factor) as u32;
-    #[cfg(target_os = "windows")]
     application_window.set_size(PhysicalSize::new(new_width, new_height)).unwrap();
     Ok(new_width)
 }

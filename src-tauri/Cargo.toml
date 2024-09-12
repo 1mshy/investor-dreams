@@ -7,28 +7,18 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.dev]
-debug = true
-split-debuginfo = '...'  # Platform-specific.
-strip = "none"
-debug-assertions = true
-overflow-checks = true
-lto = false
-panic = 'unwind'
-incremental = true
-codegen-units = 256
-rpath = false
-opt-level = 3 # Prioritizes small binary size. Use `3` if you prefer speed.
+incremental = true # Compile your binary in smaller steps.
 
 [profile.release]
 codegen-units = 1 # Allows LLVM to perform better optimization.
 lto = true # Enables link-time-optimizations.
-opt-level = "z" # Prioritizes small binary size. Use `3` if you prefer speed.
+opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
 panic = "abort" # Higher performance by disabling panic handlers.
 strip = true # Ensures debug symbols are removed.
 
 [lib]
 name = "investor_dreams_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+crate-type = ["lib", "cdylib", "staticlib"]
 
 [build-dependencies]
 tauri-build = { version = "2.0.0-rc", features = [] }
@@ -36,12 +26,12 @@ tauri-build = { version = "2.0.0-rc", features = [] }
 [dependencies]
 tauri = { version = "2.0.0-rc", features = ["macos-private-api"] }
 tauri-plugin-shell = "2.0.0-rc"
-tauri-plugin-decorum = "1.0.0"
-window-vibrancy = "0.5.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
+tauri-plugin-decorum = "1.0.0"
+window-vibrancy = "0.5.0"
 whoami = "1.5.1"
 dotenv = "0.15.0"
 ollama-rs = "0.2.0"
