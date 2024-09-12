@@ -13,7 +13,7 @@ import localforage from "localforage";
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import TableDownloadPopup from "../popups/TableDownloadPopup";
+import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
 
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";

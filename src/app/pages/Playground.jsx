@@ -1,4 +1,4 @@
-import { get_index_stocks, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_sp_500_data } from '@/app/funcs/scraper';
 import {
     fetch_widget_data,
     get_all_sectors,
@@ -10,16 +10,16 @@ import { SoftPaper, theme } from '@/app/mui/theme';
 import { Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
-import MenuButton from '../../../components/MenuButton';
-import { DynamicStockWidget } from '../../../components/widgets/DynamicStockWidget';
-import SectorSelect from '../misc/SectorSelect';
+import MenuButton from '@/components/MenuButton';
+import { DynamicStockWidget } from '@/components/widgets/DynamicStockWidget';
+import SectorSelect from '@/app/ui_components/misc/SectorSelect';
 /**
  * css imports
  */
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
 import { Link } from 'react-router-dom';
-import EasySelection from '../misc/EasySelection';
+import EasySelection from '@/app/ui_components/misc/EasySelection';
 import { retrieve, store } from '@/app/funcs/cache';
 
 export default class Playground extends Component {

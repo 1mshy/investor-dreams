@@ -3,12 +3,12 @@ import "../app/css/Widgets.css";
 import { clear_cache, retrieve, store } from './funcs/cache';
 import { log } from './funcs/logger';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import Home from './ui_components/pages/Home';
-import Playground from './ui_components/pages/Playground';
-import Analysis from './ui_components/pages/Analysis';
-import NotFound from './not-found';
 import { ToastContainer } from 'react-toastify';
-
+import Portfolio from './pages/Portfolio';
+import Home from './pages/Home';
+import Playground from './pages/Playground';
+import Analysis from './pages/Analysis';
+import NotFound from './pages/NotFound';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -28,6 +28,14 @@ const BasePage = () => {
       path: "/analysis",
       element: <Analysis />,
     },
+    {
+      path: "/portfolio",
+      element: <Portfolio />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    }
   ]);
 
   const current_version = "1.0.9";

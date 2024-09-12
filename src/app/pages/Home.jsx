@@ -63,6 +63,7 @@ export default class Home extends Component {
                     </div> */}
                     <div className={"homepage-nav"} >
                         <Link to="/playground" className={"homepage-navButton"}>Playground</Link>
+                        <Link to="/portfolio" className={"homepage-navButton"}>Portfolio</Link>
                         <Link to="/analysis" className={"homepage-navButton"}>Analysis</Link>
                         {/* <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
