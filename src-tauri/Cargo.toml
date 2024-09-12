@@ -36,12 +36,12 @@ tauri-build = { version = "2.0.0-rc", features = [] }
 [dependencies]
 tauri = { version = "2.0.0-rc", features = ["macos-private-api"] }
 tauri-plugin-shell = "2.0.0-rc"
+tauri-plugin-decorum = "1.0.0"
+window-vibrancy = "0.5.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
-tauri-plugin-decorum = "1.0.0"
-window-vibrancy = "0.5.0"
 whoami = "1.5.1"
 dotenv = "0.15.0"
 ollama-rs = "0.2.0"
