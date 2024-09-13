@@ -60,7 +60,11 @@ export default class Analysis extends Component {
     predict(symbol) {
         this.predictions.setItem("AAPL", 180)
     }
-
+    /**
+     * 
+     * @param {Boolean} skip_cached - should ignore the cached data if any
+     * @returns {Promise<void>}
+     */
     async fetch_all_data(skip_cached = true) {
         const all_symbols = await get_all_symbols();
         const random_num_hash = `${Math.random()}_${Date.now()}`;
@@ -143,6 +147,7 @@ export default class Analysis extends Component {
             const target_percent_difference = percentage_change(price_target, current_price)
             // console.log(pe_ratio)
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
+            if(isNaN(market_cap)) continue;
             if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
             const final_data = {
                 symbol: key, market_cap, current_price, price_target, percent_change, net_change,
