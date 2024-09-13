@@ -50,17 +50,22 @@ const BigStockWidget = (props) => {
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
-    const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2]: ""
-
-    console.log(technicals.OneYrTarget.value)
-    const unformatted_target = unformat_number(technicals.OneYrTarget.value)
-    const unformatted_price = unformat_number(price);
-    const price_target_change = percentage_change(unformatted_target, unformatted_price)
-
-    let dividend_amount = unformat_number(technicals.AnnualizedDividend.value);
-    if(dividend_amount === 0) {
-        if(technicals.SpecialDividendAmount && technicals.SpecialDividendAmount.value !== "N/A") {
-            dividend_amount = unformat_number(technicals.SpecialDividendAmount.value) * 4;
+    const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2] : ""
+    
+    let unformatted_target = 0
+    let unformatted_price = 0
+    let price_target_change = 0
+    let dividend_amount = 0
+    // technicals may be null on first render
+    if (technicals) {
+        unformatted_target = unformat_number(technicals.OneYrTarget.value)
+        unformatted_price = unformat_number(price);
+        price_target_change = percentage_change(unformatted_target, unformatted_price)
+        dividend_amount = unformat_number(technicals.AnnualizedDividend.value);
+        if (dividend_amount === 0) {
+            if (technicals.SpecialDividendAmount && technicals.SpecialDividendAmount.value !== "N/A") {
+                dividend_amount = unformat_number(technicals.SpecialDividendAmount.value) * 4;
+            }
         }
     }
     const dividend_yield = dividend_amount / unformatted_price * 100;
@@ -96,7 +101,7 @@ const BigStockWidget = (props) => {
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`(EPS/TTP):`}</div>
-                        <div className={"info-value"}>{`${technicals.EarningsPerShare.value} (${format_percentage(unformat_number(technicals.EarningsPerShare.value)/unformatted_price*100)})`}</div>
+                        <div className={"info-value"}>{`${technicals.EarningsPerShare.value} (${format_percentage(unformat_number(technicals.EarningsPerShare.value) / unformatted_price * 100)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
