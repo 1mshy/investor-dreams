@@ -58,7 +58,6 @@ export async function get_all_nasdaq_info() {
     if (!data) {
         const raw_json_data = await invoke('req_nasdaq_info')
         const json_data = JSON.parse(raw_json_data);
-        console.log(json_data);
         const all_data = json_data.data.rows; // array of objects
         let new_data = {};
         all_data.forEach((stock) => {
