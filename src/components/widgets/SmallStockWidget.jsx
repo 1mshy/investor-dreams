@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import PercentageFormat from "../PercentageFormat";

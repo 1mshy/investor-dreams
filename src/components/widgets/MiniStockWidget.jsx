@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "../PercentageFormat";

@@ -1,5 +1,3 @@
-"use client";
-
 import { Component } from 'react';
 import MediumStockWidget from './MediumStockWidget';
 import MiniStockWidget from "./MiniStockWidget";
