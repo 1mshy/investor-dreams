@@ -49,7 +49,7 @@ export default class Home extends Component {
         console.log(bottom_3_change)
 
 
-        this.setState({ top_favs, top_3_changes: top3, worst_3_changes: bottom3 });
+        this.setState({ top_favs, top_3_changes: top_3_change, worst_3_changes: bottom_3_change });
     }
 
     render() {
@@ -94,14 +94,14 @@ export default class Home extends Component {
                     <div className={"homepage-columns"}>
                         <h3>Best Performing</h3>
                         <div className={"top3-list"}>
-                            {top_3_changes.map((ticker_data) => {
-                                const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
+                            {top_3_changes.map((ticker_symbol) => {
+                                // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return <StockWidget
                                     size={"small"}
                                     symbol={ticker_symbol}
-                                    name={company}
-                                    price={current_price}
-                                    percent_change={percent_change}
+                                    // name={company}
+                                    // price={current_price}
+                                    // percent_change={percent_change}
                                     key={ticker_symbol}
                                 />
                             })}
@@ -110,14 +110,14 @@ export default class Home extends Component {
                     <div className={"homepage-columns"}>
                         <h3>Worst performing</h3>
                         <div className={"bottom3-list"}>
-                            {worst_3_changes.map((ticker_data) => {
-                                const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
+                            {worst_3_changes.map((ticker_symbol) => {
+                                // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return <StockWidget
                                     size={"small"}
                                     symbol={ticker_symbol}
-                                    name={company}
-                                    price={current_price}
-                                    percent_change={percent_change}
+                                    // name={company}
+                                    // price={current_price}
+                                    // percent_change={percent_change}
                                     key={ticker_symbol}
                                 />
                             })}

@@ -1,3 +1,6 @@
+
+![Opening](static/investor_dreams_opening.mp4)
+
 # Investors Dream
 This project is made to show the daily changes of us based stocks that are part of the s&p 500. 
 I have wanted to visualize the changes to the stocks that are part of the Standard & Poor’s 500 
