@@ -36,7 +36,9 @@ const BigStockWidget = (props) => {
             set_ticker_info(info);
         });
     }, []);
-
+    /**
+     * @desc Generates a current summary using the news articles
+     */
     const generate_summary = async () => {
         const bodies = await get_all_news_bodies(news, symbol)
         const prompt = `From the following information, find the most relevant details on the publicly traded company ${symbol}:\n${bodies}`
@@ -51,7 +53,7 @@ const BigStockWidget = (props) => {
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
 
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2] : ""
-    
+
     let unformatted_target = 0
     let unformatted_price = 0
     let price_target_change = 0

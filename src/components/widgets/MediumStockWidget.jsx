@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices } from "@/app/funcs/historical_pricing";

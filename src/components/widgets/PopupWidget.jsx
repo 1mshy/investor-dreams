@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { Backdrop, Dialog } from '@mui/material';
 import { Transition } from '../../app/funcs/themes';

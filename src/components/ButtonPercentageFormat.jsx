@@ -1,8 +1,5 @@
-"use client"
-
-import { useEffect, useState } from 'react';
-import "../app/css/Formatting.css"
 import { Button } from '@mui/material';
+import "../app/css/Formatting.css";
 import PercentageFormat from './PercentageFormat';
 
 /**
