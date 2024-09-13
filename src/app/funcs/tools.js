@@ -41,8 +41,8 @@ export function format_number(number) {
  * @returns {Number}
  */
 export function unformat_number(number) {
-    if (!number) return 0;
-    return Number(`${number}`.replace("$", "").replace(",", "").replace("'", "").replace("%", ""));
+    if (!number) return NaN;
+    return Number(`${number}`.replaceAll("$", "").replaceAll(",", "").replaceAll("'", "").replaceAll("%", ""));
 }
 /**
  * 

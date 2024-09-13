@@ -1,5 +1,5 @@
 
-![Opening](static/investor_dreams_opening.mp4)
+static/investor_dreams_opening.mp4
 
 # Investors Dream
 This project is made to show the daily changes of us based stocks that are part of the s&p 500. 
