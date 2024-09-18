@@ -31,7 +31,7 @@ const WAIT_TIME = 61_000; // milliseconds
  * @returns {String}
  */
 export function clean_ticker(ticker) {
-    if(!ticker) return "";
+    if (!ticker) return "";
     return `${ticker}`.replace("/", ".");
 }
 
@@ -194,13 +194,15 @@ export async function nasdaq_sorted_by(sort_method = "marketCap", ticker_list = 
     const tickers_with_market_cap = ticker_list.map(ticker => {
         let value = all_tickers[ticker][sort_method];
         if (!value) { value = 0 }
-        if (!isNaN(value)) { unformat_number(value) }
+        if (!isNaN(value)) {
+            value = unformat_number(value)
+        }
         return {
             ticker: ticker,
-            sort_method: unformat_number(all_tickers[ticker][sort_method])
+            sorting_variable: value
         }
     });
-    return tickers_with_market_cap.sort((a, b) => b.sort_method - a.sort_method).map(item => item.ticker);
+    return tickers_with_market_cap.sort((a, b) => b.sorting_variable - a.sorting_variable).map(item => item.ticker);
 }
 
 /**
