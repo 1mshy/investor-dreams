@@ -81,9 +81,9 @@ export function clear_cache() {
     NASDAQ_NEWS.clear();
     NASDAQ_TECHNICALS.clear();
     OLLAMA_GENERATION.clear();
-    // STOCK_CACHE.clear();
-    // NASDAQ_NEWS.clear();
-    // NASDAQ_TECHNICALS.clear();
+    STOCK_CACHE.clear();
+    NASDAQ_NEWS.clear();
+    NASDAQ_TECHNICALS.clear();
 }
 
 /**
