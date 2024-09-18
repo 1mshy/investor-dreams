@@ -31,7 +31,7 @@ const WAIT_TIME = 61_000; // milliseconds
  * @returns {String}
  */
 export function clean_ticker(ticker) {
-    if (!ticker) return "";
+    if(!ticker) return "";
     return `${ticker}`.replace("/", ".");
 }
 
@@ -187,19 +187,18 @@ export async function get_market_cap(ticker_symbol) {
  * @returns {Promise<[String]>}
  */
 export async function nasdaq_sorted_by(sort_method = "marketCap", ticker_list = []) {
+    // sorting methods that are numbers
+    const numbered_sorting = ["lastsale", "netchange", "pctchange", "marketCap", "ipoyear", "volume"];
     const all_tickers = await get_all_nasdaq_info();
     if (ticker_list.length === 0) {
         ticker_list = Object.keys(all_tickers);
     }
     const tickers_with_market_cap = ticker_list.map(ticker => {
-        let value = all_tickers[ticker][sort_method];
-        if (!value) { value = 0 }
-        if (!isNaN(value)) {
-            value = unformat_number(value)
-        }
+        const raw_value = all_tickers[ticker][sort_method];
+        const formatted_value = numbered_sorting.includes(sort_method) ? unformat_number(raw_value) : raw_value;
         return {
             ticker: ticker,
-            sorting_variable: value
+            sorting_variable: formatted_value,
         }
     });
     return tickers_with_market_cap.sort((a, b) => b.sorting_variable - a.sorting_variable).map(item => item.ticker);
