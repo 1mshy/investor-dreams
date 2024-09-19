@@ -31,7 +31,7 @@ const MediumStockWidget = (props) => {
     const month_prices = get_month_prices(historical_prices);
     return (
         <>
-            <SoftPaper className={"container"} style={{ width: "40rem" }} onClick={() => {
+            <SoftPaper className={"container"} style={{ width: "40rem", height: "max-content" }} onClick={() => {
                 if(!month_prices) return;
                 onClick();
             }}>

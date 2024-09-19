@@ -109,7 +109,6 @@ export default class Playground extends Component {
                             tickers_in_sector.push(ticker);
                         }
                     };
-
                     this.set_tickers(tickers_in_sector, () => this.set_sorting(this.state.sort_method)).then(_ => { });
                 });
             });
@@ -195,12 +194,11 @@ export default class Playground extends Component {
                 <div className={"playground"} >
                     <div className={"generic-header"} >
                         <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
-                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} data-tauri-drag-region>
-                                <MenuButton component={Link} to="/home" >
-                                    Home
-                                </MenuButton>
+                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} style={{alignItems: "center"}} data-tauri-drag-region>
+                               
                                 <SectorSelect set_sector={this.set_sector} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
+                                <Link to="/home" className={"homepage-navButton"} style={{marginLeft: "auto", order: 2, height: "auto"}}>Home</Link>
                                 {/* <TextField id='searchBar' label="Stock" variant='outlined' color='primary' /> */}
                             </Grid2>
                         </SoftPaper>

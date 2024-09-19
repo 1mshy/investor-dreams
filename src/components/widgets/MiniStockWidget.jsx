@@ -14,7 +14,7 @@ import PercentageFormat from "../PercentageFormat";
 const MiniStockWidget = ({ symbol, name, price, percent_change, onClick }) => {
     return (
         <>
-            <SoftPaper className={"container"} onClick={onClick}>
+            <SoftPaper className={"container"} style={{ height: "max-content" }} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
                         <div className={"ticker_symbol"}>{symbol}</div>

@@ -4,3 +4,9 @@
     justify-content: center;
     margin-top: 20px;
 }
+
+.analysis-whole {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}

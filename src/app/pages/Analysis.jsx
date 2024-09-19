@@ -94,7 +94,7 @@ export default class Analysis extends Component {
             chunk.push(all_symbols[i++]);
         }
         eval_chunks();
-        console.log(JSON.stringify(all_symbols))
+        // console.log(JSON.stringify(all_symbols))
         // console.log(symbol_chunks)
 
         for (let chunk of symbol_chunks) {
@@ -147,7 +147,7 @@ export default class Analysis extends Component {
             const target_percent_difference = percentage_change(price_target, current_price)
             // console.log(pe_ratio)
             const market_cap = unformat_number(summaryData["MarketCap"]["value"])
-            if(isNaN(market_cap)) continue;
+            if (isNaN(market_cap)) continue;
             if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
             const final_data = {
                 symbol: key, market_cap, current_price, price_target, percent_change, net_change,
@@ -168,25 +168,23 @@ export default class Analysis extends Component {
             show_searching_options, searching_options } = this.state;
 
         return <ThemeProvider theme={theme}>
-            <div className={"playground"}>
-                <div className={"generic-header"} data-tauri-drag-region>
-                    <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
-                        <Grid2 data-tauri-drag-region container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1}>
-                            <MenuButton component={Link} to="/home" >
-                                Home
-                            </MenuButton>
-                            {/* <TextField id='searchBar' label="Stock" variant='outlined' color='primary' /> */}
-                        </Grid2>
-                    </SoftPaper>
+            <div className={"analysis-whole"}>
+                <div className={"homepage-header"} data-tauri-drag-region>
+                    <div className={"homepage-nav"} data-tauri-drag-region>
+                        <Link to="/home" className={"homepage-navButton"}>Home</Link>
+                    </div>
                 </div>
                 <div className="">
-                    <h1>Predictions</h1>
                     <div>
-                        {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}% (${searched_symbols.size}/${all_symbols.length})`}
+                        <h1>Predictions</h1>
+                        <div>
+                            {`Searched symbols: ${(searched_symbols.size / all_symbols.length * 100).toFixed(2)}% (${searched_symbols.size}/${all_symbols.length})`}
+                        </div>
+                        <div>
+                            {`Just got info on: ${search_value}`}
+                        </div>
                     </div>
-                    <div>
-                        {`Just got info on: ${search_value}`}
-                    </div>
+
                     <Stack spacing={2} direction={"row"}>
                         {/* <Autocomplete
                             disablePortal
