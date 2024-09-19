@@ -178,7 +178,6 @@ export async function get_market_cap(ticker_symbol) {
     const all_tickers = await get_all_nasdaq_info();
     const ticker_info = all_tickers[ticker_symbol];
     if (!ticker_info) return 0;
-    console.log(ticker_info)
     return unformat_number(ticker_info["marketCap"]);
 }
 /**
@@ -360,7 +359,6 @@ export async function get_ticker_technicals(ticker) {
         return cached_technicals;
     const url = `https://api.nasdaq.com/api/quote/${ticker}/summary?assetclass=stocks`;
     const technical_data = await invoke_with_timeout("get_request_api", { url: url });
-    console.log(technical_data)
     const parsed_technicals = JSON.parse(technical_data);
     set_cache(local_storage_key, parsed_technicals, 60, NASDAQ_TECHNICALS);
     return parsed_technicals;
@@ -403,9 +401,9 @@ export const OLLAMA_GENERATION = localforage.createInstance({
  * @returns {Promise<String>}
  */
 export async function generate_ollama_message(prompt) {
-    OLLAMA_GENERATION.keys().then(keys => {
-        console.log(keys)
-    })
+    // OLLAMA_GENERATION.keys().then(keys => {
+    //     console.log(keys)
+    // })
     const cached = await get_ollama_cached_generation(prompt);
     if (cached)
         return cached

@@ -17,8 +17,8 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
     const month_prices = get_month_prices(historical_prices)
     return (
         <>
-            <SoftPaper className={"container"} onClick={() => {
-                if (!historical_prices || !name ) return;
+            <SoftPaper className={"container"} style={{ height: "max-content" }} onClick={() => {
+                if (!historical_prices || !name) return;
                 onClick();
             }}>
                 <div className={"widget-header"}>

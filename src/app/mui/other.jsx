@@ -33,7 +33,6 @@ export const CurrencyTextField = (props) => {
 
     const handle_value_change = (event) => {
         let input_value = parseFloat(event.target.value) || '';
-        console.log(input_value)
         if (input_value) {
             let new_suffix_index = suffix_index;
 
@@ -41,12 +40,10 @@ export const CurrencyTextField = (props) => {
                 input_value /= 1000;
                 new_suffix_index += 1;
             }
-            console.log(input_value)
             set_value(input_value);
             set_suffix_index(new_suffix_index);
 
             const factored_value = input_value * suffixes[new_suffix_index].factor;
-            console.log(factored_value)
             // on_change(factored_value);
         } else {
             set_value('');
@@ -62,8 +59,6 @@ export const CurrencyTextField = (props) => {
     };
 
     useEffect(() => {
-        console.log(value)
-        console.log(suffix_index)
         if (value >= 1000 && suffix_index < 2) {
             let input_value = value;
             let new_suffix_index = suffix_index;
@@ -72,11 +67,9 @@ export const CurrencyTextField = (props) => {
                 input_value /= 1000;
                 new_suffix_index += 1;
             }
-            console.log(input_value)
             set_value(input_value);
             set_suffix_index(new_suffix_index);
         }
-        console.log(value)
     }, []);
 
     useEffect(() => {
