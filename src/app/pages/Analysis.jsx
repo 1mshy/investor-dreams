@@ -4,16 +4,14 @@ import { get_state } from "@/app/funcs/states";
 import { clear_all_technical_data, get_all_symbols, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS, percentage_change } from "@/app/funcs/stock_api";
 import { delay, unformat_number } from "@/app/funcs/tools";
 import { CurrencyTextField } from "@/app/mui/other";
-import { BackGroundPaper, SoftPaper, theme } from "@/app/mui/theme";
-import MenuButton from "@/components/MenuButton";
+import { BackGroundPaper, theme } from "@/app/mui/theme";
+import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
 import StockWidget from "@/components/widgets/StockWidget";
 import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import localforage from "localforage";
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
 
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
@@ -262,7 +260,6 @@ export default class Analysis extends Component {
                                 <MenuItem value={"pe_ratio"}>PE ratio</MenuItem>
                                 <MenuItem value={"forward_pe_ratio"}>FPE ratio</MenuItem>
                                 <MenuItem value={"divided_yield"}>Divided Yield</MenuItem>
-
                                 <MenuItem value={"percent_change"}>Daily percent change</MenuItem>
                                 <MenuItem value={"net_change"}>Daily net change</MenuItem>
                             </Select>
