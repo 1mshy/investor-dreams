@@ -140,8 +140,6 @@ export default class Playground extends Component {
     async set_sorting(sort_method) {
         const { ticker_symbols } = this.state;
         const all_data = await get_all_nasdaq_info();
-        console.log(all_data)
-        console.log(sort_method)
         this.setState({ sort_method })
         store("sort_method", sort_method);
         switch (sort_method) {
