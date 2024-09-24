@@ -25,6 +25,7 @@ import EasySelection from '@/app/ui_components/misc/EasySelection';
 import { retrieve, store } from '@/app/funcs/cache';
 import { LoadingTextField } from '../mui/other';
 import StockWidget from '@/components/widgets/StockWidget';
+import { unformat_number } from '../funcs/tools';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -139,6 +140,7 @@ export default class Playground extends Component {
     async set_sorting(sort_method) {
         const { ticker_symbols } = this.state;
         const all_data = await get_all_nasdaq_info();
+        console.log(all_data)
         console.log(sort_method)
         this.setState({ sort_method })
         store("sort_method", sort_method);
@@ -158,7 +160,7 @@ export default class Playground extends Component {
             }
             case "Volitility": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = all_data[ticker_symbol].pctchange;
+                    const change = unformat_number(all_data[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -170,7 +172,7 @@ export default class Playground extends Component {
             }
             case "Bullish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = all_data[ticker_symbol].pctchange;
+                    const change = unformat_number(all_data[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -182,7 +184,7 @@ export default class Playground extends Component {
             }
             case "Bearish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = all_data[ticker_symbol].pctchange;
+                    const change = unformat_number(all_data[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
