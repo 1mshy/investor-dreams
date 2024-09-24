@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, InputAdornment, Select, MenuItem, Badge } from '@mui/material';
+import { TextField, InputAdornment, Select, MenuItem, Badge, CircularProgress } from '@mui/material';
 
 import { is_market_open } from "../funcs/tools";
 
@@ -24,6 +24,31 @@ const suffixes = [
     { label: 'B', factor: 1_000_000_000 },
     { label: 'T', factor: 1_000_000_000_000 },
 ];
+
+
+export const LoadingTextField = (props) => {
+    const [loading, setLoading] = useState(Boolean(props.loading)); // State for loading
+
+    useEffect(() => {
+        setLoading(Boolean(props.loading));
+    }, [Boolean(props.loading)]);
+
+    return (
+        <TextField
+            {...props}
+            loading={loading}
+            label="Loading Input"
+            variant="outlined"
+            InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                        {loading && <CircularProgress size={20} disableShrink />}
+                    </InputAdornment>
+                ),
+            }}
+        />
+    );
+}
 
 
 export const CurrencyTextField = (props) => {

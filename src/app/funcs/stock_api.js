@@ -32,7 +32,7 @@ const WAIT_TIME = 61_000; // milliseconds
  */
 export function clean_ticker(ticker) {
     if (!ticker) return "";
-    return `${ticker}`.replace("/", ".");
+    return `${ticker}`.replace("/", ".") //.replace("^", ".");
 }
 
 /**
@@ -67,6 +67,11 @@ export async function request_ticker_data(ticker_symbol) {
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
     const response = await invoke("get_request_api", { url: url });
     const data = JSON.parse(response);
+    if(data && data.code === 404) {
+        console.log("invalid ticker symbol submitted: " + ticker_symbol)
+        return await request_ticker_data("AAPL");
+    }
+
     if (is_error(data)) {
         stop_requesting = true;
         return await request_ticker_data(ticker_symbol);
@@ -167,7 +172,7 @@ export async function get_all_symbols() {
     // deleting custom keys
     delete nasdaq_info["last_updated"];
     delete nasdaq_info["expiration"];
-    return Object.keys(nasdaq_info).map(ticker => ticker.replace("/", "."))
+    return Object.keys(nasdaq_info).map(ticker => clean_ticker(ticker));
 }
 /**
  * 
