@@ -141,7 +141,7 @@ export async function get_ticker_info(ticker) {
  */
 export async function get_all_sectors() {
     let sectors = [];
-    const data = await get_all_static_ticker_info();
+    const data = await get_all_nasdaq_info();
     Object.keys(data).forEach(key => {
         if (!sectors.includes(data[key]["sector"])) {
             sectors.push(data[key]["sector"]);
