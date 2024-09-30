@@ -9,7 +9,7 @@ use crate::sensitive_data::{
 };
 use crate::ollama::ollama_generate;
 use crate::tools::save_json_file;
-use tauri::Manager;
+use tauri::{Manager, Url};
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod requesting;
 mod sensitive_constants;
@@ -30,6 +30,11 @@ pub fn run() {
     .manage(ollama_instance) // Manage the Ollama instance
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
+            // second window
+            let webview_url = tauri::WebviewUrl::External(Url::parse("https://google.com").unwrap());
+            tauri::WebviewWindowBuilder::new(app, "second", webview_url)
+            .title("Second")
+            .build()?;
 
             #[cfg(target_os = "macos")]
             apply_vibrancy(
