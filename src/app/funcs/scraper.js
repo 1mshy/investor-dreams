@@ -128,7 +128,7 @@ export async function get_all_news_bodies(news_list, symbol) {
 }
 
 export async function get_nasdaq_news_body(news, symbol) {
-    const url = `https://www.nasdaq.com${news.url}`;
+    const url = get_whole_nasdaq_news_url(news.url);
     const key = `${symbol}_${news.url}`;
     const cached_item = await NASDAQ_SCRAPED_STORAGE.getItem(key);
     if (cached_item) return cached_item;
@@ -159,3 +159,6 @@ export async function get_nasdaq_news_body(news, symbol) {
     return paragraph_content;
 }
 
+export async function get_whole_nasdaq_news_url(url) {
+    return `https://www.nasdaq.com${url}`;
+}

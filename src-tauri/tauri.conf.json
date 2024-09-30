@@ -42,7 +42,9 @@
   },
   "plugins": {
     "shell": {
-      "allowedCommands": []
+      "allowedCommands": [
+        "open"
+      ]
     }
   }
 }

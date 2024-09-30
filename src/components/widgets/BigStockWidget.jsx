@@ -1,5 +1,5 @@
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
-import { get_all_news_bodies } from "@/app/funcs/scraper";
+import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
@@ -182,6 +182,20 @@ const BigStockWidget = (props) => {
                     {"Summary"}
                 </div>
                 <div className={""}>{ticker_info.summary}</div>
+                <div className={"info-title"} >
+                    {"News Headlines"}
+                </div>
+                <div>
+                    {news.map((article, index) => {
+                        return <div key={index} style={{ cursor: "pointer" }} onClick={() => {
+                            open(get_whole_nasdaq_news_url(article.url));
+                        }}>
+                                {article.title}
+                        </div>
+                    })}
+                </div>
+                <a href="https://example.com" target="_blank">Example link</a>
+
                 <div className={"info-title"} >
                     {"LLM generated summary"}
                 </div>
