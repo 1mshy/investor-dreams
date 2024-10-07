@@ -31,10 +31,10 @@ pub fn run() {
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
             // second window
-            let webview_url = tauri::WebviewUrl::External(Url::parse("https://google.com").unwrap());
-            tauri::WebviewWindowBuilder::new(app, "second", webview_url)
-            .title("Second")
-            .build()?;
+            // let webview_url = tauri::WebviewUrl::External(Url::parse("https://google.com").unwrap());
+            // tauri::WebviewWindowBuilder::new(app, "second", webview_url)
+            // .title("Second")
+            // .build()?;
 
             #[cfg(target_os = "macos")]
             apply_vibrancy(

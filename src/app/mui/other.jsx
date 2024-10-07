@@ -37,14 +37,17 @@ export const LoadingTextField = (props) => {
         <TextField
             {...props}
             loading={loading}
-            label="Loading Input"
-            variant="outlined"
+            autoComplete="off" // Disables autocomplete
+            inputProps={{
+              autoCorrect: 'off', // Disables autocorrect
+            }}
             InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">
                         {loading && <CircularProgress size={20} disableShrink />}
                     </InputAdornment>
                 ),
+                style: { textTransform: 'capitalize' }, // Auto-capitalization
             }}
         />
     );
