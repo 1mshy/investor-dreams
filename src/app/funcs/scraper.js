@@ -159,6 +159,6 @@ export async function get_nasdaq_news_body(news, symbol) {
     return paragraph_content;
 }
 
-export async function get_whole_nasdaq_news_url(url) {
+export function get_whole_nasdaq_news_url(url) {
     return `https://www.nasdaq.com${url}`;
 }

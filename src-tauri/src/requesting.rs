@@ -10,14 +10,8 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let response = client
         .get(url)
         // Set headers to mimic a browser request
-        .header(
-            "User-Agent",
-            "PostmanRuntime/7.39.0"
-        )
-        .header(
-            "Accept",
-            "*/*",
-        )
+        .header("User-Agent", "PostmanRuntime/7.39.0")
+        .header("Accept", "*/*")
         .header("Connection", "keep-alive")
         .send()
         .await?;
@@ -34,7 +28,6 @@ pub async fn get_request_api(url: String) -> Result<String, String> {
         Err(e) => Err(format!("Failed to send GET request: {}", e)),
     }
 }
-
 
 #[command]
 pub async fn req_nasdaq_info() -> String {
@@ -55,8 +48,6 @@ pub async fn get_all_static_ticker_info() -> String {
     };
 }
 
-
-
 #[command]
 pub async fn request_deep() -> String {
     let url = "https://api.nasdaq.com/api/quote/AAPL/chart?assetclass=stocks&fromdate=2000-08-16&todate=2024-08-16";
@@ -65,11 +56,11 @@ pub async fn request_deep() -> String {
         Err(e) => format!("Error: {}", e),
     };
 }
-    /*
-    Good to know apis:
-    https://api.nasdaq.com/api/quote/AAPL/summary?assetclass=stocks
-    news letters: 
-    https://www.nasdaq.com/api/news/topic/articlebysymbol?q=AAPL|STOCKS&offset=0&limit=10&fallback=true
-    company profile: https://api.nasdaq.com/api/company/AAPL/company-profile
-    All companies today on the nasdaq: https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true
-     */
+/*
+Good to know apis:
+https://api.nasdaq.com/api/quote/AAPL/summary?assetclass=stocks
+news letters:
+https://www.nasdaq.com/api/news/topic/articlebysymbol?q=AAPL|STOCKS&offset=0&limit=10&fallback=true
+company profile: https://api.nasdaq.com/api/company/AAPL/company-profile
+All companies today on the nasdaq: https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true
+ */

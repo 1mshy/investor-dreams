@@ -187,8 +187,9 @@ const BigStockWidget = (props) => {
                 </div>
                 <div>
                     {news.map((article, index) => {
-                        return <div key={index} style={{ cursor: "pointer" }} onClick={() => {
-                            open(get_whole_nasdaq_news_url(article.url));
+                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                            console.log(get_whole_nasdaq_news_url(article.url))
+                            await open(get_whole_nasdaq_news_url(article.url));
                         }}>
                                 {article.title}
                         </div>
