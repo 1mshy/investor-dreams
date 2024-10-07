@@ -187,7 +187,7 @@ export default class Playground extends Component {
                                 <SectorSelect set_sector={this.set_sector} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
-                                <LoadingTextField id='searchBar' label="Stock" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
+                                <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
                                 {ticker_search !== "" && <Button onClick={() => this.searching_ticker("")}>Clear</Button>}
                             </Grid2>
                         </SoftPaper>
