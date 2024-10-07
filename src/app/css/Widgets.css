@@ -132,3 +132,11 @@
     font-weight: bold;
     width: max-content;
 }
+
+.news-row {
+
+}
+.news-row:hover {
+    background-color: #94a3b8;
+    cursor: pointer;
+}

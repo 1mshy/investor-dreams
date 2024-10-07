@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import styled from 'styled-components';
+import { styled } from '@mui/system';
 
 /**
  * Changes the theme for each MUI component in the whole project from here
