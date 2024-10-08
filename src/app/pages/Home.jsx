@@ -52,7 +52,7 @@ export default class Home extends Component {
                         className={"homepage-title"}
                         style={{ display: "inline-flex" }}
                     >
-                        To the moon {username} 🚀🚀
+                        Welcome, {username}
                     </h1>
                     {/* <div style={{ display: "inline-flex" }}>
                         <StockSearch label="" variant="standard" fullWidth />
