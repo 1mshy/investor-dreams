@@ -24,8 +24,8 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
                 <div className={"widget-header"}>
                     <div style={{ width: "100%" }}>
                         <div className={"ticker_symbol"}>{symbol}</div>
-                        <div style={{ float: "right" }}>
-                            <div className={"price-change"}>
+                        <div style={{ float: "right", background: "inherit", zIndex: 100000000 }}>
+                            <div className={"price-change"} style={{  background: "inherit", zIndex: 100000000 }}>
                                 {percent_change && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
                                 {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                             </div>

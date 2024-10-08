@@ -78,6 +78,8 @@
 .price-change {
     font-size: 1.2rem;
     overflow: hidden;
+    background-color: inherit;
+    z-index: 10;
 }
 
 .date {

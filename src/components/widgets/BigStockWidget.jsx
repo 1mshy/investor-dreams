@@ -160,8 +160,8 @@ const BigStockWidget = (props) => {
                             <div className={"info-title"}>Market</div>
                             <div className={"info-value"}>{ticker_info.market}</div>
                             <div className={"info-title"}>Website</div>
-                            <div className={"info-value"} style={{ cursor: "pointer" }} onClick={() => {
-                                open(ticker_info.website);
+                            <div className={"info-value"} style={{ cursor: "pointer" }} onClick={async () => {
+                                await open(ticker_info.website);
                             }}>
                                 {ticker_info.website}
                             </div>
@@ -188,7 +188,6 @@ const BigStockWidget = (props) => {
                 <div>
                     {news.map((article, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
-                            console.log(get_whole_nasdaq_news_url(article.url))
                             await open(get_whole_nasdaq_news_url(article.url));
                         }}>
                                 {article.title}
