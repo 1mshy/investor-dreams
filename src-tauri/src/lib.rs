@@ -10,7 +10,7 @@ use crate::requesting::{
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
-use crate::tools::save_json_file;
+use crate::tools::{save_json_file, save_json_to_folder};
 use tauri::{Manager, Url};
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod ollama;
@@ -66,7 +66,8 @@ pub fn run() {
             request_deep,
             get_request_api,
             ollama_generate,
-            save_json_file
+            save_json_file,
+            save_json_to_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

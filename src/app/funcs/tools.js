@@ -114,3 +114,27 @@ export function upload_json(json_data, filename) {
 
     // link.click();
 }
+
+
+export async function upload_chunks(json_data, folder) {
+    let promises = [];
+    toast.warn("Writing file to downloads folder, please wait...");
+    for (let key of Object.keys(json_data)) {
+        const data = json_data[key];
+        const jsonContent = JSON.stringify(data);
+        const fileNameWithKey = `${key}.json`;
+
+        // Ensure that both filename and jsonContent are correctly passed
+        if (jsonContent && fileNameWithKey) {
+            promises.push(invoke("save_json_to_folder", { filename: fileNameWithKey, folder, jsonContent })
+                .catch((error) => {
+                    toast.error(`Error: ${error}`);
+                }));
+        } else {
+            toast.error("Invalid json content or filename.");
+        }
+    }
+    Promise.all(promises).then((results) => {
+        toast.success("Saved all data to downloads folder.");
+    });
+}

@@ -1,7 +1,7 @@
 import { Backdrop, Button, DialogContent } from "@mui/material";
 import { Component } from "react";
 import { Transition } from "@/app/funcs/themes";
-import { upload_json } from "@/app/funcs/tools";
+import { upload_chunks, upload_json } from "@/app/funcs/tools";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 
@@ -57,8 +57,8 @@ class TableDownloadPopup extends Component {
                                             json_table[key] = value;
                                         });
                                         // const filename = `${table._dbInfo.db.name}.json`;
-                                        const filename = `${table._config.name}.json`;
-                                        upload_json(json_table, filename);
+                                        const folder = `${table._config.name}`;
+                                        upload_chunks(json_table, folder);
                                     }}>
                                         {`${table._config.name}`}
                                     </Button>
