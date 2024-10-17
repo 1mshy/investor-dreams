@@ -185,7 +185,7 @@ const BigStockWidget = (props) => {
                 <div className={"info-title"} >
                     {"News Headlines"}
                 </div>
-                <div>
+                {news && <div>
                     {news.map((article, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(get_whole_nasdaq_news_url(article.url));
@@ -193,7 +193,7 @@ const BigStockWidget = (props) => {
                                 {article.title}
                         </div>
                     })}
-                </div>
+                </div>}
                 <a href="https://example.com" target="_blank">Example link</a>
 
                 <div className={"info-title"} >
