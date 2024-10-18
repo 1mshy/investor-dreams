@@ -36,6 +36,8 @@ const PopupWidget = (props) => {
                         maxWidth: "90%",
                         height: "100%",
                         maxHeight: "80%",
+                        zIndex: 1300, // Ensure Dialog has lower z-index than the tooltip
+
                     }
                 }}
             >

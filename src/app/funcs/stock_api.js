@@ -67,7 +67,7 @@ export async function request_ticker_data(ticker_symbol) {
     const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
     const response = await invoke("get_request_api", { url: url });
     const data = JSON.parse(response);
-    if(data && data.code === 404) {
+    if (data && data.code === 404) {
         console.log("invalid ticker symbol submitted: " + ticker_symbol)
         return await request_ticker_data("AAPL");
     }
@@ -106,6 +106,9 @@ export async function fetch_widget_data(ticker_symbol) {
     const change_month = monthly_change_from_data(ticker_data);
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
+    const historical_data = ticker_data["values"];
+    console.log("historical data", historical_data)
+
     return {
         symbol: ticker_symbol,
         name: company_name,
@@ -116,6 +119,7 @@ export async function fetch_widget_data(ticker_symbol) {
         historical_prices: historical_prices,
         news: news,
         technicals: technicals,
+        historical_data: historical_data,
         ...nasdaq_ticker_info,
     };
 }
@@ -199,7 +203,7 @@ export async function nasdaq_sorted_by(sort_method = "marketCap", ticker_list = 
     }
     const tickers_with_market_cap = ticker_list.map(ticker => {
         const raw_value = all_tickers[ticker][sort_method];
-        if(!raw_value) return null;
+        if (!raw_value) return null;
         let formatted_value;
         if (numbered_sorting.includes(sort_method)) {
             formatted_value = unformat_number(raw_value);

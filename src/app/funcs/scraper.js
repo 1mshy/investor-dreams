@@ -42,7 +42,7 @@ export async function get_sp_500_data() {
     const ten_minutes = 1000 * 60 * 10;
     const date_requested = data ? data["time_requested"] : false;
     if (!data || Date.now() - date_requested > ten_minutes) {
-        console.log("Requesting top 500 company data from rust backend")
+        console.log("Requesting top company data from rust backend")
         data = await request_top_companies();
         complex_store(local_storage_key, data);
     }

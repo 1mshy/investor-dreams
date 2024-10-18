@@ -25,7 +25,7 @@ import PercentageFormat from "../PercentageFormat";
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
 const MediumStockWidget = (props) => {
-    const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick } = props;
+    const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick, historical_data } = props;
 
     const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
     const month_prices = get_month_prices(historical_prices);
@@ -63,7 +63,7 @@ const MediumStockWidget = (props) => {
                 </div>
                 <div className={"content"}>
                     <div className={"price"}>${price}</div>
-                    <PriceGraph prices={month_prices} />
+                    <PriceGraph prices={month_prices} historical_data={historical_data}/>
                     <div className={"price-data"}>
                         <div className={"price-change"}>
                             {percent_change && <PercentageFormat percent_change={percent_change} />}
