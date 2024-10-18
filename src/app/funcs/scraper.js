@@ -2,36 +2,8 @@
 import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import localforage from 'localforage';
-import { complex_retrieve, complex_store, get_cache, set_cache } from './cache';
+import { get_cache, set_cache } from './cache';
 import { clean_ticker, get_company_summary } from './stock_api';
-
-/**
- * @description Get the S&P 500 list of companies with their ticker symbol, company name and portfolio percentage
- * @returns {Promise<Object<string, {number: number, company: string, portfolio_percent: string, current_price:number, change:number, percent_change:number}>}
- */
-async function request_top_companies() {
-    const text = await invoke('get_all_static_ticker_info');
-    const nasdaq_info = await get_all_nasdaq_info();
-    const $ = load(text);
-    const data = {};
-    $('table.table tbody tr').each((index, element) => {
-        const cells = $(element).find('td');
-        // TODO create a regex function to remove all stuff that can be around a number to cause it to be parsed null
-        if (cells.length >= 4) {
-            const number = index + 1;
-            const company = $(cells[1]).text().trim();
-            const ticker_symbol = $(cells[2]).text().trim();
-            const portfolio_percent = Number($(cells[3]).text().trim().replace("%", ""));
-            const current_price = Number($(cells[4]).text().trim().replace(",", ""));
-            const change = Number($(cells[5]).text().trim());
-            const percent_change = Number($(cells[6]).text().trim().replace(/%(|)|\(|\)/g, "")); //replaces '%', '(', ')'
-            if (!isNaN(ticker_symbol)) return;
-            data[ticker_symbol] = { number, ticker_symbol, company, portfolio_percent, current_price, change, percent_change, ...nasdaq_info[ticker_symbol] };
-        }
-    });
-    data["time_requested"] = Date.now();
-    return data;
-}
 
 /**
  * gets info on all known stocks using the nasdaq api
@@ -54,6 +26,11 @@ export async function get_all_nasdaq_info() {
     return data;
 }
 
+
+export async function ticker_to_name(ticker_symbol) {
+    return (await get_all_nasdaq_info())[ticker_symbol].name;
+}
+
 /**
  * fetch local json data
  * @param {String} url 
@@ -67,13 +44,6 @@ export async function fetch_json(url) {
         },
         mode: 'no-cors'
     }).then(res => res.json());
-}
-
-
-export async function ticker_to_name(ticker_symbol) {
-    const data = await get_company_summary();
-    if(!data["data"]) return "Unknown";
-    return data["data"]["CompanyName"]["value"];
 }
 
 
