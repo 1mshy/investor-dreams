@@ -25,7 +25,7 @@ import "@/app/css/Widgets.css";
  *      It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
-    const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals } = props;
+    const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals, historical_data } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
@@ -121,7 +121,7 @@ const BigStockWidget = (props) => {
 
                 </div>
                 }
-                <PriceGraph prices={graph_prices} size={"big"} />
+                <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data}/>
                 {historical_prices && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
