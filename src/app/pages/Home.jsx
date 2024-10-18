@@ -1,5 +1,4 @@
 import { has_favourites, top_favourite_changes } from "@/app/funcs/favourites";
-import { get_sp_500_data } from "@/app/funcs/scraper";
 import StockWidget from "@/components/widgets/StockWidget";
 import { Component } from "react";
 
@@ -88,7 +87,6 @@ export default class Home extends Component {
                             <div className={"homepage-favourties"}>
                                 {top_favs.map((ticker_symbol) => {
                                     // console.log(top_favs)
-                                    // get_sp_500_data().then((response) => { console.log(response) });
                                     return (
                                         <StockWidget
                                             symbol={ticker_symbol}

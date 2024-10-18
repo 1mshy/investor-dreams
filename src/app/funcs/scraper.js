@@ -32,22 +32,7 @@ async function request_top_companies() {
     data["time_requested"] = Date.now();
     return data;
 }
-/**
- * @desc exposed caching function for the requesting of the S&P 500 list
- *@returns {Promise<Object<string, {number: number, company: string, portfolio_percent: string, current_price:number, change:number, percent_change:number}>}
- */
-export async function get_sp_500_data() {
-    const local_storage_key = "s&p500_ticker_name_percent";
-    let data = await complex_retrieve(local_storage_key);
-    const ten_minutes = 1000 * 60 * 10;
-    const date_requested = data ? data["time_requested"] : false;
-    if (!data || Date.now() - date_requested > ten_minutes) {
-        console.log("Requesting top company data from rust backend")
-        data = await request_top_companies();
-        complex_store(local_storage_key, data);
-    }
-    return data;
-}
+
 /**
  * gets info on all known stocks using the nasdaq api
  * @returns {Promise<["symbol": "Symbol", "name": "Name","lastsale": "Last Sale","netchange": "Net Change","pctchange": "% Change","marketCap": "Market Cap","country": "Country","ipoyear": "IPO Year","volume": "Volume","sector": "Sector","industry": "Industry","url": "Url"]>}
@@ -69,11 +54,6 @@ export async function get_all_nasdaq_info() {
     return data;
 }
 
-export async function get_index_stocks() {
-    const index_data = await get_sp_500_data();
-    return Object.keys(index_data);
-}
-
 /**
  * fetch local json data
  * @param {String} url 
@@ -88,25 +68,12 @@ export async function fetch_json(url) {
         mode: 'no-cors'
     }).then(res => res.json());
 }
-/**
- * Returns the change from the last list of all the stocks
- * It is not always spot on.
- */
-export async function get_lazy_percent_change(ticker_symbol) {
-    const data = await get_sp_500_data();
-    return data[ticker_symbol].percent_change;
-}
+
 
 export async function ticker_to_name(ticker_symbol) {
     const data = await get_company_summary();
     if(!data["data"]) return "Unknown";
     return data["data"]["CompanyName"]["value"];
-}
-
-export async function get_portfolio_weight(ticker_symbol) {
-    const data = await get_sp_500_data();
-    if(!data[ticker_symbol]) return 0;
-    return data[ticker_symbol].portfolio_percent;
 }
 
 

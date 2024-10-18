@@ -155,14 +155,6 @@ export async function get_all_sectors() {
     return sectors.sort();
 }
 
-/**
- * finds the price of a company using the large dataset that is requested every few minutes. 
- * Note: This data is not completely up to date
- */
-export async function lazy_price_of_ticker(ticker_symbol) {
-    const all_data = await get_sp_500_data();
-    return all_data[ticker_symbol].current_price;
-}
 
 let current_api_index = 0;
 function get_next_api_key() {

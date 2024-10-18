@@ -1,31 +1,27 @@
-import { get_all_nasdaq_info, get_sp_500_data } from '@/app/funcs/scraper';
+import { get_all_nasdaq_info } from '@/app/funcs/scraper';
 import {
     clean_ticker,
-    fetch_widget_data,
     get_all_sectors,
-    get_all_static_ticker_info,
     get_all_symbols,
     get_market_cap,
     nasdaq_sorted_by
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
-import { Button, Stack, TextField, ThemeProvider } from '@mui/material';
+import SectorSelect from '@/app/ui_components/misc/SectorSelect';
+import { Button, Stack, ThemeProvider } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
-import MenuButton from '@/components/MenuButton';
-import { DynamicStockWidget } from '@/components/widgets/DynamicStockWidget';
-import SectorSelect from '@/app/ui_components/misc/SectorSelect';
 /**
  * css imports
  */
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import { Link } from 'react-router-dom';
-import EasySelection from '@/app/ui_components/misc/EasySelection';
 import { retrieve, store } from '@/app/funcs/cache';
-import { LoadingTextField } from '../mui/other';
+import EasySelection from '@/app/ui_components/misc/EasySelection';
 import StockWidget from '@/components/widgets/StockWidget';
+import { Link } from 'react-router-dom';
 import { unformat_number } from '../funcs/tools';
+import { LoadingTextField } from '../mui/other';
 
 export default class Playground extends Component {
     constructor(props) {
