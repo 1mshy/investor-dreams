@@ -2,9 +2,6 @@ use reqwest::Client;
 use std::error::Error;
 use tauri::command;
 
-static mut USERNAME: &str = "default";
-static mut PASSWORD: &str = "default";
-
 /**
  * This function sends a GET request to the provided URL and returns the response text.
  */
