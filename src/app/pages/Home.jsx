@@ -9,6 +9,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
 import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
 import LineChartWithCustomTooltip from "@/components/LineChartWithCustomTooltip";
+import { extractInfo } from "../funcs/reddit";
 
 export default class Home extends Component {
     constructor(props) {
@@ -22,6 +23,8 @@ export default class Home extends Component {
     }
 
     async componentDidMount() {
+        extractInfo();
+
         // Only access browser-specific APIs here
         console.log("getting username");
         const username = await invoke("get_username");
