@@ -104,7 +104,6 @@ export default class Playground extends Component {
             return;
         }
         const sectors = await get_all_sectors();
-        const {custom_sectors} = this.state;
         if (!sectors.includes(sector)) return;
         const all_data = await get_all_nasdaq_info();
         const top_500 = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
