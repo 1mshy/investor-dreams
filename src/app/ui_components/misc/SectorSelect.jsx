@@ -24,7 +24,7 @@ export default class SectorSelect extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sector: [],
+            sector: "",
             custom_sectors: [],
             generated_sectors: [],
         }
@@ -37,16 +37,24 @@ export default class SectorSelect extends React.Component {
         this.props.set_sector(sector)
     }
 
-    componentDidMount() {
-        get_all_sectors().then(sectors => {
-            const default_sector = "Top 12";
-            // sectors.unshift(default_sector);
-            this.setState({ generated_sectors: sectors, custom_sectors: this.props.custom_sectors, sector: default_sector })
-        })
+    async componentDidMount() {
+        const sectors = await get_all_sectors()
+        this.setState({ generated_sectors: sectors, custom_sectors: this.props.custom_sectors })
+    }
+    /**
+     * Updates the sector state if the default sector is set
+     * Need to wait for the parent component to set the default sector
+     * @returns {Promise<void>}
+     */
+    async componentDidUpdate() {
+        if (!this.state.sector && this.props.default_sector) {
+            this.setState({ sector: this.props.default_sector })
+        }
     }
 
     render() {
         const { sector, custom_sectors, generated_sectors } = this.state;
+        console.log(this.props.default_sector)
         return (
             <Box sx={{ minWidth: 120 }}>
                 <FormControl sx={{ m: 1, width: 300 }}>

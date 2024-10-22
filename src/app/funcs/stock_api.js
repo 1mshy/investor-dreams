@@ -107,7 +107,7 @@ export async function fetch_widget_data(ticker_symbol) {
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
     const historical_data = ticker_data["values"];
-    console.log("historical data", historical_data)
+    // console.log("historical data", historical_data)
 
     return {
         symbol: ticker_symbol,
@@ -183,16 +183,27 @@ export async function get_market_cap(ticker_symbol) {
 }
 /**
  * Get all nasdaq ticker sortd by one of the possible sorting methods
- * Sort method possible values: "symbol,name,lastsale,netchange,pctchange,marketCap,country,ipoyear,volume,sector,industry,url"
+ * @param {String} sort_method how to sort the tickers, Sort method possible values: "symbol,name,lastsale,netchange,pctchange,marketCap,country,ipoyear,volume,sector,industry,url"
+ * @param {[String]} ticker_list List of ticker symbols
  * @returns {Promise<[String]>}
  */
 export async function nasdaq_sorted_by(sort_method = "marketCap", ticker_list = []) {
-    // sorting methods that are numbers
-    const numbered_sorting = ["lastsale", "netchange", "pctchange", "marketCap", "ipoyear", "volume"];
     const all_tickers = await get_all_nasdaq_info();
     if (ticker_list.length === 0) {
-        ticker_list = Object.keys(all_tickers);
+        ticker_list = await get_all_symbols();
     }
+    return nasdaq_sorted_syncronous(sort_method, ticker_list, all_tickers);
+}
+/**
+ * This is the syncronous branch of nasdaq_sorted_by that does not require the data to be fetched
+ * @param {String} sort_method how to sort the tickers, Sort method possible values: "symbol,name,lastsale,netchange,pctchange,marketCap,country,ipoyear,volume,sector,industry,url"
+ * @param {[String]} ticker_list List of ticker symbols
+ * @param {{}} all_tickers all the ticker data from nasdaq api (get_all_nasdaq_info)
+ * @returns {[String]} list of ticker symbols sorted by the sort method
+ */
+export function nasdaq_sorted_syncronous(sort_method = "marketCap", ticker_list, all_tickers) {
+    // sorting methods that are numbers
+    const numbered_sorting = ["lastsale", "netchange", "pctchange", "marketCap", "ipoyear", "volume"];
     const tickers_with_market_cap = ticker_list.map(ticker => {
         const raw_value = all_tickers[ticker][sort_method];
         if (!raw_value) return null;
