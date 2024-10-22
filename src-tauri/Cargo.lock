@@ -1633,6 +1633,7 @@ dependencies = [
 name = "investor-dreams"
 version = "0.0.1"
 dependencies = [
+ "base64 0.22.1",
  "directories",
  "dotenv",
  "ollama-rs",
