@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "git update-index --assume-unchanged src-tauri/src/sensitive_constants.rs && vite",
     "build": "vite build",
     "preview": "vite preview",
     "tauri": "tauri",
