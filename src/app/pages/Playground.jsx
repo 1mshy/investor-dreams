@@ -50,6 +50,7 @@ export default class Playground extends Component {
                     function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_data).slice(0, 20), default: false }))()`
                 }
             },
+            current_sector: "",
             default_sector: ""
         };
         this.set_sector = this.set_sector.bind(this);
@@ -73,7 +74,7 @@ export default class Playground extends Component {
     async searching_ticker(ticker_search) {
         const SHOWN_TICKER_AMOUNT = 5;
         this.setState({ ticker_search });
-        if (ticker_search === "") return this.set_top_20();
+        if (ticker_search === "") return this.set_sector(this.state.current_sector);
         console.log(ticker_search)
         this.setState({ show_loading_ticker_search: true });
         const all_tickers = await get_all_symbols();
@@ -99,6 +100,7 @@ export default class Playground extends Component {
      */
     async set_sector(sector) {
         const { custom_sectors } = this.state;
+        this.setState({ current_sector: sector });
         if (custom_sectors[sector]) {
             this.set_tickers(custom_sectors[sector].tickers);
             return;
