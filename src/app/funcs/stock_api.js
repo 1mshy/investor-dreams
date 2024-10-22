@@ -383,6 +383,20 @@ export async function get_all_historical_keys() {
 export async function get_all_technical_data_keys() {
     return NASDAQ_TECHNICALS.keys();
 }
+
+/**
+ * returns all key values pairs in the technical data dataset
+ * @returns {Promise<{}>}
+ */
+export async function get_all_technical_data() {
+    const keys = await get_all_technical_data_keys();
+    const all_technicals = await Promise.all(keys.map(key => get_cached_ticker_technicals(key)));
+    const combined = {};
+    keys.forEach((key, index) => {
+        combined[key] = all_technicals[index];
+    });
+    return combined;
+}
 /**
  * Deletes all keys in the technical data cache
  * @returns {Promise<void>}

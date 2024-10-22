@@ -3,6 +3,7 @@ import {
     clean_ticker,
     get_all_sectors,
     get_all_symbols,
+    get_all_technical_data,
     get_market_cap,
     nasdaq_sorted_by,
     nasdaq_sorted_syncronous
@@ -24,6 +25,7 @@ import { Link } from 'react-router-dom';
 import { unformat_number } from '../funcs/tools';
 import { LoadingTextField } from '../mui/other';
 import { get_custom_sectors } from '../funcs/sectors';
+import { filter_tickers } from '../funcs/analysis';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -47,7 +49,24 @@ export default class Playground extends Component {
                 "Top 20": {
                     tickers: [],
                     default: true,
-                    function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_data).slice(0, 20), default: false }))()`
+                    function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
+                },
+                "Random": {
+                    tickers: [],
+                    default: false,
+                    function: `(() =>{
+            const searching_options = {
+                        min_market_cap: 1_000_000_000_00,
+                        max_market_cap: 1_000_000_000_000_000,
+                        tickers_shown: 12,
+                        sort_by: "pctchange",
+                        reverse: true,
+                    };
+            const final_list = filter_tickers(searching_options, all_tickers, all_nasdaq_info, all_technical_data).map(item => item.symbol);
+                console.log("HELLO IM FROM STRING");
+            console.log(final_list);
+            return {tickers: final_list, default:false};
+        })()`
                 }
             },
             current_sector: "",
@@ -107,15 +126,15 @@ export default class Playground extends Component {
         }
         const sectors = await get_all_sectors();
         if (!sectors.includes(sector)) return;
-        const all_data = await get_all_nasdaq_info();
+        const all_nasdaq_info = await get_all_nasdaq_info();
         const top_500 = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
-        const tickers_in_sector = top_500.filter(ticker_symbol => all_data[ticker_symbol].sector === sector);
+        const tickers_in_sector = top_500.filter(ticker_symbol => all_nasdaq_info[ticker_symbol].sector === sector);
         this.set_tickers(tickers_in_sector);
     };
 
     async set_sorting(sort_method) {
         const { ticker_symbols } = this.state;
-        const all_data = await get_all_nasdaq_info();
+        const all_nasdaq_info = await get_all_nasdaq_info();
         this.setState({ sort_method })
         store("sort_method", sort_method);
         switch (sort_method) {
@@ -134,7 +153,7 @@ export default class Playground extends Component {
             }
             case "Volitility": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = unformat_number(all_data[ticker_symbol].pctchange);
+                    const change = unformat_number(all_nasdaq_info[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -146,7 +165,7 @@ export default class Playground extends Component {
             }
             case "Bullish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = unformat_number(all_data[ticker_symbol].pctchange);
+                    const change = unformat_number(all_nasdaq_info[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -158,7 +177,7 @@ export default class Playground extends Component {
             }
             case "Bearish": {
                 const change_promises = ticker_symbols.map(async (ticker_symbol) => {
-                    const change = unformat_number(all_data[ticker_symbol].pctchange);
+                    const change = unformat_number(all_nasdaq_info[ticker_symbol].pctchange);
                     return { ticker_symbol, change };
                 });
                 const changes = await Promise.all(change_promises);
@@ -178,16 +197,19 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
-        // these constsnts are ALL NECESSARY for the eval function to work
+        // these constants are ALL NECESSARY for the eval function to work
         const TOP_20 = "Top 20";
-        const all_data = await get_all_nasdaq_info();
+        const all_nasdaq_info = await get_all_nasdaq_info();
         const all_tickers = await get_all_symbols();
-        let custom_sectors = await get_custom_sectors();
-
+        const all_technical_data = await get_all_technical_data();
+        // let custom_sectors = await get_custom_sectors();
+        let custom_sectors = this.state.custom_sectors;
+        console.log(custom_sectors)
         if (!custom_sectors) custom_sectors = {};
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
+                console.log(custom_sectors[sector].function)
                 custom_sectors[sector] = eval(custom_sectors[sector].function);
             }
             if (custom_sectors[sector].default) {
