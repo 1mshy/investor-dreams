@@ -41,6 +41,7 @@ export default class Playground extends Component {
             create_sector_popup: false,
             ticker_search: "",
             show_loading_ticker_search: false,
+            custom_sectors: ["Top 20"],
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
@@ -89,6 +90,7 @@ export default class Playground extends Component {
      */
     async set_sector(sector) {
         const sectors = await get_all_sectors();
+        const {custom_sectors} = this.state;
         if (!sectors.includes(sector)) return;
         const all_data = await get_all_nasdaq_info();
         const top_500 = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
@@ -172,7 +174,7 @@ export default class Playground extends Component {
 
 
     render() {
-        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search } = this.state;
+        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors } = this.state;
         console.log(ticker_symbols)
         return (
             <ThemeProvider theme={theme}>
@@ -180,7 +182,7 @@ export default class Playground extends Component {
                     <div className={"generic-header"} >
                         <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} style={{ alignItems: "center" }} data-tauri-drag-region>
-                                <SectorSelect set_sector={this.set_sector} />
+                                <SectorSelect set_sector={this.set_sector} custom_sectors={custom_sectors} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
                                 <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />

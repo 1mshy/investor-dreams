@@ -40,8 +40,8 @@ export default class SectorSelect extends React.Component {
     componentDidMount() {
         get_all_sectors().then(sectors => {
             const default_sector = "Top 12";
-            sectors.unshift(default_sector);
-            this.setState({ generated_sectors: sectors, sector: default_sector })
+            // sectors.unshift(default_sector);
+            this.setState({ generated_sectors: sectors, custom_sectors: this.props.custom_sectors, sector: default_sector })
         })
     }
 
