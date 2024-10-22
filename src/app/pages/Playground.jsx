@@ -4,7 +4,8 @@ import {
     get_all_sectors,
     get_all_symbols,
     get_market_cap,
-    nasdaq_sorted_by
+    nasdaq_sorted_by,
+    nasdaq_sorted_syncronous
 } from "@/app/funcs/stock_api";
 import { SoftPaper, theme } from '@/app/mui/theme';
 import SectorSelect from '@/app/ui_components/misc/SectorSelect';
@@ -16,12 +17,13 @@ import { Component } from 'react';
  */
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import { retrieve, store } from '@/app/funcs/cache';
+import { complex_retrieve, complex_store, retrieve, store } from '@/app/funcs/cache';
 import EasySelection from '@/app/ui_components/misc/EasySelection';
 import StockWidget from '@/components/widgets/StockWidget';
 import { Link } from 'react-router-dom';
 import { unformat_number } from '../funcs/tools';
 import { LoadingTextField } from '../mui/other';
+import { get_custom_sectors } from '../funcs/sectors';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -41,7 +43,14 @@ export default class Playground extends Component {
             create_sector_popup: false,
             ticker_search: "",
             show_loading_ticker_search: false,
-            custom_sectors: ["Top 20"],
+            custom_sectors: {
+                "Top 20": {
+                    tickers: [],
+                    default: true,
+                    function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_data).slice(0, 20), default: false }))()`
+                }
+            },
+            default_sector: ""
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
@@ -80,7 +89,7 @@ export default class Playground extends Component {
      * @param {[string]} ticker_symbols 
      */
     async set_tickers(ticker_symbols, func) {
-        if(!func) return this.setState({ ticker_symbols }, () => this.set_sorting(this.state.sort_method));
+        if (!func) return this.setState({ ticker_symbols }, () => this.set_sorting(this.state.sort_method));
         this.setState({ ticker_symbols }, func);
     }
 
@@ -89,6 +98,11 @@ export default class Playground extends Component {
      * @param {String} sector 
      */
     async set_sector(sector) {
+        const { custom_sectors } = this.state;
+        if (custom_sectors[sector]) {
+            this.set_tickers(custom_sectors[sector].tickers);
+            return;
+        }
         const sectors = await get_all_sectors();
         const {custom_sectors} = this.state;
         if (!sectors.includes(sector)) return;
@@ -114,7 +128,7 @@ export default class Playground extends Component {
                 // sort by highest weight
                 const sorted_by_weight = weights.sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                this.setState({ticker_symbols: sorted_by_weight});
+                this.setState({ ticker_symbols: sorted_by_weight });
                 break;
             }
             case "Volitility": {
@@ -126,7 +140,7 @@ export default class Playground extends Component {
                 // sort by highest weight
                 const sorted_by_weight = changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change)).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                this.setState({ticker_symbols: sorted_by_weight});
+                this.setState({ ticker_symbols: sorted_by_weight });
                 break;
             }
             case "Bullish": {
@@ -138,7 +152,7 @@ export default class Playground extends Component {
                 // sort by highest weight
                 const sorted_by_weight = changes.sort((a, b) => b.change - a.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                this.setState({ticker_symbols: sorted_by_weight});
+                this.setState({ ticker_symbols: sorted_by_weight });
                 break;
             }
             case "Bearish": {
@@ -150,7 +164,7 @@ export default class Playground extends Component {
                 // sort by highest weight
                 const sorted_by_weight = changes.sort((a, b) => a.change - b.change).map(item => item.ticker_symbol);
                 // update the state with the sorted ticker symbols
-                this.setState({ticker_symbols: sorted_by_weight});
+                this.setState({ ticker_symbols: sorted_by_weight });
                 break;
             }
 
@@ -163,7 +177,26 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
-        this.set_top_20();
+        // these constsnts are ALL NECESSARY for the eval function to work
+        const TOP_20 = "Top 20";
+        const all_data = await get_all_nasdaq_info();
+        const all_tickers = await get_all_symbols();
+        let custom_sectors = await get_custom_sectors();
+
+        if (!custom_sectors) custom_sectors = {};
+        let default_sector = TOP_20;
+        for (const sector of Object.keys(custom_sectors)) {
+            if (custom_sectors[sector].function) {
+                custom_sectors[sector] = eval(custom_sectors[sector].function);
+            }
+            if (custom_sectors[sector].default) {
+                default_sector = sector;
+                break;
+            }
+        }
+        await complex_store("custom_sectors", custom_sectors);
+        console.log(custom_sectors)
+        this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
     }
 
     async set_top_20() {
@@ -174,7 +207,7 @@ export default class Playground extends Component {
 
 
     render() {
-        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors } = this.state;
+        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors, default_sector } = this.state;
         console.log(ticker_symbols)
         return (
             <ThemeProvider theme={theme}>
@@ -182,7 +215,7 @@ export default class Playground extends Component {
                     <div className={"generic-header"} >
                         <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
                             <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} style={{ alignItems: "center" }} data-tauri-drag-region>
-                                <SectorSelect set_sector={this.set_sector} custom_sectors={custom_sectors} />
+                                <SectorSelect set_sector={this.set_sector} custom_sectors={Object.keys(custom_sectors)} default_sector={default_sector} />
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
                                 <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
@@ -192,7 +225,7 @@ export default class Playground extends Component {
                     </div>
                     <div className={"playground-content"} >
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
-                            {ticker_symbols.map(ticker_symbol => {
+                            {ticker_symbols && ticker_symbols.map(ticker_symbol => {
                                 return <StockWidget size={"medium"} symbol={ticker_symbol} key={ticker_symbol} /> // {...stock_data[ticker_symbol]}
                             })}
                         </div>
