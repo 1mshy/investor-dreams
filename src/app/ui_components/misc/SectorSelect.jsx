@@ -6,6 +6,7 @@ import Select from '@mui/material/Select';
 import { ListSubheader, OutlinedInput } from '@mui/material';
 import { get_all_sectors } from '../../funcs/stock_api';
 import Box from '@mui/material/Box';
+import { get_custom_sectors } from '@/app/funcs/sectors';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -25,7 +26,6 @@ export default class SectorSelect extends React.Component {
         super(props)
         this.state = {
             sector: "",
-            custom_sectors: [],
             generated_sectors: [],
         }
         this.handleChange = this.handleChange.bind(this);
@@ -39,7 +39,7 @@ export default class SectorSelect extends React.Component {
 
     async componentDidMount() {
         const sectors = await get_all_sectors()
-        this.setState({ generated_sectors: sectors, custom_sectors: this.props.custom_sectors })
+        this.setState({ generated_sectors: sectors })
     }
     /**
      * Updates the sector state if the default sector is set
@@ -53,7 +53,8 @@ export default class SectorSelect extends React.Component {
     }
 
     render() {
-        const { sector, custom_sectors, generated_sectors } = this.state;
+        const { sector, generated_sectors } = this.state;
+        const {custom_sectors} = this.props;
         console.log(this.props.default_sector)
         return (
             <Box sx={{ minWidth: 120 }}>
