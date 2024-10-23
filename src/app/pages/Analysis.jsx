@@ -17,6 +17,7 @@ import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import { filter_tickers } from "../funcs/analysis";
+import { save_dynamic_sector } from "../funcs/sectors";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -133,13 +134,6 @@ export default class Analysis extends Component {
         const all_technical_data = await get_all_technical_data();
         const final_list = filter_tickers(searching_options, all_tickers, all_nasdaq_info, all_technical_data);
         this.setState({ filtered_tickers: final_list })
-        const functionAsString =
-        `(() =>{
-            const searching_options = ${JSON.stringify(searching_options)};
-            // Now use the captured searching_options and other data
-            const final_list = filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data);
-            return final_list;
-        })()`
         console.log(final_list);
         console.log(final_list[0])
         console.log("finished")
@@ -254,6 +248,11 @@ export default class Analysis extends Component {
                                 this.setState({ searching_options: { ...searching_options, reverse: !searching_options.reverse } })
                             }} />
                         </FormControl>
+                        <Button onClick={() => {
+                            save_dynamic_sector("test", searching_options)
+                        }}>
+                            Save
+                            </Button>
 
                         <div style={{ flex: 1 }}>
                             <TableDownloadPopup downloadable_stores={downloadable_stores}>

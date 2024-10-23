@@ -39,35 +39,21 @@ export default class Playground extends Component {
          * @desc For example if I add a new item to {ticker_symbols} the component will re-render to reflect the new item
          */
         this.state = {
+            ticker_symbols_before_sort: [],
             ticker_symbols: [],
             sort_method: this.get_sorting_method(), // Weight, Volitility, Bullish, Bearish
+            has_set_sort_method: false,
             add_sector_menu: false,
             create_sector_popup: false,
             ticker_search: "",
             show_loading_ticker_search: false,
             custom_sectors: {
-                "Top 20": {
-                    tickers: [],
-                    default: true,
-                    function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
-                },
-                "Random": {
-                    tickers: [],
-                    default: false,
-                    function: `(() =>{
-            const searching_options = {
-                        min_market_cap: 1_000_000_000_00,
-                        max_market_cap: 1_000_000_000_000_000,
-                        tickers_shown: 12,
-                        sort_by: "pctchange",
-                        reverse: true,
-                    };
-            const final_list = filter_tickers(searching_options, all_tickers, all_nasdaq_info, all_technical_data).map(item => item.symbol);
-                console.log("HELLO IM FROM STRING");
-            console.log(final_list);
-            return {tickers: final_list, default:false};
-        })()`
-                }
+                // example
+                // "Top 20": {
+                //     tickers: [],
+                //     default: true,
+                //     function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
+                // },
             },
             current_sector: "",
             default_sector: ""
@@ -109,8 +95,8 @@ export default class Playground extends Component {
      * @param {[string]} ticker_symbols 
      */
     async set_tickers(ticker_symbols, func) {
-        if (!func) return this.setState({ ticker_symbols }, () => this.set_sorting(this.state.sort_method));
-        this.setState({ ticker_symbols }, func);
+        if (!func) return this.setState({ ticker_symbols, ticker_symbols_before_sort: ticker_symbols }, () => this.set_sorting(this.state.sort_method));
+        this.setState({ ticker_symbols, ticker_symbols_before_sort: ticker_symbols }, func);
     }
 
     /**
@@ -135,7 +121,7 @@ export default class Playground extends Component {
     async set_sorting(sort_method) {
         const { ticker_symbols } = this.state;
         const all_nasdaq_info = await get_all_nasdaq_info();
-        this.setState({ sort_method })
+        this.setState({ sort_method, has_set_sort_method: true });
         store("sort_method", sort_method);
         switch (sort_method) {
             case "MarketCap": {
@@ -202,21 +188,25 @@ export default class Playground extends Component {
         const all_nasdaq_info = await get_all_nasdaq_info();
         const all_tickers = await get_all_symbols();
         const all_technical_data = await get_all_technical_data();
-        // let custom_sectors = await get_custom_sectors();
-        let custom_sectors = this.state.custom_sectors;
+        let custom_sectors = await get_custom_sectors();
         console.log(custom_sectors)
         if (!custom_sectors) custom_sectors = {};
+        custom_sectors[TOP_20] = {
+            tickers: [],
+            default: true,
+            function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
+        };
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
                 console.log(custom_sectors[sector].function)
                 custom_sectors[sector] = eval(custom_sectors[sector].function);
             }
-            if (custom_sectors[sector].default) {
+            if (!default_sector && custom_sectors[sector].default) {
                 default_sector = sector;
-                break;
             }
         }
+        console.log(custom_sectors)
         await complex_store("custom_sectors", custom_sectors);
         console.log(custom_sectors)
         this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
@@ -242,6 +232,9 @@ export default class Playground extends Component {
                                 <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
                                 <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
                                 <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
+                                <Button onClick={() => {
+                                    this.setState({ ticker_symbols: this.state.ticker_symbols_before_sort });
+                                }}>Unsort</Button>
                                 {ticker_search !== "" && <Button onClick={() => this.searching_ticker("")}>Clear</Button>}
                             </Grid2>
                         </SoftPaper>

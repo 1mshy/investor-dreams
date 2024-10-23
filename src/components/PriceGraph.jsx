@@ -114,7 +114,6 @@ class PriceGraph extends Component {
 
                         // Set custom text for the tooltip
                         if (tooltipModel.body) {
-                            console.log(tooltipModel.dataPoints[0]);
                             const value = tooltipModel.dataPoints[0].raw;
                             tooltipEl.innerHTML = `<div><strong>Price:</strong> ${value}</div>`;
                             const formatDate = (dateString) => {
@@ -127,13 +126,8 @@ class PriceGraph extends Component {
 
                             if (this.props.historical_data) {
                                 const index = tooltipModel.dataPoints[0].dataIndex;
-                                console.log(index)
-                                console.log(this.props.historical_data)
-                                console.log(this.props.historical_data[index])
                                 const date = this.props.historical_data[prices.length - 1 - index].datetime;
                                 const formatted_date = formatDate(date)
-                                console.log(formatted_date)
-                                console.log(date)
                                 tooltipEl.innerHTML += `<div><strong>Date:</strong> ${formatted_date}</div>`;
                             }
                         }
