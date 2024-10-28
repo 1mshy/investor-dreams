@@ -12,6 +12,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { IconButton } from "@mui/material";
 import { useState } from "react";
 import PercentageFormat from "../PercentageFormat";
+import { useEffect } from "react";
 
 /**
  * @param {String} symbol
@@ -26,9 +27,13 @@ import PercentageFormat from "../PercentageFormat";
  */
 const MediumStockWidget = (props) => {
     const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick, historical_data } = props;
-
-    const [is_favourite, set_favourite] = useState(is_ticker_favourite(symbol));
+    const [is_favourite, set_favourite] = useState(false);
     const month_prices = get_month_prices(historical_prices);
+
+    useEffect(() => {
+        set_favourite(is_ticker_favourite(symbol));
+    }, [symbol]);
+    
     return (
         <>
             <SoftPaper className={"container"} style={{ width: "40rem", height: "max-content" }} onClick={() => {

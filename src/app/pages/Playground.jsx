@@ -26,6 +26,7 @@ import { unformat_number } from '../funcs/tools';
 import { LoadingTextField } from '../mui/other';
 import { get_custom_sectors } from '../funcs/sectors';
 import { filter_tickers } from '../funcs/analysis';
+import { get_favourite_array } from '../funcs/favourites';
 
 export default class Playground extends Component {
     constructor(props) {
@@ -196,6 +197,10 @@ export default class Playground extends Component {
             default: true,
             function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
         };
+        custom_sectors["Favourites"] = {
+            tickers: get_favourite_array(),
+            default: false,
+        }
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
