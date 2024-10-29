@@ -61,7 +61,6 @@ export default class Playground extends Component {
         };
         this.set_sector = this.set_sector.bind(this);
         this.set_tickers = this.set_tickers.bind(this);
-        this.set_top_20 = this.set_top_20.bind(this);
 
         this.sorting_content = {
             "MarketCap": () => { this.set_sorting("MarketCap") },
@@ -178,6 +177,30 @@ export default class Playground extends Component {
         }
     }
 
+    default_custom_sectors() {
+        return {
+            "Top 20": {
+                tickers: [],
+                default: true,
+                function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
+            },
+            "Best Performing": {
+                tickers: [],
+                default: true,
+                function: `(() => ({ tickers: nasdaq_sorted_syncronous("pctchange", all_tickers, all_nasdaq_info).slice(0, 20).reverse(), default: false }))()`
+            },
+            "Worst Performing": {
+                tickers: [],
+                default: true,
+                function: `(() => ({ tickers: nasdaq_sorted_syncronous("pctchange", all_tickers, all_nasdaq_info).slice(-20), default: false }))()`
+            },
+            "Favourites": {
+                tickers: get_favourite_array(),
+                default: false,
+            }
+        }
+    }
+
     /**
      * This function is called when the component is mounted 
      * (aka when the component is added to the DOM) 
@@ -191,12 +214,7 @@ export default class Playground extends Component {
         const all_technical_data = await get_all_technical_data();
         let custom_sectors = await get_custom_sectors();
         console.log(custom_sectors)
-        if (!custom_sectors) custom_sectors = {};
-        custom_sectors[TOP_20] = {
-            tickers: [],
-            default: true,
-            function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
-        };
+        if (!custom_sectors) custom_sectors = this.default_custom_sectors();
         custom_sectors["Favourites"] = {
             tickers: get_favourite_array(),
             default: false,
@@ -216,13 +234,6 @@ export default class Playground extends Component {
         console.log(custom_sectors)
         this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
     }
-
-    async set_top_20() {
-        // get the top companies
-        const top_20_by_market_cap = (await nasdaq_sorted_by("marketCap")).slice(0, 20);
-        this.set_tickers(top_20_by_market_cap);
-    }
-
 
     render() {
         const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors, default_sector } = this.state;

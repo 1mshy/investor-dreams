@@ -11,6 +11,8 @@ import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import PercentageFormat from "../PercentageFormat";
 
 import "@/app/css/Widgets.css";
+import { useRef } from "react";
+import Popup from "../popups/Popup";
 
 /**
  * @param {String} symbol
@@ -30,6 +32,18 @@ const BigStockWidget = (props) => {
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
+
+
+    const popupRef = useRef();
+  const [userData, setUserData] = useState(null);
+
+  const openPopup = () => {
+    popupRef.current.open();
+  };
+
+  const handlePopupSubmit = (data) => {
+    setUserData(data);
+  };
 
     useEffect(() => {
         get_ticker_info(symbol).then((info) => {
@@ -193,6 +207,11 @@ const BigStockWidget = (props) => {
                                 {article.title}
                         </div>
                     })}
+                          <button onClick={openPopup}>Open Popup</button>
+
+                          {userData && <p>User Input: {userData}</p>}
+      <Popup ref={popupRef} onSubmit={handlePopupSubmit} />
+
                 </div>}
                 <a href="https://example.com" target="_blank">Example link</a>
 
