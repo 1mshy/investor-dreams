@@ -1,5 +1,3 @@
-;
-
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import { format_currency } from "@/app/funcs/tools";
@@ -33,7 +31,7 @@ const MediumStockWidget = (props) => {
     useEffect(() => {
         set_favourite(is_ticker_favourite(symbol));
     }, [symbol]);
-    
+
     return (
         <>
             <SoftPaper className={"container"} style={{ width: "40rem", height: "max-content" }} onClick={() => {
