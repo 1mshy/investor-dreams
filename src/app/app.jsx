@@ -38,7 +38,7 @@ const BasePage = () => {
     }
   ]);
 
-  const current_version = "1.0.10";
+  const current_version = "1.0.11";
   useEffect(() => {
     const set_version = retrieve("current_version");
     if (!set_version || set_version !== current_version) {
