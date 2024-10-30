@@ -1,4 +1,5 @@
-import { percentage_change } from "./stock_api";
+import { get_all_nasdaq_info } from "./scraper";
+import { get_all_symbols, get_all_technical_data, percentage_change } from "./stock_api";
 import { unformat_number } from "./tools";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
@@ -33,4 +34,11 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
     final_list.sort((a, b) => b[searching_options.sort_by] - a[searching_options.sort_by]);
     if (searching_options.reverse) final_list.reverse();
     return final_list.slice(0, searching_options.tickers_shown);
+}
+
+export async function filter_tickers_async(searching_options) {
+    const all_nasdaq_info = await get_all_nasdaq_info();
+    const all_tickers = await get_all_symbols();
+    const all_technical_data = await get_all_technical_data();
+    return filter_tickers(searching_options, all_tickers, all_nasdaq_info, all_technical_data);
 }

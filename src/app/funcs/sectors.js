@@ -20,9 +20,9 @@ export async function set_custom_sector(name, info) {
 
 export async function save_dynamic_sector(name, searching_options) {
     const dynamic_sector = {
-        function: `(() =>{
+        function: `(async () => {
             const searching_options = ${JSON.stringify(searching_options)};
-            const final_list = filter_tickers(searching_options, all_tickers, all_nasdaq_info, all_technical_data).map(item => item.symbol);
+            const final_list = (await filter_tickers_async(searching_options)).map(item => item.symbol);
             return {tickers: final_list};
         })()`,
         tickers: [],

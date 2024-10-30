@@ -25,7 +25,7 @@ import { Link } from 'react-router-dom';
 import { unformat_number } from '../funcs/tools';
 import { LoadingTextField } from '../mui/other';
 import { get_custom_sectors } from '../funcs/sectors';
-import { filter_tickers } from '../funcs/analysis';
+import { filter_tickers, filter_tickers_async } from '../funcs/analysis';
 import { get_favourite_array } from '../funcs/favourites';
 
 export default class Playground extends Component {
@@ -178,22 +178,36 @@ export default class Playground extends Component {
     }
 
     default_custom_sectors() {
+        // await(async () => {
+        //     const tickers = await nasdaq_sorted_by("marketCap").slice(0, 20);
+        //     return { tickers, default: false }
+        // })()
         return {
             "Top 20": {
                 tickers: [],
                 default: true,
-                function: `(() => ({ tickers: nasdaq_sorted_syncronous("marketCap", all_tickers, all_nasdaq_info).slice(0, 20), default: false }))()`
+                function: `(async () => {
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 20);
+            return { tickers, default: false }
+        })()`
             },
             "Best Performing": {
                 tickers: [],
                 default: true,
-                function: `(() => ({ tickers: nasdaq_sorted_syncronous("pctchange", all_tickers, all_nasdaq_info).slice(0, 20).reverse(), default: false }))()`
+                function: `(async () => {
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
+            const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(0, 20);
+            return { tickers:sorted, default: false }
+        })()`
             },
             "Worst Performing": {
                 tickers: [],
                 default: true,
-                function: `(() => ({ tickers: nasdaq_sorted_syncronous("pctchange", all_tickers, all_nasdaq_info).slice(-20), default: false }))()`
-            },
+                function: `(async () => {
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
+            const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(-20).reverse();
+            return { tickers:sorted, default: false }
+        })()` },
             "Favourites": {
                 tickers: get_favourite_array(),
                 default: false,
@@ -207,14 +221,11 @@ export default class Playground extends Component {
      * (aka when the component is finished rendering)
      */
     async componentDidMount() {
-        // these constants are ALL NECESSARY for the eval function to work
         const TOP_20 = "Top 20";
-        const all_nasdaq_info = await get_all_nasdaq_info();
-        const all_tickers = await get_all_symbols();
-        const all_technical_data = await get_all_technical_data();
         let custom_sectors = await get_custom_sectors();
         console.log(custom_sectors)
-        if (!custom_sectors) custom_sectors = this.default_custom_sectors();
+        if (!custom_sectors) custom_sectors = {};
+        custom_sectors = { ...custom_sectors, ...this.default_custom_sectors() };
         custom_sectors["Favourites"] = {
             tickers: get_favourite_array(),
             default: false,
@@ -223,7 +234,7 @@ export default class Playground extends Component {
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
                 console.log(custom_sectors[sector].function)
-                custom_sectors[sector] = eval(custom_sectors[sector].function);
+                custom_sectors[sector] = await eval(custom_sectors[sector].function);
             }
             if (!default_sector && custom_sectors[sector].default) {
                 default_sector = sector;
