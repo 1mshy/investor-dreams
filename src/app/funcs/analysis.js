@@ -3,9 +3,6 @@ import { get_all_symbols, get_all_technical_data, percentage_change } from "./st
 import { unformat_number } from "./tools";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
-    const start = Date.now();
-    console.log((Date.now() - start))
-    console.log(all_technical_data)
     const final_list = [];
     for (let key of all_keys) {
         const data = all_technical_data[key];

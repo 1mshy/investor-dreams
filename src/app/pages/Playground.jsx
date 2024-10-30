@@ -223,13 +223,8 @@ export default class Playground extends Component {
     async componentDidMount() {
         const TOP_20 = "Top 20";
         let custom_sectors = await get_custom_sectors();
-        console.log(custom_sectors)
         if (!custom_sectors) custom_sectors = {};
         custom_sectors = { ...custom_sectors, ...this.default_custom_sectors() };
-        custom_sectors["Favourites"] = {
-            tickers: get_favourite_array(),
-            default: false,
-        }
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
@@ -240,9 +235,7 @@ export default class Playground extends Component {
                 default_sector = sector;
             }
         }
-        console.log(custom_sectors)
         await complex_store("custom_sectors", custom_sectors);
-        console.log(custom_sectors)
         this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
     }
 
