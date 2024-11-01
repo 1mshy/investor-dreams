@@ -80,12 +80,12 @@ export default class Playground extends Component {
         const SHOWN_TICKER_AMOUNT = 5;
         this.setState({ ticker_search });
         if (ticker_search === "") return this.set_sector(this.state.current_sector);
-        console.log(ticker_search)
+        // console.log(ticker_search)
         this.setState({ show_loading_ticker_search: true });
         const all_tickers = await get_all_symbols();
-        console.log(all_tickers)
+        // console.log(all_tickers)
         const sorted_tickers = all_tickers.filter(ticker => !clean_ticker(ticker_search).includes(".") && ticker.toLocaleUpperCase().startsWith(clean_ticker(ticker_search).toLocaleUpperCase()))
-        console.log(sorted_tickers)
+        // console.log(sorted_tickers)
         this.setState({ ticker_symbols: sorted_tickers.slice(0, SHOWN_TICKER_AMOUNT) });
         this.setState({ show_loading_ticker_search: false });
     }
@@ -107,6 +107,10 @@ export default class Playground extends Component {
         const { custom_sectors } = this.state;
         this.setState({ current_sector: sector });
         if (custom_sectors[sector]) {
+            if (!custom_sectors[sector].should_sort) {
+                this.set_tickers(custom_sectors[sector].tickers, () => { });
+                return;
+            }
             this.set_tickers(custom_sectors[sector].tickers);
             return;
         }
@@ -186,6 +190,7 @@ export default class Playground extends Component {
             "Top 20": {
                 tickers: [],
                 default: true,
+                should_sort: true,
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 20);
             return { tickers, default: false }
@@ -194,6 +199,7 @@ export default class Playground extends Component {
             "Best Performing": {
                 tickers: [],
                 default: true,
+                should_sort: false,
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(0, 20);
@@ -203,6 +209,7 @@ export default class Playground extends Component {
             "Worst Performing": {
                 tickers: [],
                 default: true,
+                should_sort: false,
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(-20).reverse();
@@ -210,6 +217,7 @@ export default class Playground extends Component {
         })()` },
             "Favourites": {
                 tickers: get_favourite_array(),
+                should_sort: true,
                 default: false,
             }
         }
