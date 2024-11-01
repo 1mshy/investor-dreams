@@ -7,7 +7,7 @@ import { CurrencyTextField } from "@/app/mui/other";
 import { BackGroundPaper, theme } from "@/app/mui/theme";
 import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
 import StockWidget from "@/components/widgets/StockWidget";
-import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip } from '@mui/material';
+import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography } from '@mui/material';
 import localforage from "localforage";
 import { Component } from "react";
 import { Link } from "react-router-dom";
@@ -18,6 +18,7 @@ import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import { filter_tickers } from "../funcs/analysis";
 import { save_dynamic_sector } from "../funcs/sectors";
+import RangeSlider from "../ui_components/misc/MarketCapSlider";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -206,7 +207,15 @@ export default class Analysis extends Component {
                         }}>
                             Load
                         </Button>
-                        <CurrencyTextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} on_change={(value) => {
+                        <div>
+                        <Typography id="track-false-slider" gutterBottom>
+                            Market Cap
+                        </Typography>
+                        <RangeSlider callback={(left, right) => {
+                            this.setState({ searching_options: { ...searching_options, min_market_cap: left, max_market_cap: right } })
+                        }} />
+                        </div>
+                        {/* <CurrencyTextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} on_change={(value) => {
                             console.log(value)
                             if (isNaN(value) || value < 0) return;
                             this.setState({ searching_options: { ...searching_options, min_market_cap: Number(value) } })
@@ -214,12 +223,13 @@ export default class Analysis extends Component {
                         <CurrencyTextField variant="standard" label="Max Market Cap" value={searching_options.max_market_cap} on_change={(value) => {
                             if (isNaN(value) || value < 0) return;
                             this.setState({ searching_options: { ...searching_options, max_market_cap: Number(value) } })
-                        }} />
+                        }} /> */}
                         <TextField variant="standard" label="Tickers Shown" value={searching_options.tickers_shown} onChange={(e) => {
                             const value = e.target.value;
                             if (isNaN(value) || value < 0) return;
                             this.setState({ searching_options: { ...searching_options, tickers_shown: Number(value) } })
                         }} />
+
 
                         <FormControl>
                             <InputLabel id="demo-simple-select-label">Sorting</InputLabel>
@@ -252,7 +262,7 @@ export default class Analysis extends Component {
                             save_dynamic_sector("test", searching_options)
                         }}>
                             Save
-                            </Button>
+                        </Button>
 
                         <div style={{ flex: 1 }}>
                             <TableDownloadPopup downloadable_stores={downloadable_stores}>
