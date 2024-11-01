@@ -107,11 +107,12 @@ export default class Playground extends Component {
         const { custom_sectors } = this.state;
         this.setState({ current_sector: sector });
         if (custom_sectors[sector]) {
-            if (!custom_sectors[sector].should_sort) {
+            console.log(custom_sectors[sector])
+            if (custom_sectors[sector].should_sort) {
+                this.set_tickers(custom_sectors[sector].tickers);
+            } else {
                 this.set_tickers(custom_sectors[sector].tickers, () => { });
-                return;
             }
-            this.set_tickers(custom_sectors[sector].tickers);
             return;
         }
         const sectors = await get_all_sectors();
@@ -237,12 +238,14 @@ export default class Playground extends Component {
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
                 console.log(custom_sectors[sector].function)
-                custom_sectors[sector] = await eval(custom_sectors[sector].function);
+                custom_sectors[sector].tickers = (await eval(custom_sectors[sector].function)).tickers;
             }
+            // TODO allow user to set default sector
             if (!default_sector && custom_sectors[sector].default) {
                 default_sector = sector;
             }
         }
+        console.log(custom_sectors)
         await complex_store("custom_sectors", custom_sectors);
         this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
     }
