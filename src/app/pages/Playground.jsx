@@ -190,7 +190,7 @@ export default class Playground extends Component {
                 should_sort: true,
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 20);
-            return { tickers, default: false }
+            return { tickers }
         })()`
             },
             "Best Performing": {
@@ -200,7 +200,7 @@ export default class Playground extends Component {
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(0, 20);
-            return { tickers:sorted, default: false }
+            return { tickers:sorted }
         })()`
             },
             "Worst Performing": {
@@ -210,7 +210,7 @@ export default class Playground extends Component {
                 function: `(async () => {
             const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(-20).reverse();
-            return { tickers:sorted, default: false }
+            return { tickers:sorted }
         })()` },
             "Favourites": {
                 tickers: get_favourite_array(),
@@ -233,7 +233,7 @@ export default class Playground extends Component {
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
-                custom_sectors[sector].tickers = (await eval(custom_sectors[sector].function)).tickers;
+                custom_sectors[sector]= {...custom_sectors[sector], ...(await eval(custom_sectors[sector].function))}
             }
             // TODO allow user to set default sector
             if (!default_sector && custom_sectors[sector].default) {
