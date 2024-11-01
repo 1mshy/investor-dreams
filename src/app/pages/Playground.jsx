@@ -80,12 +80,9 @@ export default class Playground extends Component {
         const SHOWN_TICKER_AMOUNT = 5;
         this.setState({ ticker_search });
         if (ticker_search === "") return this.set_sector(this.state.current_sector);
-        // console.log(ticker_search)
         this.setState({ show_loading_ticker_search: true });
         const all_tickers = await get_all_symbols();
-        // console.log(all_tickers)
         const sorted_tickers = all_tickers.filter(ticker => !clean_ticker(ticker_search).includes(".") && ticker.toLocaleUpperCase().startsWith(clean_ticker(ticker_search).toLocaleUpperCase()))
-        // console.log(sorted_tickers)
         this.setState({ ticker_symbols: sorted_tickers.slice(0, SHOWN_TICKER_AMOUNT) });
         this.setState({ show_loading_ticker_search: false });
     }
@@ -107,7 +104,6 @@ export default class Playground extends Component {
         const { custom_sectors } = this.state;
         this.setState({ current_sector: sector });
         if (custom_sectors[sector]) {
-            console.log(custom_sectors[sector])
             if (custom_sectors[sector].should_sort) {
                 this.set_tickers(custom_sectors[sector].tickers);
             } else {
@@ -237,7 +233,6 @@ export default class Playground extends Component {
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
-                console.log(custom_sectors[sector].function)
                 custom_sectors[sector].tickers = (await eval(custom_sectors[sector].function)).tickers;
             }
             // TODO allow user to set default sector
@@ -245,7 +240,6 @@ export default class Playground extends Component {
                 default_sector = sector;
             }
         }
-        console.log(custom_sectors)
         await complex_store("custom_sectors", custom_sectors);
         this.setState({ custom_sectors, default_sector: default_sector }, () => this.set_sector(TOP_20));
     }
