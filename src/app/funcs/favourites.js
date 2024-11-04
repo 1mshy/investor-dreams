@@ -6,9 +6,11 @@ const favourite_local_storage_key = "favourites";
 
 export async function top_favourite_changes() {
     const all_data = await get_all_nasdaq_info();
+    const all_possible_tickers = Object.keys(all_data);
     const favourites = get_favourite_array();
     let top_3_changes = [];
     for (const ticker_symbol of favourites) {
+        if (!all_possible_tickers.includes(ticker_symbol)) continue;
         const stock_data = all_data[ticker_symbol];
         const change = Math.abs(unformat_number(stock_data.pctchange));
         top_3_changes.push({ ticker_symbol, change });
