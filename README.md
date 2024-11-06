@@ -5,6 +5,11 @@ This project is made to show the daily changes of us based stocks that are part 
 I have wanted to visualize the changes to the stocks that are part of the Standard & Poor’s 500 
 index fund but cannot find any tools online that can easily do so.
 If you want to contribute, please change the api token used to your own, as to not spam mine. You can get a free api token [here](https://twelvedata.com/).
+**With data come great power** - Aspiring software engineer
+
+# TODO Reddit browsing
+Browse through reddit threads to feel the underlying sentiment of targeted stocks or markets
+
 
 This is a tauri application, using nextjs as the front end
 ## Getting Started
