@@ -35,7 +35,7 @@ const MediumStockWidget = (props) => {
     return (
         <>
             <SoftPaper className={"container"} style={{ width: "40rem", height: "max-content" }} onClick={() => {
-                if(!month_prices) return;
+                if (!month_prices) return;
                 onClick();
             }}>
                 <div className={"widget-header"}>
@@ -66,7 +66,7 @@ const MediumStockWidget = (props) => {
                 </div>
                 <div className={"content"}>
                     <div className={"price"}>${price}</div>
-                    <PriceGraph prices={month_prices} historical_data={historical_data}/>
+                    <PriceGraph prices={month_prices} historical_data={historical_data} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
                             {percent_change && <PercentageFormat percent_change={percent_change} />}

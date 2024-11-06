@@ -26,7 +26,7 @@ let stop_requesting = false;
 const WAIT_TIME = 61_000; // milliseconds
 
 /**
- * Cleans unwanted characters from a ticker symbol 
+ * Removes unwanted characters from a ticker symbol string
  * @param {String} ticker 
  * @returns {String}
  */
@@ -41,9 +41,6 @@ export function clean_ticker(ticker) {
  * @desc Request stock data from the API
  * @desc This function is rate limited to 8 requests per minute
  * @desc If the limit is reached, the function will wait for a minute and then resume
- * @example
- * const data = await request_ticker_data("AAPL")
- * console.log(data)
  */
 export async function request_ticker_data(ticker_symbol) {
     if (api_keys.length === 0) {
@@ -134,7 +131,12 @@ export async function get_all_static_ticker_info() {
     return all_data;
 }
 
-export async function get_ticker_info(ticker) {
+/**
+ * Gets static/offline information on a ticker from the current json database in the app
+ * @param {String} ticker 
+ * @returns {Promise<{}>}
+ */
+export async function get_static_ticker_info(ticker) {
     const data = await get_all_static_ticker_info();
     return data[ticker];
 }
@@ -157,12 +159,20 @@ export async function get_all_sectors() {
 
 
 let current_api_index = 0;
+/**
+ * Uses a global index to get the next api key in the list
+ * @returns {String}
+ */
 function get_next_api_key() {
     let api_key = api_keys[current_api_index];
     current_api_index = (current_api_index + 1) % api_keys.length;
     return api_key;
 }
 
+/**
+ * Returns all known ticker symbols from the nasdaq api
+ * @returns {Promise<{[String]}>}
+ */
 export async function get_all_symbols() {
     const nasdaq_info = await get_all_nasdaq_info();
     // deleting custom keys
@@ -173,7 +183,7 @@ export async function get_all_symbols() {
 /**
  * 
  * @param {String} ticker_symbol 
- * @returns {Promise<Number>}
+ * @returns {Promise<{Number}>}
  */
 export async function get_market_cap(ticker_symbol) {
     const all_tickers = await get_all_nasdaq_info();
@@ -185,7 +195,7 @@ export async function get_market_cap(ticker_symbol) {
  * Get all nasdaq ticker sortd by one of the possible sorting methods
  * @param {String} sort_method how to sort the tickers, Sort method possible values: "symbol,name,lastsale,netchange,pctchange,marketCap,country,ipoyear,volume,sector,industry,url"
  * @param {[String]} ticker_list List of ticker symbols
- * @returns {Promise<[String]>}
+ * @returns {Promise<{[String]}>}
  */
 export async function nasdaq_sorted_by(sort_method = "marketCap", ticker_list = []) {
     const all_tickers = await get_all_nasdaq_info();

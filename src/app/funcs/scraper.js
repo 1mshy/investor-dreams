@@ -6,8 +6,9 @@ import { get_cache, set_cache } from './cache';
 import { clean_ticker, get_company_summary } from './stock_api';
 
 /**
- * gets info on all known stocks using the nasdaq api
- * @returns {Promise<["symbol": "Symbol", "name": "Name","lastsale": "Last Sale","netchange": "Net Change","pctchange": "% Change","marketCap": "Market Cap","country": "Country","ipoyear": "IPO Year","volume": "Volume","sector": "Sector","industry": "Industry","url": "Url"]>}
+ * gets info on all known stocks using the nasdaq api and returns it as an object in the format:
+ * {"symbol" : {"symbol": "Symbol", "name": "Name","lastsale": "Last Sale","netchange": "Net Change","pctchange": "% Change","marketCap": "Market Cap","country": "Country","ipoyear": "IPO Year","volume": "Volume","sector": "Sector","industry": "Industry","url": "Url"}}
+ * @returns {Promise<{{}}>} - object with ticker as key and object as value
  */
 export async function get_all_nasdaq_info() {
     const local_storage_key = "NASDAQ_ALL_INFO_TODAY";
@@ -26,7 +27,11 @@ export async function get_all_nasdaq_info() {
     return data;
 }
 
-
+/**
+ * 
+ * @param {String} ticker_symbol 
+ * @returns {String} - name of the company
+ */
 export async function ticker_to_name(ticker_symbol) {
     return (await get_all_nasdaq_info())[ticker_symbol].name;
 }
@@ -36,15 +41,15 @@ export async function ticker_to_name(ticker_symbol) {
  * @param {String} url 
  * @returns {Object} fetch result
  */
-export async function fetch_json(url) {
-    return fetch(url, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        mode: 'no-cors'
-    }).then(res => res.json());
-}
+// export async function fetch_json(url) {
+//     return fetch(url, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Accept': 'application/json'
+//         },
+//         mode: 'no-cors'
+//     }).then(res => res.json());
+// }
 
 
 /**
