@@ -1,6 +1,6 @@
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
-import { format_currency } from "@/app/funcs/tools";
+import { format_currency, format_currency_with_symbols } from "@/app/funcs/tools";
 import { SoftPaper } from "@/app/mui/theme";
 import CustomSector from "@/app/ui_components/popups/CustomSector";
 import PriceGraph from "@/components/PriceGraph";
@@ -73,7 +73,7 @@ const MediumStockWidget = (props) => {
                             {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                         </div>
                         <div className={"date"}>
-                            {marketCap && <div className={"market-cap"}>MC: {format_currency(marketCap)}</div>}
+                            {marketCap && <div className={"market-cap"}>MC: {format_currency_with_symbols(marketCap)}</div>}
                             {date}
                         </div>
                     </div>
