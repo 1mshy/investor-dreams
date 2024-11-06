@@ -23,7 +23,7 @@ const PopupWidget = (props) => {
     return (
         <Backdrop open={open} data-tauri-drag-region onClick={onClick} invisible={true} style={{ width: "100%", maxWidth: "100%" }}>
             <Dialog
-            data-tauri-drag-region
+                data-tauri-drag-region
                 open={open}
                 aria-labelledby="responsive-dialog-title"
                 TransitionComponent={Transition}

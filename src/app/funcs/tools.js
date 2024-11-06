@@ -4,12 +4,11 @@ import { toast } from "react-toastify";
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
- * 
- * @param {String} percent 
- * @returns {Number}
+ * @param {String} percent - percentage value in string format (ex: 10%)
+ * @returns {Number} - decimal value of that percentage
  */
 export function percent_to_decimal(percent) {
-    return Number(percent.replace("%", "")) / 100;
+    return unformat_number(percent) / 100;
 }
 
 /**
@@ -19,6 +18,10 @@ export function percent_to_decimal(percent) {
  */
 export function decimal_to_percent(decimal) {
     return (decimal * 100).toFixed(2) + "%";
+}
+
+export function remove_decimal_zeros(number) {
+    return Number(number).toString();
 }
 
 /**
@@ -34,11 +37,21 @@ export function format_number(number) {
         usable_num /= 1000;
         formatting_suffixed.shift();
     }
-    return `${usable_num.toFixed(2)}${formatting_suffixed[0]}`;
+    return `${Number(usable_num.toFixed(2))}${formatting_suffixed[0]}`;
 }
 /**
- * @param {String} number 
- * @returns {Number}
+ * 
+ * @param {Number} number 
+ * @returns 
+ */
+export function format_number_with_commas(number) {
+    return `${number}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/**
+ * @param {String} number - String formatted number
+ * @returns {Number} - unformatted
+ * @example unformat_number("$1,000") => 1000
  */
 export function unformat_number(number) {
     if (!number) return NaN;
@@ -47,13 +60,22 @@ export function unformat_number(number) {
 /**
  * 
  * @param {Number} number 
- * @returns {String}
+ * @returns {String} - formatted with commas
  */
 export function format_currency(number) {
-    return `$${format_number(number)}`;
+    return `$${format_number_with_commas(number)}`;
 }
+
 /**
  * 
+ * @param {Number} number 
+ * @returns {String} - formatted with currency symbol
+ */
+export function format_currency_with_symbols(number) {
+    return `$${format_number(number)}`;
+}
+
+/**
  * @param {Number} number 
  * @returns {String}
  */
@@ -61,6 +83,10 @@ export function format_percentage(number) {
     return `${unformat_number(number).toFixed(2)}%`;
 }
 
+/**
+ * Checks if the market is open
+ * @returns {Boolean}
+ */
 export function is_market_open() {
     const current_hour = new Date().getHours();
     const current_day = new Date().getDay();
@@ -115,8 +141,13 @@ export function upload_json(json_data, filename) {
     // link.click();
 }
 
-
-export async function upload_chunks(json_data, folder) {
+/**
+ * Writes multiple json files to the select folder of the user
+ * The data will be seperated into file names for each key, with the data in the file being the stringified value 
+ * @param {Object} json_data - json data to be written
+ * @param {String} folder - folder name to save the files to
+ */
+export async function write_chunks(json_data, folder) {
     let promises = [];
     toast.warn("Writing file to downloads folder, please wait...");
     for (let key of Object.keys(json_data)) {

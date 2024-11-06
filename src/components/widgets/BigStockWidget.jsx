@@ -1,7 +1,7 @@
 import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { generate_ollama_message, get_ticker_info, percentage_change } from "@/app/funcs/stock_api";
-import { format_currency, format_number, format_percentage, unformat_number } from "@/app/funcs/tools";
+import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
 import { Button, CircularProgress } from "@mui/material";
@@ -35,18 +35,18 @@ const BigStockWidget = (props) => {
 
 
     const popupRef = useRef();
-  const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState(null);
 
-  const openPopup = () => {
-    popupRef.current.open();
-  };
+    const openPopup = () => {
+        popupRef.current.open();
+    };
 
-  const handlePopupSubmit = (data) => {
-    setUserData(data);
-  };
+    const handlePopupSubmit = (data) => {
+        setUserData(data);
+    };
 
     useEffect(() => {
-        get_ticker_info(symbol).then((info) => {
+        get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
         });
     }, []);
@@ -135,7 +135,7 @@ const BigStockWidget = (props) => {
 
                 </div>
                 }
-                <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data}/>
+                <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data} />
                 {historical_prices && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
@@ -185,7 +185,7 @@ const BigStockWidget = (props) => {
                     <div className={"info-title"}>Yesterday</div>
                     <div className={"info-value"}>${yesterday_price}</div>
                     <div className={"info-title"}>Currently</div>
-                    <div className={"price"}>${price}</div>
+                    <div className={"price"}>${format_number_with_commas(price)}</div>
                     <div className={"info-title"}>Market Cap</div>
                     <div className={"price"}>{format_currency(marketCap)}</div>
                 </div>
@@ -204,13 +204,13 @@ const BigStockWidget = (props) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(get_whole_nasdaq_news_url(article.url));
                         }}>
-                                {article.title}
+                            {article.title}
                         </div>
                     })}
-                          <button onClick={openPopup}>Open Popup</button>
+                    <button onClick={openPopup}>Open Popup</button>
 
-                          {userData && <p>User Input: {userData}</p>}
-      <Popup ref={popupRef} onSubmit={handlePopupSubmit} />
+                    {userData && <p>User Input: {userData}</p>}
+                    <Popup ref={popupRef} onSubmit={handlePopupSubmit} />
 
                 </div>}
                 <a href="https://example.com" target="_blank">Example link</a>

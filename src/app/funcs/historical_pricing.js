@@ -1,6 +1,8 @@
 /**
  * @param {Array} historical_prices 
  * All functions below are to be used with managing historical prices of an equity
+ * The historical prices are expected to be an array of numbers where the first element 
+ * is the oldest price and the last element is the most recent price
  */
 
 import { percentage_change } from "./stock_api";

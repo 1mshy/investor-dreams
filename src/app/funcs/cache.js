@@ -35,6 +35,12 @@ export async function stock_cache_is_valid(key) {
     return cache_validity;
 }
 
+/**
+ * 
+ * @param {String} key 
+ * @param {Object} item 
+ * @returns {Promise<Boolean>} checks if the current cache of a key is valid: exists and in the proper time frame
+ */
 export async function cache_is_valid(key, item = "nothing") {
     // it is possible to have two identical keys that point to different caches
     // thus it is important that when the item is passed as a parameter it should know if it is a cache Object or nothing
@@ -52,6 +58,7 @@ export async function cache_is_valid(key, item = "nothing") {
  * @param {String} key 
  * @param {Object} value 
  * @param {Number} expiration time till expiration in minutes 
+ * @param {localforage} custom_forage - custom localforage instance
  */
 export function set_cache(key, value, expiration = DEFAULT_EXPIRATION, custom_forage = null) {
     complex_retrieve(key).then(item => {
@@ -66,14 +73,20 @@ export function set_cache(key, value, expiration = DEFAULT_EXPIRATION, custom_fo
     })
 
 }
-
+/**
+ * @param {String} key 
+ * @param {localforage} custom_forage - custom localforage instance (optional)
+ * @returns 
+ */
 export async function get_cache(key, custom_forage = null) {
     const item = await complex_retrieve(key, custom_forage);
     const valid_cache = await cache_is_valid(key, item);
     if (!item || !valid_cache) return null;
     return item;
 }
-
+/**
+ * Clears most cache from the application storage
+ */
 export function clear_cache() {
     localStorage.clear();
     localforage.clear();
@@ -88,20 +101,24 @@ export function clear_cache() {
 
 /**
  * basic wrapper around the localStorage API
+ * @param {String} key - key of the item to store
+ * @param {String} value - value of the item to store
  */
 export function store(key, value) {
     localStorage.setItem(key, value)
 }
 /**
  * basic wrapper around the localStorage API
+ * @param {String} key - key of the item to retrieve
  */
 export function retrieve(key) {
     return localStorage.getItem(key)
 }
 /**
  * Used to store Objects, arrays, and other complex data types to a database
- * @param {String} key 
- * @param {Object} value 
+ * @param {String} key - key of the item to store
+ * @param {Object} value - value of the item to store
+ * @param {localforage} custom_forage - custom localforage instance (optional)
  */
 export function complex_store(key, value, custom_forage = null) {
     if (custom_forage) {
@@ -111,7 +128,8 @@ export function complex_store(key, value, custom_forage = null) {
 }
 /**
  * 
- * @param {String} key 
+ * @param {String} key - key of the item to retrieve
+ * @param {localforage} custom_forage - custom localforage instance (optional)
  * @returns {Object}
  */
 export async function complex_retrieve(key, custom_forage = null) {
