@@ -48,6 +48,7 @@ export default class Playground extends Component {
             create_sector_popup: false,
             ticker_search: "",
             show_loading_ticker_search: false,
+            show_sort_button: false, // show the sort button or the unsort button
             custom_sectors: {
                 // example
                 // "Top 20": {
@@ -106,8 +107,10 @@ export default class Playground extends Component {
         if (custom_sectors[sector]) {
             if (custom_sectors[sector].should_sort) {
                 this.set_tickers(custom_sectors[sector].tickers);
+                this.setState({ show_sort_button: false }); // show unsort button
             } else {
                 this.set_tickers(custom_sectors[sector].tickers, () => { });
+                this.setState({ show_sort_button: true }); // show sort button
             }
             return;
         }
@@ -233,7 +236,7 @@ export default class Playground extends Component {
         let default_sector = TOP_20;
         for (const sector of Object.keys(custom_sectors)) {
             if (custom_sectors[sector].function) {
-                custom_sectors[sector]= {...custom_sectors[sector], ...(await eval(custom_sectors[sector].function))}
+                custom_sectors[sector] = { ...custom_sectors[sector], ...(await eval(custom_sectors[sector].function)) }
             }
             // TODO allow user to set default sector
             if (!default_sector && custom_sectors[sector].default) {
@@ -245,7 +248,7 @@ export default class Playground extends Component {
     }
 
     render() {
-        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors, default_sector } = this.state;
+        const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors, default_sector, show_sort_button } = this.state;
         console.log(ticker_symbols)
         return (
             <ThemeProvider theme={theme}>
@@ -258,8 +261,12 @@ export default class Playground extends Component {
                                 <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
                                 <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
                                 <Button onClick={() => {
-                                    this.setState({ ticker_symbols: this.state.ticker_symbols_before_sort });
-                                }}>Unsort</Button>
+                                    if (show_sort_button)
+                                        this.set_sorting(sort_method);
+                                    else
+                                        this.setState({ ticker_symbols: this.state.ticker_symbols_before_sort });
+                                    this.setState({ show_sort_button: !show_sort_button });
+                                }}>{show_sort_button ? "Sort" : "Unsort"}</Button>
                                 {ticker_search !== "" && <Button onClick={() => this.searching_ticker("")}>Clear</Button>}
                             </Grid2>
                         </SoftPaper>
