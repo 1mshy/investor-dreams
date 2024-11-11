@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 // possible reddit function
 export async function extractInfo() {
+    return;
     const json_data = await invoke("reddit_request_api", { url: 'https://oauth.reddit.com/r/apple/new/' });
     const formatted_json = JSON.parse(json_data);
     console.log(formatted_json)
