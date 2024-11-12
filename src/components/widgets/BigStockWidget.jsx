@@ -1,4 +1,4 @@
-import { get_five_year_prices, get_month_prices, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
+import { get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
@@ -65,6 +65,7 @@ const BigStockWidget = (props) => {
     const percent_change_year = get_percent_change_year(historical_prices);
     const percent_change_five_year = get_percent_change_five_year(historical_prices);
     const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
+    const percent_change_all = get_percent_change_all(historical_prices);
 
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2] : ""
 
@@ -144,6 +145,7 @@ const BigStockWidget = (props) => {
                         <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_graph_prices(get_year_prices(historical_prices)) }} />
                         <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_graph_prices(get_five_year_prices(historical_prices)) }} />
                         <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_graph_prices(get_ten_year_prices(historical_prices)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_graph_prices(historical_prices) }} />
                     </div>
                     <div className={"date"}>
                         {date}
