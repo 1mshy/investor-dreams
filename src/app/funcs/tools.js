@@ -45,7 +45,8 @@ export function format_number(number) {
  * @returns 
  */
 export function format_number_with_commas(number) {
-    return `${number}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if(isNaN(number)) return ""; 
+    return `${Number(number).toFixed(2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 /**

@@ -304,11 +304,11 @@ function is_error(stock_data) {
  * 
  * @param {Number} current 
  * @param {Number} old 
- * @returns {Number}
+ * @returns {Number} percentage represented as a number
+ * @example percentage_change(10, 5) -> 100%
  */
 export function percentage_change(current, old) {
     return (current - old) / old * 100;
-
 }
 
 export function set_api_key() {

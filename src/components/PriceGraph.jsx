@@ -11,6 +11,10 @@ import {
     Legend,
     Filler,
 } from 'chart.js';
+import PercentageFormat from './PercentageFormat';
+import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
+import { percentage_change } from '@/app/funcs/stock_api';
+import { user_settings } from '@/app/config/settings';
 
 ChartJS.register(
     CategoryScale,
@@ -114,8 +118,15 @@ class PriceGraph extends Component {
 
                         // Set custom text for the tooltip
                         if (tooltipModel.body) {
+                            const { prices } = this.props;
                             const value = tooltipModel.dataPoints[0].raw;
-                            tooltipEl.innerHTML = `<div><strong>Price:</strong> ${value}</div>`;
+                            const current_price = prices[prices.length - 1];
+                            const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
+                            const are_different_numbers = unformat_number(current_price) !== unformat_number(value)
+                            tooltipEl.innerHTML = `<div><strong>Price:</strong> ${format_currency(value)}</div>`;
+                            console.log(user_settings.show_relative_prices_on_graph)
+                            if (user_settings.show_relative_prices_on_graph.value && are_different_numbers)
+                                tooltipEl.innerHTML += `<div><strong>Relatively:</strong> ${format_percentage(!isNaN(percent_change) ? percent_change : 0)}</div>`;
                             const formatDate = (dateString) => {
                                 const date = new Date(dateString);
                                 date.setHours(12)
