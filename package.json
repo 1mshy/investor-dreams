@@ -13,8 +13,8 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
+    "@mui/icons-material": "^5.15.18",
+    "@mui/material": "^5.16.7",
     "@tauri-apps/api": "^2.0.0-rc.0",
     "@tauri-apps/cli-win32-x64-msvc": "^2.1.0",
     "@tauri-apps/plugin-shell": "^2.0.0",

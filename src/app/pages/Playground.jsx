@@ -11,6 +11,7 @@ import {
 import { SoftPaper, theme } from '@/app/mui/theme';
 import SectorSelect from '@/app/ui_components/misc/SectorSelect';
 import { Button, Stack, ThemeProvider } from '@mui/material';
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Component } from 'react';
 /**
  * css imports
@@ -253,19 +254,21 @@ export default class Playground extends Component {
             <ThemeProvider theme={theme}>
                 <div className={"playground"} >
                     <div className={"generic-header"} >
-                        <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} spacing={2} direction={"row"} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
-                            <SectorSelect set_sector={this.set_sector} custom_sectors={Object.keys(custom_sectors)} default_sector={default_sector} />
-                            <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
-                            <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
-                            <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
-                            <Button onClick={() => {
-                                if (show_sort_button)
-                                    this.set_sorting(sort_method);
-                                else
-                                    this.setState({ ticker_symbols: this.state.ticker_symbols_before_sort });
-                                this.setState({ show_sort_button: !show_sort_button });
-                            }}>{show_sort_button ? "Sort" : "Unsort"}</Button>
-                            {ticker_search !== "" && <Button onClick={() => this.searching_ticker("")}>Clear</Button>}
+                        <SoftPaper data-tauri-drag-region elevation={8} component={Stack} marginBottom={0} square width={"100%"} style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}>
+                            <Grid2 container marginLeft={5} marginTop={1} marginBottom={1} md={{ flexGrow: 1 }} columnGap={1} style={{ alignItems: "center" }} data-tauri-drag-region>
+                                <SectorSelect set_sector={this.set_sector} custom_sectors={Object.keys(custom_sectors)} default_sector={default_sector} />
+                                <EasySelection label="Sort" content={this.sorting_content} default={sort_method} />
+                                <Link to="/home" className={"homepage-navButton"} style={{ marginLeft: "auto", order: 2, height: "auto" }}>Home</Link>
+                                <LoadingTextField id='searchBar' label="Stock Search" variant='outlined' color='primary' onChange={e => this.searching_ticker(e.target.value)} value={ticker_search} loading={show_loading_ticker_search} />
+                                <Button onClick={() => {
+                                    if (show_sort_button)
+                                        this.set_sorting(sort_method);
+                                    else
+                                        this.setState({ ticker_symbols: this.state.ticker_symbols_before_sort });
+                                    this.setState({ show_sort_button: !show_sort_button });
+                                }}>{show_sort_button ? "Sort" : "Unsort"}</Button>
+                                {ticker_search !== "" && <Button onClick={() => this.searching_ticker("")}>Clear</Button>}
+                            </Grid2>
                         </SoftPaper>
                     </div>
                     <div className={"playground-content"} >
