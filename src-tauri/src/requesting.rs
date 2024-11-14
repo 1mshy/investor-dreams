@@ -55,29 +55,28 @@ pub async fn reddit_request_api(url: String) -> Result<String, String> {
 #[command]
 pub async fn req_nasdaq_info() -> String {
     let url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true";
-    let info = match get_request(url).await {
+    match get_request(url).await {
         Ok(response_text) => response_text,
         Err(e) => format!("Error: {}", e),
-    };
-    return info;
+    }
 }
 
 #[command]
 pub async fn get_all_static_ticker_info() -> String {
     let url = "https://www.slickcharts.com/sp500";
-    return match get_request(url).await {
+    match get_request(url).await {
         Ok(response_text) => response_text,
         Err(e) => format!("Error: {}", e),
-    };
+    }
 }
 
 #[command]
 pub async fn request_deep() -> String {
     let url = "https://api.nasdaq.com/api/quote/AAPL/chart?assetclass=stocks&fromdate=2000-08-16&todate=2024-08-16";
-    return match get_request(url).await {
+    match get_request(url).await {
         Ok(response_text) => response_text,
         Err(e) => format!("Error: {}", e),
-    };
+    }
 }
 /*
 Good to know apis:

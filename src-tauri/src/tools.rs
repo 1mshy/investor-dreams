@@ -6,18 +6,18 @@ use tauri::command;
 
 #[command]
 pub async fn save_json_file(filename: String, json_content: String) -> String {
-    return match save_file_to_downloads(&filename, json_content).await {
+    match save_file_to_downloads(&filename, json_content).await {
         Ok(path) => format!("File saved to: {:?}", path),
         Err(e) => format!("Failed to save file {:?}", e),
-    };
+    }
 }
 
 #[command]
 pub async fn save_json_to_folder(filename: String, folder: String, json_content: String) -> String {
-    return match save_file_to_downloads_with_folder(&filename, &folder, json_content).await {
+    match save_file_to_downloads_with_folder(&filename, &folder, json_content).await {
         Ok(path) => format!("File saved to: {:?}", path),
         Err(e) => format!("Failed to save file {:?}", e),
-    };
+    }
 }
 
 async fn save_file_to_downloads(filename: &str, content: String) -> io::Result<PathBuf> {
