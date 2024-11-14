@@ -6,16 +6,15 @@ use crate::sensitive_constants;
 #[command]
 pub fn get_api_keys() -> String {
     let env_keys = env::var("API_KEY");
-    let api_keys = match env_keys {
+    match env_keys {
         Ok(keys) => keys,
         Err(_) => sensitive_constants::BUILD_API_KEYS.to_string(),
-    };
-    return api_keys;
+    }
 }
 
 #[command]
 pub fn get_username() -> String {
-    return whoami::realname();
+    whoami::realname()
 }
 
 #[command]
