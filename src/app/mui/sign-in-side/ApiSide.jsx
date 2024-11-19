@@ -7,10 +7,10 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import ApiCard from './ApiCard';
 
-export default function ApiSide(props) {
+export default function ApiSide() {
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
+    <AppTheme>
+      {/* <CssBaseline enableColorScheme /> */}
       {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
       <Stack
         direction="column"

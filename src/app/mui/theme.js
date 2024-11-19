@@ -22,7 +22,25 @@ export const theme = createTheme({
         },
       },
     },
-  },
+    // MuiCssBaseline: {
+    //   styleOverrides: {
+    //     body: {
+    //       position: 'relative', // Enable pseudo-elements
+    //       minHeight: '100%',
+    //       '&::before': {
+    //         content: '""',
+    //         display: 'block',
+    //         position: 'absolute',
+    //         inset: 0,
+    //         zIndex: -1,
+    //         backgroundImage:
+    //           'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+    //         backgroundRepeat: 'no-repeat',
+    //       },
+    //     },
+    //   },
+    // },
+  }
 });
 
 /**

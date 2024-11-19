@@ -13,6 +13,9 @@ import { invoke } from '@tauri-apps/api/core';
 import Setup from './pages/Setup';
 import { set_api_keys } from './funcs/stock_api';
 import { format_api_keys } from './funcs/tools';
+import { theme } from './mui/theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import Background from './mui/Background';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -71,23 +74,23 @@ const BasePage = () => {
   }, []);
 
   return (
-    <div>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        limit={4}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
-      {!errors && <RouterProvider router={router} />}
-      {errors && has_checked && <div> <Setup /></div>}
-    </div>
+      <Background>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          limit={4}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        {!errors && <RouterProvider router={router} />}
+        {errors && has_checked && <div> <Setup /></div>}
+      </Background>
   );
 };
 
