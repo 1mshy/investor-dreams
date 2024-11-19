@@ -52,7 +52,7 @@ export default function ApiCard() {
   };
 
   const handleSubmit = async (event) => {
-    if (emailError || passwordError) {
+    if (emailError) {
       event.preventDefault();
       return;
     }

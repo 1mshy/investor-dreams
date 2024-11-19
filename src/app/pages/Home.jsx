@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
 import LineChartWithCustomTooltip from "@/components/LineChartWithCustomTooltip";
 import { extractInfo } from "../funcs/reddit";
+import Background from "../mui/Background";
 
 export default class Home extends Component {
     constructor(props) {
