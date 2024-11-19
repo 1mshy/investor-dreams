@@ -151,7 +151,7 @@ export default function ApiCard() {
             id="email"
             type="email"
             name="email"
-            placeholder="your@email.com"
+            placeholder="45679b81ee52a455fafb8afff8386b05,..."
             autoComplete="email"
             autoFocus
             required
@@ -179,8 +179,8 @@ export default function ApiCard() {
             error={passwordError}
             helperText={passwordErrorMessage}
             name="password"
-            placeholder="••••••"
-            type="password"
+            placeholder="abcd keep this empty"
+            type="text"
             id="password"
             autoComplete="current-password"
             autoFocus
@@ -190,10 +190,6 @@ export default function ApiCard() {
             color={passwordError ? 'error' : 'primary'}
           />
         </FormControl>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember keys"
-        />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
           Submit
