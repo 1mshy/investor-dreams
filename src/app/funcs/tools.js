@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import { open } from "@tauri-apps/plugin-shell";
 import { toast } from "react-toastify";
 
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -119,6 +120,24 @@ export function invoke_with_timeout(command, args = {}, timeout = 7000) {
             setTimeout(() => reject(new Error('Operation timed out')), timeout)
         )
     ]);
+}
+
+export async function open_external_link(url) {
+    return await open(url);
+}
+
+/**
+ * 
+ * @param {String} keys
+ * @returns {Array<String>} 
+ */
+export function format_api_keys(keys) {
+    if(!keys || keys=== "") return null;
+    let api_keys = keys.trim().split(",").map(key => key.trim()).filter(a => a !== "");
+    if (Math.random() > 0.5) {
+        api_keys = api_keys.reverse();
+    }
+    return api_keys;
 }
 
 

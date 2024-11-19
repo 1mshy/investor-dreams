@@ -15,7 +15,6 @@ import { SoftPaper } from "@/app/mui/theme";
  */
 const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_month, onClick, historical_prices, historical_data, show_name = true }) => {
     const month_prices = get_month_prices(historical_prices)
-    console.log(historical_data)
     return (
         <>
             <SoftPaper className={"container"} style={{ height: "max-content" }} onClick={() => {
