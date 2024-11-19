@@ -3,23 +3,17 @@ import localforage from "localforage";
 import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
 import { delay, invoke_with_timeout, unformat_number } from "./tools";
+
 let api_keys = []
+
+export function set_api_keys(new_api_keys) {
+    api_keys = new_api_keys;
+}
 /**
  * data on stock tickers, not related to price
  * ex: location, sector, industry, etc
  */
 let all_data = undefined;
-/**
- * @desc Get the api key from the backend
- */
-invoke("get_api_keys")
-    .then((keys) => {
-        api_keys = keys.split(",");
-        if (Math.random() > 0.5) {
-            api_keys = api_keys.reverse();
-        }
-    })
-    .catch((error) => console.error(`No api key found!!!: ${error}`));
 
 const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&outputsize=5000"
 let stop_requesting = false;
@@ -310,11 +304,6 @@ function is_error(stock_data) {
 export function percentage_change(current, old) {
     return (current - old) / old * 100;
 }
-
-export function set_api_key() {
-    // api_key = 
-}
-
 
 
 /**

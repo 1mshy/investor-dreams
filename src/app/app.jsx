@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../app/css/Widgets.css";
-import { clear_cache, retrieve, store } from './funcs/cache';
+import { clear_cache, complex_retrieve, complex_store, retrieve, store } from './funcs/cache';
 import { log } from './funcs/logger';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -9,6 +9,10 @@ import Home from './pages/Home';
 import Playground from './pages/Playground';
 import Analysis from './pages/Analysis';
 import NotFound from './pages/NotFound';
+import { invoke } from '@tauri-apps/api/core';
+import Setup from './pages/Setup';
+import { set_api_keys } from './funcs/stock_api';
+import { format_api_keys } from './funcs/tools';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -38,14 +42,32 @@ const BasePage = () => {
     }
   ]);
 
-  const current_version = "1.0.12";
+  const current_version = "1.0.14";
+  const [errors, set_errors] = useState(true);
+  const [has_checked, set_has_checked] = useState(false);
   useEffect(() => {
-    const set_version = retrieve("current_version");
-    if (!set_version || set_version !== current_version) {
-      log("New version detected, clearing cache", set_version, current_version);
-      clear_cache();
-      store("current_version", current_version);
-    }
+    const become_async = async () => {
+      const set_version = await complex_retrieve("current_version");
+      if (!set_version || set_version !== current_version) {
+        console.log("New version detected, clearing cache", set_version, current_version);
+        clear_cache();
+        await complex_store("current_version", current_version);
+      }
+      let keys = format_api_keys(await invoke("get_api_keys")); // checks for keys built into the binary as a string
+      if (!keys) {
+        keys = await complex_retrieve("user_api_keys"); // checks for keys set by the user, already in an array
+        if (!keys) {
+          console.log(keys)
+          console.error(`No twelve data api key found!!!`)
+          set_has_checked(true)
+          return
+        }
+      }
+      set_api_keys(keys)
+      set_errors(false)
+      set_has_checked(true)
+    };
+    become_async();
   }, []);
 
   return (
@@ -63,7 +85,8 @@ const BasePage = () => {
         pauseOnHover
         theme="dark"
       />
-      <RouterProvider router={router} />
+      {!errors && <RouterProvider router={router} />}
+      {errors && has_checked && <div> <Setup /></div>}
     </div>
   );
 };
