@@ -1,22 +1,21 @@
 import { cache_is_valid, STOCK_CACHE } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
 import { get_state } from "@/app/funcs/states";
-import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS, percentage_change } from "@/app/funcs/stock_api";
-import { delay, unformat_number } from "@/app/funcs/tools";
-import { CurrencyTextField } from "@/app/mui/other";
+import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS } from "@/app/funcs/stock_api";
+import { delay } from "@/app/funcs/tools";
 import { BackGroundPaper, theme } from "@/app/mui/theme";
 import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
 import StockWidget from "@/components/widgets/StockWidget";
 import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography } from '@mui/material';
 import localforage from "localforage";
-import { Component } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
-import { filter_tickers, request_database } from "../funcs/analysis";
+import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
+import { filter_tickers } from "../funcs/analysis";
 import { save_dynamic_sector } from "../funcs/sectors";
 import RangeSlider from "../ui_components/misc/MarketCapSlider";
 
@@ -47,7 +46,13 @@ export default class Analysis extends Component {
         this.fetch_all_data = this.fetch_all_data.bind(this);
         this.sort_all_tickers = this.sort_all_tickers.bind(this);
         this.toggle_searching_options = this.toggle_searching_options.bind(this);
+
+        this.save_popup_ref = React.createRef(null);
     }
+
+    openPopup() {
+        this.save_popup_ref.current.open();
+    };
 
     async componentDidMount() {
         const all_symbols = await get_all_symbols();
@@ -208,12 +213,12 @@ export default class Analysis extends Component {
                             Load
                         </Button>
                         <div>
-                        <Typography id="track-false-slider" gutterBottom>
-                            Market Cap
-                        </Typography>
-                        <RangeSlider callback={(left, right) => {
-                            this.setState({ searching_options: { ...searching_options, min_market_cap: left, max_market_cap: right } })
-                        }} />
+                            <Typography id="track-false-slider" gutterBottom>
+                                Market Cap
+                            </Typography>
+                            <RangeSlider callback={(left, right) => {
+                                this.setState({ searching_options: { ...searching_options, min_market_cap: left, max_market_cap: right } })
+                            }} />
                         </div>
                         {/* <CurrencyTextField variant="standard" label="Min Market Cap" value={searching_options.min_market_cap} on_change={(value) => {
                             console.log(value)
@@ -258,11 +263,11 @@ export default class Analysis extends Component {
                                 this.setState({ searching_options: { ...searching_options, reverse: !searching_options.reverse } })
                             }} />
                         </FormControl>
-                        <Button onClick={() => {
-                            save_dynamic_sector("test", searching_options)
-                        }}>
-                            Save
-                        </Button>
+
+                        <CustomSectorNamePopup ref={this.save_popup_ref} onSubmit={(user_input) => {
+                            if (user_input && user_input !== "")
+                                save_dynamic_sector(user_input, searching_options)
+                        }} />
 
                         <div style={{ flex: 1 }}>
                             <TableDownloadPopup downloadable_stores={downloadable_stores}>

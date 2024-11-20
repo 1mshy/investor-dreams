@@ -25,7 +25,6 @@ const BasePage = () => {
     {
       path: "/home",
       element: <Home />,
-      errorElement: <NotFound />,
     },
     {
       path: "/playground",
@@ -42,6 +41,7 @@ const BasePage = () => {
     {
       path: "*",
       element: <NotFound />,
+      errorElement: <div>bad</div>,
     }
   ]);
 

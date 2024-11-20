@@ -1,9 +1,7 @@
-;
-
+import { SolidPaper } from '@/app/mui/theme';
 import { Backdrop, Dialog } from '@mui/material';
 import { Transition } from '../../app/funcs/themes';
 import BigStockWidget from "./BigStockWidget";
-import { SoftPaper, SolidPaper } from '@/app/mui/theme';
 
 /**
  * @param {String} symbol
@@ -37,7 +35,6 @@ const PopupWidget = (props) => {
                         height: "100%",
                         maxHeight: "80%",
                         zIndex: 1300, // Ensure Dialog has lower z-index than the tooltip
-
                     }
                 }}
             >

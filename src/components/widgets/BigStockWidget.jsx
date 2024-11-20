@@ -33,7 +33,6 @@ const BigStockWidget = (props) => {
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
 
-
     const popupRef = useRef();
     const [userData, setUserData] = useState(null);
 
@@ -99,7 +98,6 @@ const BigStockWidget = (props) => {
                 <MarketColouredBadge >
                     <div className={"ticker_symbol"}>{symbol}</div>
                 </MarketColouredBadge>
-
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"} >
