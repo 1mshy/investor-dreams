@@ -21,8 +21,8 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let response_text = response.text().await?;
     Ok(response_text)
 }
-
-async fn yahoo_testing() {
+#[tauri::command]
+pub async fn yahoo_testing() {
     let provider = yahoo::YahooConnector::new().unwrap();
     let start = datetime!(2020-1-1 0:00:00.00 UTC);
     let end = datetime!(2020-1-31 23:59:59.99 UTC);
