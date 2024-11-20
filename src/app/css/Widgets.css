@@ -29,9 +29,14 @@
     font-size: 0.8rem;
     font-weight: bold;
     color: #7c8793;
-    max-width: 100ch;
-    text-wrap: 300px;
-    text-overflow: fade;
+    text-wrap: wrap;
+}
+.small_company_name {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #7c8793;
+    text-wrap: wrap;
+    max-width: 10rem;
 }
 
 .exchange {
@@ -45,6 +50,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    height:max-content;
 }
 
 .data-element {
@@ -126,8 +132,15 @@
 .widget-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 1rem;
+}
+
+.small-widget-names {
+    width: 100%; /* Or a specific width */
+    white-space: normal; /* Allows wrapping */
+    overflow-wrap: break-word; /* Breaks long words to avoid overflow */
+    word-wrap: break-word; /* Legacy support for breaking long words */
+    text-overflow: ellipsis; /* Optional: Add "..." if truncation occurs */
 }
 
 .head {

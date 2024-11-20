@@ -4,6 +4,7 @@ import { get_month_prices } from "@/app/funcs/historical_pricing";
 import PercentageFormat from "../PercentageFormat";
 import PriceGraph from "../PriceGraph";
 import { SoftPaper } from "@/app/mui/theme";
+import { format_currency_with_symbols } from "@/app/funcs/tools";
 
 /**
  * @param {String} symbol
@@ -17,22 +18,23 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
     const month_prices = get_month_prices(historical_prices)
     return (
         <>
-            <SoftPaper className={"container"} style={{ height: "max-content" }} onClick={() => {
+            <SoftPaper className={"container"} onClick={() => {
                 if (!historical_prices || !name) return;
                 onClick();
             }}>
                 <div className={"widget-header"}>
-                    <div style={{ width: "100%" }}>
+                    <div className={"small-widget-names"}>
                         <div className={"ticker_symbol"}>{symbol}</div>
-                        <div style={{ float: "right", background: "inherit", zIndex: 100000000 }}>
-                            <div className={"price-change"} style={{ background: "inherit", zIndex: 100000000 }}>
-                                {percent_change && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
-                                {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
-                            </div>
-                            <div className={"smaller-price"}>${price}</div>
+                        {show_name &&
+                            <div className={"small_company_name"}>{name}
+                            </div>}
+                    </div>
+                    <div style={{ background: "inherit", zIndex: 1000000 }}>
+                        <div className={"price-change"} style={{ background: "inherit", zIndex: 100000000 }}>
+                            {percent_change && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
+                            {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                         </div>
-                        {show_name && <div className={"company_name"}>{name}
-                        </div>}
+                        <div className={"smaller-price"}>{format_currency_with_symbols(price)}</div>
                     </div>
                 </div>
                 <div className={"content"}>
