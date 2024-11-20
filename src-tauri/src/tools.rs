@@ -5,6 +5,11 @@ use std::path::PathBuf;
 use tauri::command;
 
 #[command]
+pub async fn close_window(application_window: tauri::Window) -> Result<(), tauri::Error> {
+    application_window.destroy()
+}
+
+#[command]
 pub async fn save_json_file(filename: String, json_content: String) -> String {
     match save_file_to_downloads(&filename, json_content).await {
         Ok(path) => format!("File saved to: {:?}", path),

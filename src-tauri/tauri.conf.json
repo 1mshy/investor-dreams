@@ -17,7 +17,7 @@
         "title": "inverstor-dreams",
         "width": 1920,
         "transparent": true,
-        "decorations": true,
+        "decorations": false,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true
       }
