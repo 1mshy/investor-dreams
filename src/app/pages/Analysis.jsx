@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
-import { filter_tickers } from "../funcs/analysis";
+import { filter_tickers, request_database } from "../funcs/analysis";
 import { save_dynamic_sector } from "../funcs/sectors";
 import RangeSlider from "../ui_components/misc/MarketCapSlider";
 
