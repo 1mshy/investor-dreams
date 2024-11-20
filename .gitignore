@@ -39,3 +39,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /src-tauri/src/sensitive_constants.rs
+src-tauri/Cargo.toml
