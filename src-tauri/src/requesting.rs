@@ -1,9 +1,6 @@
 use reqwest::Client;
 use std::error::Error;
-use std::time::{Duration, UNIX_EPOCH};
-use time::OffsetDateTime;
 use tauri::command;
-use yahoo_finance_api::{self as yahoo, time::macros::datetime};
 
 /**
  * This function sends a GET request to the provided URL and returns the response text.
@@ -20,20 +17,6 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
         .await?;
     let response_text = response.text().await?;
     Ok(response_text)
-}
-#[tauri::command]
-pub async fn yahoo_testing() {
-    let provider = yahoo::YahooConnector::new().unwrap();
-    let start = datetime!(2020-1-1 0:00:00.00 UTC);
-    let end = datetime!(2020-1-31 23:59:59.99 UTC);
-    let response = match provider.get_latest_quotes("AMZN", "1d").await {
-        Ok(res) => res,
-        Err(e) => panic!("{}", e),
-    };
-    let quote = response.last_quote().unwrap();
-    let time: OffsetDateTime =
-        OffsetDateTime::from(UNIX_EPOCH + Duration::from_secs(quote.timestamp));
-    println!("At {} quote price of Apple was {}", time, quote.close);
 }
 
 async fn reddit_request(url: &str) -> Result<String, Box<dyn Error>> {

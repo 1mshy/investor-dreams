@@ -5,7 +5,7 @@ use std::env;
 
 use crate::ollama::ollama_generate;
 use crate::requesting::{
-    get_all_static_ticker_info, get_request_api, req_nasdaq_info, request_deep, reddit_request_api, yahoo_testing
+    get_all_static_ticker_info, get_request_api, req_nasdaq_info, request_deep, reddit_request_api
 };
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
@@ -70,7 +70,6 @@ pub fn run() {
             save_json_file,
             save_json_to_folder,
             close_window,
-            yahoo_testing,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
