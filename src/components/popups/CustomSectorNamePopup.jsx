@@ -3,7 +3,7 @@ import { Backdrop, Button, Dialog, TextField } from '@mui/material';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Transition } from '../../app/funcs/themes';
 
-const Popup = forwardRef(({ onSubmit }, ref) => {
+const CustomSectorNamePopup = forwardRef(({ onSubmit }, ref) => {
   const [inputData, setInputData] = useState('');
 
   // Expose `open` and `close` methods to the parent component
@@ -14,13 +14,18 @@ const Popup = forwardRef(({ onSubmit }, ref) => {
   }));
 
   const handleSubmit = () => {
+
     onSubmit(inputData);  // Send data back to parent
     setIsOpen(false);     // Close the popup
     setInputData('');     // Clear input after submit
   };
 
-  return (
-    <Backdrop open={isOpen} data-tauri-drag-region invisible={true} >
+  return <>
+    <Button onClick={() => { setIsOpen(true) }}>Save</Button>
+    <Backdrop open={isOpen} data-tauri-drag-region invisible={true} onClick={(e, reason) => {
+      console.log('fsdfsdf')
+      setIsOpen(false)
+    }}>
       <Dialog
         data-tauri-drag-region
         open={isOpen}
@@ -32,6 +37,11 @@ const Popup = forwardRef(({ onSubmit }, ref) => {
         sx={{
           justifyContent: "center",
           alignItems: "center",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          e.nativeEvent.stopImmediatePropagation();
         }}
       >
         <h3>Custom Sector Name</h3>
@@ -50,7 +60,7 @@ const Popup = forwardRef(({ onSubmit }, ref) => {
         </div>
       </Dialog>
     </Backdrop>
-  );
+  </>
 });
 
-export default Popup;
+export default CustomSectorNamePopup;

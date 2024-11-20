@@ -29,8 +29,8 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_
                             <div className={"small_company_name"}>{name}
                             </div>}
                     </div>
-                    <div style={{ background: "inherit", zIndex: 1000000 }}>
-                        <div className={"price-change"} style={{ background: "inherit", zIndex: 100000000 }}>
+                    <div style={{ background: "inherit" }}>
+                        <div className={"price-change"} style={{ background: "inherit" }}>
                             {percent_change && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
                             {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
                         </div>
