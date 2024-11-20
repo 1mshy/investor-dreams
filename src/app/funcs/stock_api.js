@@ -4,10 +4,18 @@ import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, st
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
 import { delay, invoke_with_timeout, unformat_number } from "./tools";
 
+/**
+ * Twelve data api keys. 
+ * Each key has a maximum of 500 total requests per day, and 8 requests per minute
+ */
 let api_keys = []
 
 export function set_api_keys(new_api_keys) {
     api_keys = new_api_keys;
+}
+
+export function get_num_keys() {
+    return api_keys.length;
 }
 /**
  * data on stock tickers, not related to price
