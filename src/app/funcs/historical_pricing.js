@@ -83,6 +83,7 @@ export function get_percent_change_ten_year(historical_prices) {
 }
 
 export function get_percent_change_all(historical_prices) {
+    historical_prices = historical_prices ? historical_prices : []
     return percentage_change(historical_prices[historical_prices.length - 1], historical_prices[0]);
 }
 
