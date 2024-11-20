@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
+import { Circle } from '@mui/icons-material';
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import { invoke } from '@tauri-apps/api/core';
+
 
 const Background = ({ children }) => {
   return (
@@ -8,8 +12,7 @@ const Background = ({ children }) => {
         {
           justifyContent: 'center',
           minHeight: '100%',
-        //   position: 'relative', // Required for pseudo-elements
-          overflow: 'hidden', // Prevent content spilling
+          overflow: 'hidden',
         },
         (theme) => ({
           '&::before': {
@@ -29,6 +32,14 @@ const Background = ({ children }) => {
         }),
       ]}
     >
+      <IconButton
+        style={{ position: 'absolute', top: '-0.3rem', right: '-0.3rem' }}
+        onClick={async () => {
+            await invoke("close_window");
+        }}
+      >
+        <Circle fontSize="small" color="error" />
+      </IconButton>
       {children}
     </Box>
   );
