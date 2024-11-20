@@ -126,7 +126,6 @@ class PriceGraph extends Component {
                             const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
                             const are_different_numbers = unformat_number(current_price) !== unformat_number(value)
                             tooltipEl.innerHTML = `<div><strong>Price:</strong> ${format_currency(value)}</div>`;
-                            console.log(user_settings.show_relative_prices_on_graph)
                             if (user_settings.show_relative_prices_on_graph.value && are_different_numbers)
                                 tooltipEl.innerHTML += `<div><strong>Relatively:</strong> ${format_percentage(!isNaN(percent_change) ? percent_change : 0)}</div>`;
                             const formatDate = (dateString) => {
