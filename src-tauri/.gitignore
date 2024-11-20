@@ -7,3 +7,5 @@
 /gen/schemas
 /src/sensitive_constants.rs
 /src-tauri/src/sensitive_constants.rs
+
+Cargo.lock

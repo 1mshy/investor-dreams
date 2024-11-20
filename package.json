@@ -30,9 +30,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.26.1",
-    "react-toastify": "^10.0.5",
-    "selenium-webdriver": "^4.21.0",
-    "tls": "^0.0.1"
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@tauri-apps/cli": ">=2.0.0-rc.0",
