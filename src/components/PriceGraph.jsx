@@ -74,6 +74,8 @@ class PriceGraph extends Component {
 
         const options = {
             responsive: true,
+            // might solve issues with formatting in the future
+            // maintainAspectRatio: !this.props.small,
             scales: {
                 x: {
                     display: false,
@@ -81,7 +83,7 @@ class PriceGraph extends Component {
                 y: {
                     display: false,
                     beginAtZero: false,
-                }
+                },
             },
             plugins: {
                 legend: {
