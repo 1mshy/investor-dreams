@@ -44,9 +44,6 @@ export default class Home extends Component {
             top_3_changes,
             bottom_3_changes,
         });
-
-        const data = await request_ticker_data("AAPL");
-        this.setState({ candle_stick_data: data.stock_data.values })
     }
 
     render() {

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Stack, TextField } from '@mui/material';
 import SignInSide from '../mui/sign-in-side/SignInSide';
 import ApiSide from '../mui/sign-in-side/ApiSide';
-import TradingViewWidget from '@/components/TradingViewWidget';
+import TradingViewWidget from '@/components/widgets/TradingViewWidget';
 
 export default class TradingView extends Component {
     constructor(props) {
