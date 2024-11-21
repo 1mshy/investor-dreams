@@ -13,7 +13,11 @@ function TradingViewWidget(props) {
         script.async = true;
         script.innerHTML = JSON.stringify({
             autosize: true,
-            hide_top_toolbar: true,
+            hide_top_toolbar: false,
+            hide_side_toolbar: false,
+            withdateranges: true,
+            save_image: false,
+            details: true,
             allow_symbol_change: false,
             calendar: false,
             interval: "D",

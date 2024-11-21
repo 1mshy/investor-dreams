@@ -36,11 +36,12 @@ const PopupWidget = (props) => {
                         maxHeight: "80%",
                         zIndex: 1300, // Ensure Dialog has lower z-index than the tooltip
                         overflow: "hidden",
+                        padding: 0,
                         
                     }
                 }}
             >
-                <BigStockWidget {...props} />
+                <BigStockWidget data-tauri-drag-region {...props} />
             </Dialog>
         </Backdrop>
     );

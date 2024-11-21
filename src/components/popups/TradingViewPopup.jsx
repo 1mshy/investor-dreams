@@ -35,10 +35,18 @@ const TradingViewPopup = (props) => {
                         height: "100%",
                         maxHeight: "85%",
                         zIndex: 1300, // Ensure Dialog has lower z-index than the tooltip
+                        padding: 0,
                     }
                 }}
             >
-                <TradingViewWidget {...props} />
+                {/* Allows dragging from top of popup */}
+                <div style={{
+                    padding: "1rem",
+                    width: "100%",
+                    height: "100%",
+                }} data-tauri-drag-region>
+                    <TradingViewWidget {...props} />
+                </div>
             </Dialog>
         </Backdrop>
     );
