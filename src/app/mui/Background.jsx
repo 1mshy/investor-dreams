@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { Circle } from '@mui/icons-material';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -7,6 +7,14 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Background = ({ children, router }) => {
+  const [not_macos, set_not_macos] = useState(false);
+
+  useEffect(() => {
+    invoke("is_macos").then((is_macos) => {
+      console.log(is_macos)
+      set_not_macos(!is_macos);
+    });
+  }, []);
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -42,22 +50,24 @@ const Background = ({ children, router }) => {
         }),
       ]}
     >
-      <IconButton
-        style={{ position: 'absolute', top: '-0.3rem', right: '-0.3rem' }}
-        onClick={async () => {
-          await invoke("close_window");
-        }}
-      >
-        <Circle fontSize="small" color="error" />
-      </IconButton>
-      <IconButton
-        style={{ position: 'absolute', top: '-0.3rem', right: '1rem' }}
-        onClick={async () => {
-          handleBack();
-        }}
-      >
-        <Circle fontSize="small" color="primary" />
-      </IconButton>
+      {not_macos && <>
+        <IconButton
+          style={{ position: 'absolute', top: '-0.3rem', right: '-0.3rem' }}
+          onClick={async () => {
+            await invoke("close_window");
+          }}
+        >
+          <Circle fontSize="small" color="error" />
+        </IconButton>
+        <IconButton
+          style={{ position: 'absolute', top: '-0.3rem', right: '1rem' }}
+          onClick={async () => {
+            handleBack();
+          }}
+        >
+          <Circle fontSize="small" color="primary" />
+        </IconButton>
+      </>}
       {children}
     </Box>
   );

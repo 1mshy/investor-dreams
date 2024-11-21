@@ -18,6 +18,15 @@ pub async fn save_json_file(filename: String, json_content: String) -> String {
 }
 
 #[command]
+pub async fn is_macos() -> bool {
+    #[cfg(target_os = "macos")]
+    return true;
+    
+    #[cfg(not(target_os = "macos"))]
+    return false;
+}
+
+#[command]
 pub async fn save_json_to_folder(filename: String, folder: String, json_content: String) -> String {
     match save_file_to_downloads_with_folder(&filename, &folder, json_content).await {
         Ok(path) => format!("File saved to: {:?}", path),
@@ -55,7 +64,11 @@ async fn save_file_to_downloads(filename: &str, content: String) -> io::Result<P
     Ok(file_path)
 }
 
-async fn save_file_to_downloads_with_folder(filename: &str, folder: &str, content: String) -> io::Result<PathBuf> {
+async fn save_file_to_downloads_with_folder(
+    filename: &str,
+    folder: &str,
+    content: String,
+) -> io::Result<PathBuf> {
     // Get the user's directories
     let user_dirs = UserDirs::new().ok_or_else(|| {
         io::Error::new(io::ErrorKind::NotFound, "Could not find user directories")
@@ -63,7 +76,10 @@ async fn save_file_to_downloads_with_folder(filename: &str, folder: &str, conten
 
     // Get the Downloads directory
     let downloads_dir = user_dirs.download_dir().ok_or_else(|| {
-        io::Error::new(io::ErrorKind::NotFound, "Could not find Downloads directory")
+        io::Error::new(
+            io::ErrorKind::NotFound,
+            "Could not find Downloads directory",
+        )
     })?;
 
     // Construct the full path for the folder only (excluding the filename)
