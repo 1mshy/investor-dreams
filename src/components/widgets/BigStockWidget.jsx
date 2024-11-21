@@ -85,7 +85,7 @@ const BigStockWidget = (props) => {
                 e.nativeEvent.stopImmediatePropagation();
             }}
         >
-            <div className={"head"}>
+            <div className={"head"} data-tauri-drag-region>
                 <MarketColouredBadge >
                     <div className={"ticker_symbol"}>{symbol}</div>
                 </MarketColouredBadge>
