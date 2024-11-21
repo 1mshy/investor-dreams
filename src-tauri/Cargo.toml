@@ -8,7 +8,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.dev]
 incremental = true # Compile your binary in smaller steps.
-opt-level = 3 # Prioritizes small binary size. Use `3` if you prefer speed.
+opt-level = 2 # Prioritizes small binary size. Use `3` if you prefer speed.
 strip = false # Ensures debug symbols are removed.
 
 [profile.release]
