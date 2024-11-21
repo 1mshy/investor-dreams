@@ -35,17 +35,6 @@ const BigStockWidget = (props) => {
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
 
-    const popupRef = useRef();
-    const [userData, setUserData] = useState(null);
-
-    const openPopup = () => {
-        popupRef.current.open();
-    };
-
-    const handlePopupSubmit = (data) => {
-        setUserData(data);
-    };
-
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
@@ -213,15 +202,10 @@ const BigStockWidget = (props) => {
                             {article.title}
                         </div>
                     })}
-                    <button onClick={openPopup}>Open Popup</button>
-
-                    {userData && <p>User Input: {userData}</p>}
-                    <Popup ref={popupRef} onSubmit={handlePopupSubmit} />
 
                 </div>}
-                <a href="https://example.com" target="_blank">Example link</a>
 
-                <div className={"info-title"} >
+                {/* <div className={"info-title"} >
                     {"LLM generated summary"}
                 </div>
                 <div>
@@ -242,7 +226,7 @@ const BigStockWidget = (props) => {
                         </Button>
                     )}
                     {ollama_summary}
-                </div>
+                </div> */}
             </div>}
         </div>
     );
