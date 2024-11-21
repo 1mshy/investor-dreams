@@ -9,10 +9,11 @@ import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "../ButtonPercentageFormat";
 import PercentageFormat from "../PercentageFormat";
-
-import "@/app/css/Widgets.css";
 import { useRef } from "react";
 import Popup from "../popups/Popup";
+import TradingViewPopup from "../popups/TradingViewPopup";
+
+import "@/app/css/Widgets.css";
 
 /**
  * @param {String} symbol
@@ -32,6 +33,7 @@ const BigStockWidget = (props) => {
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
+    const [trading_view_popup, set_trading_view_popup] = useState(false);
 
     const popupRef = useRef();
     const [userData, setUserData] = useState(null);
@@ -131,10 +133,14 @@ const BigStockWidget = (props) => {
                             </div>
                         </div>
                     </div>
+                    <Button onClick={() => {
+                        set_trading_view_popup(!trading_view_popup);
+                    }}>View on tradingview</Button>
 
                 </div>
                 }
                 <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data} />
+                {trading_view_popup && <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />}
                 {historical_prices && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />

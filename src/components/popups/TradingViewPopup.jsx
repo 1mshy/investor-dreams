@@ -1,7 +1,7 @@
 import { SolidPaper } from '@/app/mui/theme';
 import { Backdrop, Dialog } from '@mui/material';
 import { Transition } from '../../app/funcs/themes';
-import BigStockWidget from "./BigStockWidget";
+import TradingViewWidget from '../widgets/TradingViewWidget';
 
 /**
  * @param {String} symbol
@@ -15,7 +15,7 @@ import BigStockWidget from "./BigStockWidget";
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  *      It is large and includes the most detail out of all the stock widgets
  */
-const PopupWidget = (props) => {
+const TradingViewPopup = (props) => {
     const { onClick, open } = props;
 
     return (
@@ -31,18 +31,16 @@ const PopupWidget = (props) => {
                 PaperProps={{
                     sx: {
                         width: "100%",
-                        maxWidth: "90%",
+                        maxWidth: "95%",
                         height: "100%",
-                        maxHeight: "80%",
+                        maxHeight: "85%",
                         zIndex: 1300, // Ensure Dialog has lower z-index than the tooltip
-                        overflow: "hidden",
-                        
                     }
                 }}
             >
-                <BigStockWidget {...props} />
+                <TradingViewWidget {...props} />
             </Dialog>
         </Backdrop>
     );
 };
-export default PopupWidget;
+export default TradingViewPopup;
