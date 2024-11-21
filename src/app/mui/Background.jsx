@@ -3,9 +3,19 @@ import { Box, IconButton } from '@mui/material';
 import { Circle } from '@mui/icons-material';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { invoke } from '@tauri-apps/api/core';
+import { useNavigate } from 'react-router-dom';
 
 
-const Background = ({ children }) => {
+const Background = ({ children, router }) => {
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.navigate(-1); // Go back to the previous page
+    } else {
+      console.log("No history to go back to.");
+    }
+  };
+
   return (
     <Box
       sx={[
@@ -35,10 +45,18 @@ const Background = ({ children }) => {
       <IconButton
         style={{ position: 'absolute', top: '-0.3rem', right: '-0.3rem' }}
         onClick={async () => {
-            await invoke("close_window");
+          await invoke("close_window");
         }}
       >
         <Circle fontSize="small" color="error" />
+      </IconButton>
+      <IconButton
+        style={{ position: 'absolute', top: '-0.3rem', right: '1rem' }}
+        onClick={async () => {
+          handleBack();
+        }}
+      >
+        <Circle fontSize="small" color="primary" />
       </IconButton>
       {children}
     </Box>

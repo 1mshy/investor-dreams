@@ -16,6 +16,7 @@ import { format_api_keys } from './funcs/tools';
 import { theme } from './mui/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import Background from './mui/Background';
+import TradingView from './pages/TradingView';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ const BasePage = () => {
     {
       path: "/portfolio",
       element: <Portfolio />,
+    },
+    {
+      path: "/tradingview",
+      element: <TradingView />,
     },
     {
       path: "*",
@@ -74,23 +79,23 @@ const BasePage = () => {
   }, []);
 
   return (
-      <Background>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          limit={4}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        {!errors && <RouterProvider router={router} />}
-        {errors && has_checked && <div> <Setup /></div>}
-      </Background>
+    <Background router={router}>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        limit={4}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      {!errors && <RouterProvider router={router} />}
+      {errors && has_checked && <div> <Setup /> </div>}
+    </Background>
   );
 };
 
