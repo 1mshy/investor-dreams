@@ -13,6 +13,7 @@ opt-level = 2 # Prioritizes small binary size. Use `3` if you prefer speed.
 strip = false # Ensures debug symbols are removed.
 
 [profile.release]
+incremental = true # Compile your binary in smaller steps.
 codegen-units = 256 # Allows LLVM to perform better optimization.
 lto = true # Enables link-time-optimizations.
 opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
