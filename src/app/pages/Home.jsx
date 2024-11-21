@@ -7,7 +7,7 @@ import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
 import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
-import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
+import { nasdaq_sorted_by, request_ticker_data } from "@/app/funcs/stock_api";
 import LineChartWithCustomTooltip from "@/components/LineChartWithCustomTooltip";
 import { extractInfo } from "../funcs/reddit";
 import Background from "../mui/Background";
@@ -44,11 +44,19 @@ export default class Home extends Component {
             top_3_changes,
             bottom_3_changes,
         });
+
+        const data = await request_ticker_data("AAPL");
+        this.setState({ candle_stick_data: data.stock_data.values })
     }
 
     render() {
         const { username, top_3_changes, bottom_3_changes, top_favs } =
             this.state;
+        const sampleData = [
+            { date: "2024-11-19", open: 100, high: 110, low: 95, close: 105, volume: 5000 },
+            { date: "2024-11-20", open: 105, high: 115, low: 100, close: 110, volume: 6000 },
+            { date: "2024-11-21", open: 110, high: 120, low: 105, close: 115, volume: 7000 },
+        ];
         return (
             <div className={"homepage-mainPage"}>
                 <div className={"homepage-header"} data-tauri-drag-region>
@@ -70,6 +78,9 @@ export default class Home extends Component {
                         </Link>
                         <Link to="/analysis" className={"homepage-navButton"}>
                             Analysis
+                        </Link>
+                        <Link to="/tradingview" className={"homepage-navButton"}>
+                            Trading View
                         </Link>
                         {/* <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
