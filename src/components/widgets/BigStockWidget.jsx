@@ -129,7 +129,7 @@ const BigStockWidget = (props) => {
                 </div>
                 }
                 <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data} />
-                {trading_view_popup && <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />}
+                <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_prices && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
