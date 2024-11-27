@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, InputAdornment, Select, MenuItem, Badge, CircularProgress } from '@mui/material';
 
-import { is_market_open } from "../funcs/tools";
+import { is_market_open } from "@/app/funcs/tools";
 
 export const MarketColouredBadge = (props) => {
     return (

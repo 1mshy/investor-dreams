@@ -1,11 +1,8 @@
-import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
 import Stack from '@mui/material/Stack';
-import SignInCard from './SignInCard';
-import Content from './Content';
+import * as React from 'react';
 import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import ApiCard from './ApiCard';
+import Content from './Content';
 
 export default function ApiSide() {
   return (

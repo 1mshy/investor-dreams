@@ -9,7 +9,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
 import { nasdaq_sorted_by, request_ticker_data } from "@/app/funcs/stock_api";
 import LineChartWithCustomTooltip from "@/components/LineChartWithCustomTooltip";
-import { extractInfo } from "../funcs/reddit";
+import { extractInfo } from "@/app/funcs/reddit";
 import Background from "../mui/Background";
 
 export default class Home extends Component {

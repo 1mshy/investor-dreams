@@ -22,7 +22,7 @@ const marks = [
  * @param {Function} props.callback - function will be called back with the following data from the range slider: [left_number, right_number]
  * @returns 
  */
-export default function RangeSlider(props) {
+export default function MarketCapSlider(props) {
     const minimum = 1_000_000;
     const maximum = 100_000_000_000_000;
     const [value, setValue] = React.useState([Math.log10(100_000_000), Math.log10(maximum)]);

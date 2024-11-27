@@ -1,32 +1,26 @@
+import { complex_store, retrieve, store } from '@/app/funcs/cache';
+import { get_favourite_array } from '@/app/funcs/favourites';
 import { get_all_nasdaq_info } from '@/app/funcs/scraper';
+import { get_custom_sectors } from '@/app/funcs/sectors';
 import {
     clean_ticker,
     get_all_sectors,
     get_all_symbols,
-    get_all_technical_data,
     get_market_cap,
-    nasdaq_sorted_by,
-    nasdaq_sorted_syncronous
+    nasdaq_sorted_by
 } from "@/app/funcs/stock_api";
+import { unformat_number } from '@/app/funcs/tools';
 import { SoftPaper, theme } from '@/app/mui/theme';
-import SectorSelect from '@/app/ui_components/misc/SectorSelect';
+import EasySelection from '@/components/misc/EasySelection';
+import SectorSelect from '@/components/misc/SectorSelect';
+import StockWidget from '@/components/widgets/StockWidget';
 import { Button, Stack, ThemeProvider } from '@mui/material';
 import { Component } from 'react';
-/**
- * css imports
- */
+import { Link } from 'react-router-dom';
+import { LoadingTextField } from '../mui/other';
+
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import { complex_retrieve, complex_store, retrieve, store } from '@/app/funcs/cache';
-import EasySelection from '@/app/ui_components/misc/EasySelection';
-import StockWidget from '@/components/widgets/StockWidget';
-import { Link } from 'react-router-dom';
-import { unformat_number } from '../funcs/tools';
-import { LoadingTextField } from '../mui/other';
-import { get_custom_sectors } from '../funcs/sectors';
-import { filter_tickers, filter_tickers_async } from '../funcs/analysis';
-import { get_favourite_array } from '../funcs/favourites';
-
 export default class Playground extends Component {
     constructor(props) {
         super(props);

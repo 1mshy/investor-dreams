@@ -12,8 +12,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { styled } from '@mui/material/styles';
-import { open_external_link } from "../../funcs/tools"
-import { complex_store } from "../../funcs/cache"
+import { open_external_link } from "@/app/funcs/tools"
+import { complex_store } from "@/app/funcs/cache"
 
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
