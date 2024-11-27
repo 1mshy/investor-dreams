@@ -24,7 +24,7 @@ use once_cell::sync::Lazy; // Import Ollama from the `ollama-rs` crate
                            // #[cfg_attr(mobile, tauri::mobile_entry_point)]
 
 pub fn run() {
-    println!("Starting Tauri App");
+    println!("Starting Investor Dreams...");
     dotenv::dotenv().ok();
     let ollama_instance = Ollama::new("http://localhost".to_string(), 11434);
 
