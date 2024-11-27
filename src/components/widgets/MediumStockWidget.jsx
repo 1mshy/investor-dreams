@@ -26,7 +26,7 @@ import { useEffect } from "react";
 const MediumStockWidget = (props) => {
     const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick, historical_data } = props;
     const [is_favourite, set_favourite] = useState(false);
-    const month_prices = get_month_prices(historical_prices);
+    const month_prices = get_month_prices(historical_data);
 
     useEffect(() => {
         set_favourite(is_ticker_favourite(symbol));

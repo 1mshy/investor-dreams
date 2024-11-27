@@ -1,4 +1,5 @@
-import { get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year, get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
+import { get_all_prices, get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
+     get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
@@ -29,12 +30,11 @@ import "@/app/css/Widgets.css";
  */
 const BigStockWidget = (props) => {
     const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals, historical_data } = props;
-    const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_prices));
+    const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
-
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
@@ -49,13 +49,13 @@ const BigStockWidget = (props) => {
         const generated_summary = await generate_ollama_message(prompt)
         set_ollama_summary(generated_summary);
     }
-
-    const percent_change_month = get_percent_change_month(historical_prices);
-    const percent_change_ytd = get_percent_change_ytd(historical_prices);
-    const percent_change_year = get_percent_change_year(historical_prices);
-    const percent_change_five_year = get_percent_change_five_year(historical_prices);
-    const percent_change_ten_year = get_percent_change_ten_year(historical_prices);
-    const percent_change_all = get_percent_change_all(historical_prices);
+    
+    const percent_change_month = get_percent_change_month(historical_data);
+    const percent_change_ytd = get_percent_change_ytd(historical_data);
+    const percent_change_year = get_percent_change_year(historical_data);
+    const percent_change_five_year = get_percent_change_five_year(historical_data);
+    const percent_change_ten_year = get_percent_change_ten_year(historical_data);
+    const percent_change_all = get_percent_change_all(historical_data);
 
     const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2] : ""
 
@@ -75,6 +75,7 @@ const BigStockWidget = (props) => {
             }
         }
     }
+    
     const dividend_yield = dividend_amount / unformatted_price * 100;
 
     return (
@@ -130,15 +131,15 @@ const BigStockWidget = (props) => {
                 }
                 <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data} />
                 <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
-                {historical_prices && <div className={"price-data"}>
+                {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
-                        <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_graph_prices(get_month_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_graph_prices(get_ytd_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_graph_prices(get_year_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_graph_prices(get_five_year_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_graph_prices(get_ten_year_prices(historical_prices)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_graph_prices(historical_prices) }} />
+                        <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_graph_prices(get_month_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_graph_prices(get_ytd_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_graph_prices(get_year_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_graph_prices(get_five_year_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_graph_prices(get_ten_year_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_graph_prices(get_all_prices(historical_data)) }} />
                     </div>
                     <div className={"date"}>
                         {date}

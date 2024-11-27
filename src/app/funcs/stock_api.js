@@ -106,7 +106,7 @@ export async function fetch_widget_data(ticker_symbol) {
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
     const historical_data = ticker_data["values"];
-    // console.log("historical data", historical_data)
+    console.log("historical data", historical_data)
 
     return {
         symbol: ticker_symbol,
