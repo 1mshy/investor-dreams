@@ -15,7 +15,7 @@ import { format_currency_with_symbols } from "@/app/funcs/tools";
  * Small stock WIdget includes the same info as the mini, but includes a small graph of the month's pricing
  */
 const SmallStockWidget = ({ symbol, name, price, percent_change, percent_change_month, onClick, historical_prices, historical_data, show_name = true }) => {
-    const month_prices = get_month_prices(historical_prices)
+    const month_prices = get_month_prices(historical_data)
     return (
         <>
             <SoftPaper className={"container"} onClick={() => {
