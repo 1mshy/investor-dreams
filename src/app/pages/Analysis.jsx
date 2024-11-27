@@ -15,9 +15,9 @@ import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
-import { filter_tickers } from "../funcs/analysis";
-import { save_dynamic_sector } from "../funcs/sectors";
-import RangeSlider from "../ui_components/misc/MarketCapSlider";
+import { filter_tickers } from "@/app/funcs/analysis";
+import { save_dynamic_sector } from "@/app/funcs/sectors";
+import MarketCapSlider from "@/components/misc/MarketCapSlider";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -216,7 +216,7 @@ export default class Analysis extends Component {
                             <Typography id="track-false-slider" gutterBottom>
                                 Market Cap
                             </Typography>
-                            <RangeSlider callback={(left, right) => {
+                            <MarketCapSlider callback={(left, right) => {
                                 this.setState({ searching_options: { ...searching_options, min_market_cap: left, max_market_cap: right } })
                             }} />
                         </div>
