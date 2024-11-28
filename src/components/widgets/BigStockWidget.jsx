@@ -16,7 +16,7 @@ import "@/app/css/Widgets.css";
 
 /**
  * @param {String} symbol
- * @param {String} name
+ * @param {String} names
  * @param {String} exchange
  * @param {Number} price
  * @param {Number} percent_change
