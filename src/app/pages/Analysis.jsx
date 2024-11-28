@@ -4,7 +4,7 @@ import { get_state } from "@/app/funcs/states";
 import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS } from "@/app/funcs/stock_api";
 import { delay } from "@/app/funcs/tools";
 import { BackGroundPaper, theme } from "@/app/mui/theme";
-import TableDownloadPopup from "@/app/ui_components/popups/TableDownloadPopup";
+import TableDownloadPopup from "@/components/popups/TableDownloadPopup"; 
 import StockWidget from "@/components/widgets/StockWidget";
 import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography } from '@mui/material';
 import localforage from "localforage";

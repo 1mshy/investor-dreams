@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "jsx": "react",
+    "allowSyntheticDefaultImports": true
   },
-  "exclude": [
-    "node_modules",
-    "src-tauri"
-  ],
-  "allowSyntheticDefaultImports": true,
+  "exclude": ["node_modules", "src-tauri"]
 }

@@ -5,14 +5,12 @@ import { generate_ollama_message, get_static_ticker_info, percentage_change } fr
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
-import { Button, CircularProgress } from "@mui/material";
+import { Button} from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
-import ButtonPercentageFormat from "../ButtonPercentageFormat";
-import PercentageFormat from "../PercentageFormat";
-import { useRef } from "react";
-import Popup from "../popups/Popup";
-import TradingViewPopup from "../popups/TradingViewPopup";
+import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
+import PercentageFormat from "@/components/PercentageFormat";
+import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 
 import "@/app/css/Widgets.css";
 
