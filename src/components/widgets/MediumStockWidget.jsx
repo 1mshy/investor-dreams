@@ -2,14 +2,14 @@ import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices } from "@/app/funcs/historical_pricing";
 import { format_currency, format_currency_with_symbols } from "@/app/funcs/tools";
 import { SoftPaper } from "@/app/mui/theme";
-import CustomSector from "@/app/ui_components/popups/CustomSector";
+import CustomSector from "@/components/popups/CustomSector";
 import PriceGraph from "@/components/PriceGraph";
 import AddIcon from '@mui/icons-material/Add';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { IconButton } from "@mui/material";
 import { useState } from "react";
-import PercentageFormat from "../PercentageFormat";
+import PercentageFormat from "@/components/PercentageFormat";
 import { useEffect } from "react";
 
 /**
