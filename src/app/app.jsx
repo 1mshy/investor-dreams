@@ -50,7 +50,7 @@ const BasePage = () => {
     }
   ]);
 
-  const current_version = "1.0.16";
+  const current_version = "1.0.17";
   const [errors, set_errors] = useState(true);
   const [has_checked, set_has_checked] = useState(false);
   useEffect(() => {
@@ -61,17 +61,18 @@ const BasePage = () => {
         clear_cache();
         await complex_store("current_version", current_version);
       }
-      let keys = format_api_keys(await invoke("get_api_keys")); // checks for keys built into the binary as a string
-      if (!keys) {
-        keys = await complex_retrieve("user_api_keys"); // checks for keys set by the user, already in an array
-        if (!keys) {
-          console.log(keys)
-          console.error(`No twelve data api key found!!!`)
-          set_has_checked(true)
-          return
-        }
-      }
-      set_api_keys(keys)
+      // api keys no longer needed
+      // let keys = format_api_keys(await invoke("get_api_keys")); // checks for keys built into the binary as a string
+      // if (!keys) {
+      //   keys = await complex_retrieve("user_api_keys"); // checks for keys set by the user, already in an array
+      //   if (!keys) {
+      //     console.log(keys)
+      //     console.error(`No twelve data api key found!!!`)
+      //     set_has_checked(true)
+      //     return
+      //   }
+      // }
+      // set_api_keys(keys)
       set_errors(false)
       set_has_checked(true)
     };
