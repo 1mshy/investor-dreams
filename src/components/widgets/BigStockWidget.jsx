@@ -37,6 +37,7 @@ const BigStockWidget = (props) => {
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
     const [rsi, set_rsi] = useState(0);
+    const [today_high_low, set_today_high_low] = useState("");
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
@@ -45,6 +46,10 @@ const BigStockWidget = (props) => {
         const rsi_values = calculateRSI(historical_prices);
         const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
         set_rsi(current_rsi);
+
+        const today_high = format_number(historical_data[0].high);
+        const today_low = format_number(historical_data[0].low);
+        set_today_high_low(`${today_high} / ${today_low}`);
     }, []);
     /**
      * @desc Generates a current summary using the news articles
@@ -83,6 +88,7 @@ const BigStockWidget = (props) => {
     }
 
     const dividend_yield = dividend_amount / unformatted_price * 100;
+    console.log(dividend_amount)
 
     return (
         <div className={"big"} data-tauri-drag-region
@@ -105,8 +111,8 @@ const BigStockWidget = (props) => {
                         <div className={"info-value"}>{`${technicals.FiftTwoWeekHighLow.value.replace("/", " / ")}`}</div>
                     </div>
                     <div className={"data-element"}>
-                        <div className={"info-title"}>{`${technicals.TodayHighLow.label}:`}</div>
-                        <div className={"info-value"}>{`${technicals.TodayHighLow.value.replace("/", " / ")}`}</div>
+                        <div className={"info-title"}>{`Today's High/Low:`}</div>
+                        <div className={"info-value"}>{`${today_high_low}`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`(PE/FPE):`}</div>
@@ -118,7 +124,7 @@ const BigStockWidget = (props) => {
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
-                        <div className={"info-value"}>{`$${format_number(dividend_amount)} (${format_percentage(dividend_yield)})`}</div>
+                        <div className={"info-value"}>{`$${format_number(dividend_amount)} ${isNaN(dividend_amount) ? '' : `(${format_percentage(dividend_yield)})`}`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`RSI:`}</div>
