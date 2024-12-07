@@ -80,14 +80,29 @@ export async function request_ticker_data(ticker_symbol) {
 }
 
 /**
- * 
- * @param {String} ticker_symbol 
- * @desc get information about the ticker symbol to create a stock widget
- */
+ * Fetches comprehensive stock widget data for the given ticker symbol.
+ *
+ * @param {string} ticker_symbol - The stock ticker symbol (e.g., "AAPL", "TSLA").
+ * @desc Fetches information about the ticker symbol, including company name, stock prices, technicals, news, and more, to create a stock widget.
+ * @returns {Promise<{
+*   symbol: string, // The ticker symbol.
+*   name: string, // The company name corresponding to the ticker symbol.
+*   price: string, // The current stock price, formatted to two decimal places.
+*   percent_change: string, // The percentage change in stock price, formatted to two decimal places.
+*   percent_change_month: string, // The monthly percentage change in stock price, formatted to two decimal places.
+*   date: string, // The date of the last stock price update.
+*   historical_prices: Array<number>, // List of historical stock prices.
+*   news: Array<Object>, // Array of news objects related to the ticker symbol.
+*   technicals: Object, // An object containing technical indicators for the stock.
+*   historical_data: HistoricalData, // Array of historical stock data points.
+*   [key: string]: any // Additional metadata from Nasdaq ticker information.
+* }>} A promise that resolves to an object containing stock widget data.
+*/
 export async function fetch_widget_data(ticker_symbol) {
     ticker_symbol = clean_ticker(ticker_symbol);
     const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
-    const ticker_data = await request_ticker_data(ticker_symbol); // gets the stock data for the company, mostly historical prices
+    const ticker_data = yahoo_to_structured(await request_yahoo_big(ticker_symbol)).data.reverse(); // gets the stock data for the company, mostly historical prices
+    console.log(ticker_data)
     const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
     const nasdaq_news = await get_ticker_news(ticker_symbol);
     const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
@@ -105,7 +120,7 @@ export async function fetch_widget_data(ticker_symbol) {
     const change_month = monthly_change_from_data(ticker_data);
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
-    const historical_data = ticker_data["values"];
+    const historical_data = ticker_data;
     console.log("historical data", historical_data)
 
     return {
@@ -241,48 +256,48 @@ export function nasdaq_sorted_syncronous(sort_method = "marketCap", ticker_list,
 
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @returns {Number}
  */
 export function current_price_from_data(stock_data) {
-    return Number(stock_data["values"][0]["close"])
+    return Number(stock_data[0]["close"])
 }
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @returns {Number}
  */
 export function yesterday_close_from_data(stock_data) {
-    return Number(stock_data["values"][1]["close"])
+    return Number(stock_data[1]["close"])
 }
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @param {Number} days_out 
  * @returns {Number}
  */
 export function price_days_out_from_data(stock_data, days_out) {
-    return Number(stock_data["values"][days_out]["close"])
+    return Number(stock_data[days_out]["close"])
 }
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @returns {Number}
  */
 export function last_date_from_data(stock_data) {
-    return stock_data["values"][0]["datetime"]
+    return stock_data[0]["datetime"]
 }
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @returns {[number]}
  */
 export function get_list_prices(stock_data) {
-    return stock_data["values"].map(value => Number(value.close)).reverse();
+    return stock_data.map(value => Number(value.close)).reverse();
 }
 /**
  * 
- * @param {Object} stock_data 
+ * @param {HistoricalData} stock_data 
  * @returns {Number}
  */
 export function change_from_data(stock_data) {
@@ -448,4 +463,82 @@ export async function generate_ollama_message(prompt) {
 
 export async function get_ollama_cached_generation(prompt) {
     return OLLAMA_GENERATION.getItem(prompt);
+}
+
+
+/**
+ * YAHOO API LOGIC
+ */
+/**
+ * Example get requests:
+ * "https://query1.finance.yahoo.com/v8/finance/chart/IBM?period1=0&period2=1733599091&interval=1d"
+ * "https://query1.finance.yahoo.com/v8/finance/chart/IBM?range=8d&interval=1m"
+ */
+const yahoo_base_url = "https://query1.finance.yahoo.com/v8/finance/chart/";
+
+
+
+export const suited_up = (symbol) => `${yahoo_base_url}${symbol}?range=1d&interval=1m&includePrePost=true`;
+
+export const yahoo_all = (symbol) => `${yahoo_base_url}${symbol}?period1=0&period2=${Date.now()}&interval=1d`;
+
+function yahoo_url(symbol, range = null, interval = "1d", period1 = 0, period2 = Date.now() / 1000) {
+    if (range) {
+        return `${yahoo_base_url}${symbol}?range=${range}&interval=${interval}`;
+    }
+    return `${yahoo_base_url}${symbol}?period1=${Math.floor(period1).toFixed(0)}&period2=${Math.floor(period2).toFixed(0)}&interval=${interval}`;
+}
+
+
+/**
+ * 
+ * @param {YahooStockData} data 
+ * @returns {TotalStockData}
+ */
+export function yahoo_to_structured(data) {
+    const key_data = data.chart.result[0];
+    const { timestamp, events, meta, indicators } = key_data;
+    const { volume, open, high, close, low } = indicators.quote[0];
+    let total_stock_data = {
+        data: [],
+        events,
+        meta
+    };
+    for (let i = 0; i < timestamp.length; i++) {
+        total_stock_data.data.push({
+            datetime: timestamp[i]*1000, // converting to milliseconds
+            volume: volume[i],
+            open: open[i],
+            high: high[i],
+            close: close[i],
+            low: low[i]
+        });
+    }
+    return total_stock_data;
+
+}
+
+/**
+ * @param {String} ticker_symbol 
+ * @returns {Promise<{meta:{},values:[]}>}
+ * @desc Request historical stock data from the Yahoo API from all time, with intervals of 1 day
+ */
+export async function request_yahoo_big(ticker_symbol) {
+    ticker_symbol = clean_ticker(ticker_symbol);
+    const valid_cache = await stock_cache_is_valid(ticker_symbol);
+    if (valid_cache) {
+        const cache = await get_cache(ticker_symbol, STOCK_CACHE);
+        return cache.stock_data;
+    }
+
+    console.log("requesting " + ticker_symbol)
+    const url = yahoo_url(ticker_symbol);
+    console.log("requesting: " + url);
+    const response = await invoke("get_request_api", { url: url });
+    const data = JSON.parse(response);
+    if (data && data.code === 404) {
+        console.log("invalid ticker symbol submitted: " + ticker_symbol)
+    }
+    // set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
+    return data;
 }

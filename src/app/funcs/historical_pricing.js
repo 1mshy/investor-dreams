@@ -23,7 +23,7 @@ export const TEN_YEARS_AGO = new Date(Date.now() - TEN_YEARS);
 
 /**
  * 
- * @param {[{}]} historical_data 
+ * @param {HistoricalData} historical_data 
  * @param {Date} date_to_end 
  * @returns 
  */
@@ -33,7 +33,7 @@ export function get_price_range(historical_data, date_to_end) {
     let selected_day = new Date();
     for (let i = 0; selected_day >= date_to_end; i++) {
         if(i >= historical_data.length) break;
-        selected_day = new Date(historical_data[i].datetime);
+        selected_day = historical_data[i].datetime;
         prices.push(unformat_number(historical_data[i].close));
     }
     return prices.reverse()

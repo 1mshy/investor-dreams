@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Background = ({ children, router }) => {
-  const [not_macos, set_not_macos] = useState(false);
-
-  useEffect(() => {
-    invoke("is_macos").then((is_macos) => {
-      console.log(is_macos)
-      set_not_macos(!is_macos);
-    });
-  }, []);
+  const [not_macos, set_not_macos] = useState(true);
+  
+  // can be used to disable the close button on macos
+  // useEffect(() => {
+  //   invoke("is_macos").then((is_macos) => {
+  //     console.log(is_macos)
+  //     set_not_macos(!is_macos);
+  //   });
+  // }, []);
 
   const handleBack = () => {
     if (window.history.length > 1) {
