@@ -1,11 +1,13 @@
-import { get_all_prices, get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
-     get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices } from "@/app/funcs/historical_pricing";
+import {
+    get_all_prices, get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
+    get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices
+} from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import PriceGraph from "@/components/PriceGraph";
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
@@ -13,6 +15,7 @@ import PercentageFormat from "@/components/PercentageFormat";
 import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 
 import "@/app/css/Widgets.css";
+import { calculateRSI } from "@/app/funcs/algorithms";
 
 /**
  * @param {String} symbol
@@ -38,6 +41,15 @@ const BigStockWidget = (props) => {
             set_ticker_info(info);
         });
     }, []);
+    const rsi = calculateRSI(historical_prices);
+    console.log("RSI")
+    console.log(rsi)
+    console.log(historical_prices)
+    // Example usage
+    const prices = [44, 44.15, 44.29, 44.21, 44.17, 44.30, 44.29, 44.40, 44.39, 44.51, 44.49, 44.65, 44.73, 44.74, 44.90, 45.01, 45.02];
+    const rsiValues = calculateRSI(prices, 14);
+
+    console.log("RSI Values:", rsiValues);
     /**
      * @desc Generates a current summary using the news articles
      */
@@ -47,7 +59,7 @@ const BigStockWidget = (props) => {
         const generated_summary = await generate_ollama_message(prompt)
         set_ollama_summary(generated_summary);
     }
-    
+
     const percent_change_month = get_percent_change_month(historical_data);
     const percent_change_ytd = get_percent_change_ytd(historical_data);
     const percent_change_year = get_percent_change_year(historical_data);
@@ -73,7 +85,7 @@ const BigStockWidget = (props) => {
             }
         }
     }
-    
+
     const dividend_yield = dividend_amount / unformatted_price * 100;
 
     return (
