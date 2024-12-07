@@ -131,7 +131,6 @@ class PriceGraph extends Component {
                             const formatDate = (dateString) => {
                                 const date = new Date(dateString);
                                 date.setHours(12)
-                                date.setUTCDate(date.getUTCDate() + 1) // apparently I need to use this for EST
                                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
                                 return date.toLocaleDateString('en-US', options);
                             };

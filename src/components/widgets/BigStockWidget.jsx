@@ -3,7 +3,7 @@ import {
     get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { generate_ollama_message, get_static_ticker_info, percentage_change, request_yahoo_big, yahoo_to_structured } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
@@ -33,7 +33,7 @@ import { invoke } from "@tauri-apps/api/core";
  * It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
-    const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals, historical_data } = props;
+    const { symbol, name, price, percent_change, historical_prices, marketCap, news, technicals, historical_data } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
@@ -42,6 +42,8 @@ const BigStockWidget = (props) => {
     const [rsi, set_rsi] = useState(0);
     const [today_high_low, set_today_high_low] = useState("");
     const [forcasted_rsi, set_forcasted_rsi] = useState(0);
+    const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
+
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
@@ -61,11 +63,16 @@ const BigStockWidget = (props) => {
 
             invoke("monte_carlo_rsi", {
                 prices: old_first_historical_data.map(data => Number(data.close)), numSimulations: 1000,
-                forecastDays: 10,
+                forecastDays: forcasted_rsi_days,
                 period: 14,
             }).then((forcasted_rsi) => {
                 console.log(forcasted_rsi)
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
+            });
+
+            request_yahoo_big(symbol).then((data) => {
+                console.log(data)
+                console.log(yahoo_to_structured(data))
             });
         }
         complex_operations();
@@ -149,7 +156,7 @@ const BigStockWidget = (props) => {
                         <div className={"info-value"}>{`${rsi} (${rsi_reading(rsi)})`}</div>
                     </div>
                     <div className={"data-element"}>
-                        <div className={"info-title"}>{`Forcasted RSI:`}</div>
+                        <div className={"info-title"}>{`Forcasted RSI (${forcasted_rsi_days} days):`}</div>
                         <div className={"info-value"}>{`${forcasted_rsi} (${rsi_reading(forcasted_rsi)})`}</div>
                     </div>
                     <div className={"data-element"}>
@@ -180,7 +187,7 @@ const BigStockWidget = (props) => {
                         <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_graph_prices(get_all_prices(historical_data)) }} />
                     </div>
                     <div className={"date"}>
-                        {date}
+                        Updated {new Date(historical_data[0].datetime).toLocaleDateString()}
                     </div>
                 </div>}
 

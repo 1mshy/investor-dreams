@@ -28,9 +28,9 @@ export async function get_all_nasdaq_info() {
 }
 
 /**
- * 
+ * Returns the name of the company
  * @param {String} ticker_symbol 
- * @returns {String} - name of the company
+ * @returns {Promise<{string}} - name of the company
  */
 export async function ticker_to_name(ticker_symbol) {
     return (await get_all_nasdaq_info())[ticker_symbol].name;
