@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { get_all_nasdaq_info } from "./scraper";
 import { get_state } from "./states";
-import { clean_ticker, get_all_symbols, get_all_technical_data, get_num_keys, percentage_change, request_ticker_data } from "./stock_api";
+import { clean_ticker, get_all_symbols, get_all_technical_data, get_num_keys, percentage_change, request_ticker_data, request_yahoo_big } from "./stock_api";
 import { delay, unformat_number } from "./tools";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
@@ -51,8 +51,8 @@ export async function request_database() {
     let state = get_state();
     state[state_key] = random_num_hash; // used to ensure two instances of this function are not running simultaneously.
     let searched_symbols = new Set();
-    const time_delta = 60 / 7 * 1000 // 7 batches per minute (max is 8 but I added a buffer) (in ms)
-    const MAX_CHUNK_SIZE = get_num_keys(); // Number of symbols to fetch at once
+    const time_delta = 1000 // 7 batches per minute (max is 8 but I added a buffer) (in ms)
+    const MAX_CHUNK_SIZE = 10; // Number of symbols to fetch at once
     let symbol_chunks = []; // array of the chunks
     let i = 0; // index in all_symbols
     let chunk = []; // current chunk
@@ -83,7 +83,7 @@ export async function request_database() {
         const start = Date.now();
         // Skip symbols if skip_cached is true and already cached
         let promises = chunk.map(async symbol => {
-            return request_ticker_data(symbol).then(() => {
+            return request_yahoo_big(symbol).then(() => {
                 searched_symbols.add(symbol);
             }).catch(() => {
                 toast.error(`${symbol} failed to fetch`);

@@ -539,6 +539,6 @@ export async function request_yahoo_big(ticker_symbol) {
     if (data && data.code === 404) {
         console.log("invalid ticker symbol submitted: " + ticker_symbol)
     }
-    // set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
+    set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
     return data;
 }
