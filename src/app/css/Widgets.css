@@ -153,10 +153,13 @@
 }
 
 .news-row {
-
+    padding: 0.2rem;
 }
 .news-row:hover {
-    background-color: #94a3b8;
+    border-color: #94a3b8;
+    border-style: none;
+    border-bottom: solid;
+    border-width: 1px;
     cursor: pointer;
 }
 

@@ -36,13 +36,16 @@ const BigStockWidget = (props) => {
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
+    const [rsi, set_rsi] = useState(0);
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
         });
+
+        const rsi_values = calculateRSI(historical_prices);
+        const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
+        set_rsi(current_rsi);
     }, []);
-    const rsi_values = calculateRSI(historical_prices);
-    const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
     /**
      * @desc Generates a current summary using the news articles
      */
@@ -119,7 +122,7 @@ const BigStockWidget = (props) => {
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`RSI:`}</div>
-                        <div className={"info-value"}>{`${current_rsi} (${rsi_reading(current_rsi)})`}</div>
+                        <div className={"info-value"}>{`${rsi} (${rsi_reading(rsi)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
