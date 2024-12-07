@@ -38,6 +38,18 @@ export function calculateRSI(prices, period = 14) {
 
   return smoothedRSI;
 }
+/**
+ * Generic rsi reading that states weather the rsi is overbought or oversold
+ * @param {Number} rsi relative strength index value
+ * @returns {String} overbought, oversold or neutral ratings
+ */
+export function rsi_reading(rsi) {
+  if(rsi < 30) return "Oversold";
+  if(rsi < 40) return "Somewhat Oversold";
+  if(rsi > 70) return "Overbought";
+  if(rsi > 60) return "Somewhat Overbought";
+  return "Neutral";
+}
 
 /**
  * 
