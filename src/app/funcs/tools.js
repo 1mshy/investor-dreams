@@ -43,11 +43,11 @@ export function format_number(number) {
 /**
  * 
  * @param {Number} number 
- * @returns 
+ * @returns {String} - formatted with commas
  */
 export function format_number_with_commas(number) {
     if(isNaN(number)) return ""; 
-    return `${Number(number).toFixed(2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return `${Number(number).toFixed(2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace(".00", "");
 }
 
 /**
