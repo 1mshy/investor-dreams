@@ -15,7 +15,7 @@ import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
-import { filter_tickers } from "@/app/funcs/analysis";
+import { filter_tickers, request_database } from "@/app/funcs/analysis";
 import { save_dynamic_sector } from "@/app/funcs/sectors";
 import MarketCapSlider from "@/components/misc/MarketCapSlider";
 
@@ -188,6 +188,13 @@ export default class Analysis extends Component {
                                 this.fetch_all_data(false)
                             }}>
                                 Fetch Up to date
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title={"EVERYTHING"}>
+                            <Button onClick={() => {
+                                request_database()
+                            }}>
+                                Request all
                             </Button>
                         </Tooltip>
                         <Button onClick={this.toggle_searching_options}>
