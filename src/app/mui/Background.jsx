@@ -60,7 +60,7 @@ const Background = ({ children, router }) => {
           <Circle fontSize="small" color="error" />
         </IconButton>
         <IconButton
-          style={{ position: 'absolute', top: '-0.3rem', right: '1.3rem' }}
+          style={{ position: 'absolute', top: '-0.3rem', right: '1.6rem' }}
           onClick={async () => {
             handleBack();
           }}
