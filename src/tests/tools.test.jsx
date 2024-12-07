@@ -2,7 +2,6 @@ import { format_currency, format_number, format_number_with_commas } from "@/app
 import { expect } from "vitest";
 
 test('number formatting with comma', () => {
-    console.log(format_number_with_commas(1000))
     expect(format_number_with_commas(1000)).toBe("1,000")
     expect(format_number_with_commas(1000000)).toBe("1,000,000")
     expect(format_number_with_commas(1000000000)).toBe("1,000,000,000")
