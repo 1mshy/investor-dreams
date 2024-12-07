@@ -15,7 +15,7 @@ import PercentageFormat from "@/components/PercentageFormat";
 import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 
 import "@/app/css/Widgets.css";
-import { calculateRSI } from "@/app/funcs/algorithms";
+import { calculateRSI, rsi_reading } from "@/app/funcs/algorithms";
 
 /**
  * @param {String} symbol
@@ -41,15 +41,8 @@ const BigStockWidget = (props) => {
             set_ticker_info(info);
         });
     }, []);
-    const rsi = calculateRSI(historical_prices);
-    console.log("RSI")
-    console.log(rsi)
-    console.log(historical_prices)
-    // Example usage
-    const prices = [44, 44.15, 44.29, 44.21, 44.17, 44.30, 44.29, 44.40, 44.39, 44.51, 44.49, 44.65, 44.73, 44.74, 44.90, 45.01, 45.02];
-    const rsiValues = calculateRSI(prices, 14);
-
-    console.log("RSI Values:", rsiValues);
+    const rsi_values = calculateRSI(historical_prices);
+    const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
     /**
      * @desc Generates a current summary using the news articles
      */
@@ -123,6 +116,10 @@ const BigStockWidget = (props) => {
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
                         <div className={"info-value"}>{`$${format_number(dividend_amount)} (${format_percentage(dividend_yield)})`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`RSI:`}</div>
+                        <div className={"info-value"}>{`${current_rsi} (${rsi_reading(current_rsi)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
