@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(unused_imports)]
 use std::env;
+use tauri::{LogicalSize, Manager, Size, Url};
 
 use crate::ollama::ollama_generate;
 use crate::requesting::{
@@ -10,14 +11,15 @@ use crate::requesting::{
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
+use crate::algorithms::{rsi, monte_carlo_rsi};
 use crate::tools::{close_window, is_macos, save_json_file, save_json_to_folder};
-use tauri::{LogicalSize, Manager, Size, Url};
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 mod ollama;
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
 mod tools;
+mod algorithms;
 
 use ollama_rs::Ollama;
 use once_cell::sync::Lazy; // Import Ollama from the `ollama-rs` crate
@@ -94,6 +96,8 @@ pub fn run() {
             save_json_to_folder,
             close_window,
             is_macos,
+            monte_carlo_rsi,
+            rsi,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

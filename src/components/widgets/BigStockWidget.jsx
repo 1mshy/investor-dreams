@@ -6,28 +6,31 @@ import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scra
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
+import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
+import PercentageFormat from "@/components/PercentageFormat";
 import PriceGraph from "@/components/PriceGraph";
+import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 import { Button } from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
 import { useEffect, useState } from "react";
-import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
-import PercentageFormat from "@/components/PercentageFormat";
-import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 
 import "@/app/css/Widgets.css";
-import { calculateRSI, rsi_reading } from "@/app/funcs/algorithms";
+import { rsi_reading } from "@/app/funcs/algorithms";
+import { invoke } from "@tauri-apps/api/core";
 
 /**
- * @param {String} symbol
- * @param {String} names
- * @param {String} exchange
- * @param {Number} price
- * @param {Number} percent_change
- * @param {String} date
- * @param {Array<number>} historical_prices
- * @param {String} size - "big" or "medium" or "mini"
+ * @param {Object} props
+ * @param {String} props.symbol
+ * @param {String} props.name
+ * @param {String} props.exchange
+ * @param {Number} props.price
+ * @param {Number} props.percent_change
+ * @param {String} props.date
+ * @param {Number[]} props.historical_prices
+ * @param {Object[]} props.historical_data
+ * @param {String} props.size - "big" or "medium" or "mini"
  * @desc Popup on the screen, blocks all other elements to focus on this one.
- *      It is large and includes the most detail out of all the stock widgets
+ * It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
     const { symbol, name, price, percent_change, date, historical_prices, marketCap, news, technicals, historical_data } = props;
@@ -38,18 +41,34 @@ const BigStockWidget = (props) => {
     const [trading_view_popup, set_trading_view_popup] = useState(false);
     const [rsi, set_rsi] = useState(0);
     const [today_high_low, set_today_high_low] = useState("");
+    const [forcasted_rsi, set_forcasted_rsi] = useState(0);
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
             set_ticker_info(info);
         });
+        const complex_operations = async () => {
+            const today_high = format_number(historical_data[0].high);
+            const today_low = format_number(historical_data[0].low);
+            set_today_high_low(`${today_high} / ${today_low}`);
 
-        const rsi_values = calculateRSI(historical_data.reverse()).map(data => data.rsi);
-        const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
-        set_rsi(current_rsi);
+            const old_first_historical_data = historical_data.slice().reverse();
 
-        const today_high = format_number(historical_data[0].high);
-        const today_low = format_number(historical_data[0].low);
-        set_today_high_low(`${today_high} / ${today_low}`);
+            invoke("rsi", {
+                prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
+            }).then((rsi_values) => {
+                set_rsi(format_number(rsi_values[rsi_values.length - 1]));
+            });
+
+            invoke("monte_carlo_rsi", {
+                prices: old_first_historical_data.map(data => Number(data.close)), numSimulations: 1000,
+                forecastDays: 10,
+                period: 14,
+            }).then((forcasted_rsi) => {
+                console.log(forcasted_rsi)
+                set_forcasted_rsi(format_number(forcasted_rsi[0]));
+            });
+        }
+        complex_operations();
     }, []);
     /**
      * @desc Generates a current summary using the news articles
@@ -88,7 +107,6 @@ const BigStockWidget = (props) => {
     }
 
     const dividend_yield = dividend_amount / unformatted_price * 100;
-    console.log(dividend_amount)
 
     return (
         <div className={"big"} data-tauri-drag-region
@@ -129,6 +147,10 @@ const BigStockWidget = (props) => {
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`RSI:`}</div>
                         <div className={"info-value"}>{`${rsi} (${rsi_reading(rsi)})`}</div>
+                    </div>
+                    <div className={"data-element"}>
+                        <div className={"info-title"}>{`Forcasted RSI:`}</div>
+                        <div className={"info-value"}>{`${forcasted_rsi} (${rsi_reading(forcasted_rsi)})`}</div>
                     </div>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
