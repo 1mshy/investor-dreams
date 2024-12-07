@@ -36,6 +36,15 @@ export function clean_ticker(ticker) {
     if (!ticker) return "";
     return `${ticker}`.replace("/", ".") //.replace("^", ".");
 }
+/**
+ *  cleans the ticker for the specifications of the yahoo api
+ * @param {string} ticker 
+ * @returns {string}
+ */
+export function clean_ticker_for_yahoo(ticker) {
+    if (!ticker) return "";
+    return `${ticker}`.replace("/", "-").replace("^", "-").replace("*", "-").replace(".", "-").replace(",", "-")
+}
 
 /**
  * @param {String} ticker_symbol 
@@ -478,11 +487,12 @@ const yahoo_base_url = "https://query1.finance.yahoo.com/v8/finance/chart/";
 
 
 
-export const suited_up = (symbol) => `${yahoo_base_url}${symbol}?range=1d&interval=1m&includePrePost=true`;
+export const suited_up = (symbol) => `${yahoo_base_url}${clean_ticker_for_yahoo(symbol)}?range=1d&interval=1m&includePrePost=true`;
 
-export const yahoo_all = (symbol) => `${yahoo_base_url}${symbol}?period1=0&period2=${Date.now()}&interval=1d`;
+export const yahoo_all = (symbol) => `${yahoo_base_url}${clean_ticker_for_yahoo(symbol)}?period1=0&period2=${Date.now()}&interval=1d`;
 
 function yahoo_url(symbol, range = null, interval = "1d", period1 = 0, period2 = Date.now() / 1000) {
+    symbol = clean_ticker_for_yahoo(symbol);
     if (range) {
         return `${yahoo_base_url}${symbol}?range=${range}&interval=${interval}`;
     }
@@ -506,7 +516,7 @@ export function yahoo_to_structured(data) {
     };
     for (let i = 0; i < timestamp.length; i++) {
         total_stock_data.data.push({
-            datetime: timestamp[i]*1000, // converting to milliseconds
+            datetime: timestamp[i] * 1000, // converting to milliseconds
             volume: volume[i],
             open: open[i],
             high: high[i],
