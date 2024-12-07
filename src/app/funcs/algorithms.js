@@ -1,15 +1,15 @@
 /**
  * 
- * @param {Number[]} prices list of prices
+ * @param {Object{datetime:String, close: Number, open: Number, high:Number, low:Number}} prices list of historical data points starting from the oldest to the newest
  * @param {Number} period period to calculate RSI (default 14)
- * @returns {Number[]} list of RSI values
+ * @returns {NumbObject{datetime:String, rs: Number, rsi: Number}} list of RSI values
  */
-export function calculateRSI(prices, period = 14) {
-  if (!prices || prices.length < period) {
+export function calculateRSI(ordered_historical_data, period = 14) {
+  if (!ordered_historical_data || ordered_historical_data.length < period) {
     throw new Error("Not enough data to calculate RSI.");
   }
-
   // Step 1: Calculate daily price changes
+  const prices = ordered_historical_data.map(a => Number(a.close));
   const changes = prices.slice(1).map((price, i) => price - prices[i]);
 
   // Step 2: Separate gains and losses
@@ -33,9 +33,9 @@ export function calculateRSI(prices, period = 14) {
     const rs = currentAvgLoss === 0 ? 0 : currentAvgGain / currentAvgLoss;
     const rsi = currentAvgLoss === 0 ? 100 : 100 - (100 / (1 + rs));
 
-    smoothedRSI.push(rsi);
+    smoothedRSI.push({ rsi, rs, datetime: ordered_historical_data[i].datetime });
   }
-
+  console.log(smoothedRSI)
   return smoothedRSI;
 }
 

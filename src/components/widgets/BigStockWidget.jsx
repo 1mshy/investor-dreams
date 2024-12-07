@@ -43,7 +43,7 @@ const BigStockWidget = (props) => {
             set_ticker_info(info);
         });
 
-        const rsi_values = calculateRSI(historical_prices);
+        const rsi_values = calculateRSI(historical_data.reverse()).map(data => data.rsi);
         const current_rsi = format_number(rsi_values[rsi_values.length - 1]);
         set_rsi(current_rsi);
 
