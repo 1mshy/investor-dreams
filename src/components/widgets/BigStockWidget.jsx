@@ -66,13 +66,7 @@ const BigStockWidget = (props) => {
                 forecastDays: forcasted_rsi_days,
                 period: 14,
             }).then((forcasted_rsi) => {
-                console.log(forcasted_rsi)
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
-            });
-
-            request_yahoo_big(symbol).then((data) => {
-                console.log(data)
-                console.log(yahoo_to_structured(data))
             });
         }
         complex_operations();
