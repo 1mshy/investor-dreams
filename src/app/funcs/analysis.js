@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { get_all_nasdaq_info } from "./scraper";
 import { get_state } from "./states";
-import { clean_ticker, get_all_symbols, get_all_technical_data, get_num_keys, percentage_change, request_ticker_data, request_yahoo_big } from "./stock_api";
+import { clean_ticker, get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "./stock_api";
 import { delay, unformat_number } from "./tools";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
@@ -19,7 +19,6 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
         const percent_change = unformat_number(all_nasdaq_info[key]["pctchange"])
         if (current_price === 0 || price_target === 0) continue;
         const target_percent_difference = percentage_change(price_target, current_price)
-        // console.log(pe_ratio)
         const market_cap = unformat_number(summaryData["MarketCap"]["value"])
         if (isNaN(market_cap)) continue;
         if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
@@ -28,7 +27,6 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
             target_percent_difference, pe_ratio, forward_pe_ratio, divided_yield
         }
         final_list.push(final_data);
-        // this.setState({ filtered_tickers: final_list })
     }
     final_list.sort((a, b) => b[searching_options.sort_by] - a[searching_options.sort_by]);
     if (searching_options.reverse) final_list.reverse();
@@ -51,7 +49,7 @@ export async function request_database() {
     let state = get_state();
     state[state_key] = random_num_hash; // used to ensure two instances of this function are not running simultaneously.
     let searched_symbols = new Set();
-    const time_delta = 1000 // 7 batches per minute (max is 8 but I added a buffer) (in ms)
+    const time_delta = 2000 // in ms
     const MAX_CHUNK_SIZE = 10; // Number of symbols to fetch at once
     let symbol_chunks = []; // array of the chunks
     let i = 0; // index in all_symbols
@@ -74,10 +72,6 @@ export async function request_database() {
         i++;
     }
     eval_chunks();
-
-    console.log(symbol_chunks)
-    // console.log(JSON.stringify(all_symbols))
-    // console.log(symbol_chunks)
 
     for (let chunk of symbol_chunks) {
         const start = Date.now();
