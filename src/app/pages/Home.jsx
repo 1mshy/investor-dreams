@@ -9,6 +9,8 @@ import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
 import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
 import { fetchSubredditPosts } from "../funcs/reddit";
+import HeatMapPopup from "@/components/popups/HeatMapPopup";
+import NewsWidget from "@/components/widgets/NewsWidget";
 
 export default class Home extends Component {
     constructor(props) {
@@ -152,8 +154,14 @@ export default class Home extends Component {
                                 );
                             })}
                         </div>
-                        {/* </div> */}
                     </div>
+                    <div className={"homepage-columns"}>
+                            <h3>Extra</h3>
+                            <div className={"homepage-favourties"}>
+                                <HeatMapPopup open={false} onClick={() => this.setState({ heatmap: false })} />
+                                <NewsWidget />
+                            </div>
+                        </div>
                 </div>
             </div>
         );
