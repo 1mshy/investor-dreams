@@ -111,7 +111,6 @@ export async function fetch_widget_data(ticker_symbol) {
     ticker_symbol = clean_ticker(ticker_symbol);
     const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
     const ticker_data = yahoo_to_structured(await request_yahoo_big(ticker_symbol)).data.reverse(); // gets the stock data for the company, mostly historical prices
-    console.log(ticker_data)
     const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
     const nasdaq_news = await get_ticker_news(ticker_symbol);
     const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
@@ -130,7 +129,6 @@ export async function fetch_widget_data(ticker_symbol) {
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
     const historical_data = ticker_data;
-    console.log("historical data", historical_data)
 
     return {
         symbol: ticker_symbol,

@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { fetchSubredditPosts } from "../funcs/reddit";
 import HeatMapPopup from "@/components/popups/HeatMapPopup";
 import NewsWidget from "@/components/widgets/NewsWidget";
+import { Button } from "@mui/material";
 
 export default class Home extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ export default class Home extends Component {
             top_3_changes: [],
             bottom_3_changes: [],
             top_favs: [],
+            heatmap: false,
         };
     }
 
@@ -56,7 +58,7 @@ export default class Home extends Component {
     }
 
     render() {
-        const { username, top_3_changes, bottom_3_changes, top_favs } =
+        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap} =
             this.state;
         const sampleData = [
             { date: "2024-11-19", open: 100, high: 110, low: 95, close: 105, volume: 5000 },
@@ -158,7 +160,8 @@ export default class Home extends Component {
                     <div className={"homepage-columns"}>
                             <h3>Extra</h3>
                             <div className={"homepage-favourties"}>
-                                <HeatMapPopup open={false} onClick={() => this.setState({ heatmap: false })} />
+                                <Button onClick={() => this.setState({ heatmap: true })}>Open Heat Map</Button>
+                                <HeatMapPopup open={heatmap} onClick={() => this.setState({ heatmap: false })} />
                                 <NewsWidget />
                             </div>
                         </div>
