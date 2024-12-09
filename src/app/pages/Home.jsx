@@ -5,10 +5,10 @@ import { Component } from "react";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
-import { extractInfo } from "@/app/funcs/reddit";
 import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
 import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
+import { fetchSubredditPosts } from "../funcs/reddit";
 
 export default class Home extends Component {
     constructor(props) {
@@ -22,8 +22,17 @@ export default class Home extends Component {
     }
 
     async componentDidMount() {
-        extractInfo();
-
+        // Example Usage
+        (async () => {
+            const subreddit = 'wallstreetbets';
+            const posts = await fetchSubredditPosts(subreddit);
+            if (posts) {
+                posts.data.children.forEach((post) => {
+                    console.log(`Title: ${post.data.title}`);
+                    console.log(post.data)
+                });
+            }
+        })();
         // Only access browser-specific APIs here
         console.log("getting username");
         const username = await invoke("get_username");
