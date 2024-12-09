@@ -509,6 +509,7 @@ export function yahoo_to_structured(data) {
     const key_data = data.chart.result[0];
     const { timestamp, events, meta, indicators } = key_data;
     const { volume, open, high, close, low } = indicators.quote[0];
+    const adjusted_close = indicators.adjclose[0].adjclose;
     let total_stock_data = {
         data: [],
         events,
@@ -520,7 +521,7 @@ export function yahoo_to_structured(data) {
             volume: volume[i],
             open: open[i],
             high: high[i],
-            close: close[i],
+            close: adjusted_close[i],
             low: low[i]
         });
     }
