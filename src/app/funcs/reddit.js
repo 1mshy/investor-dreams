@@ -1,32 +1,42 @@
 import { invoke } from "@tauri-apps/api/core";
+import { cache_is_valid, get_cache, set_cache } from "./cache";
 
-// possible reddit function
-export async function extractInfo() {
-    return;
-    const json_data = await invoke("reddit_request_api", { url: 'https://oauth.reddit.com/r/apple/new/' });
-    const formatted_json = JSON.parse(json_data);
-    console.log(formatted_json)
-    console.log(formatted_json["kind"])
-    console.log(formatted_json["data"])
-    const { kind, data } = formatted_json;
-    console.log(kind);
-    console.log(data)
-    if (kind === 'Listing') {
-        console.log(`Kind: ${kind}`);
-        console.log(`Data: ${JSON.stringify(data)}`);
-
-        const children = data.children;
-        children.forEach((child) => {
-            const { kind, data: childData } = child;
-            console.log(`Child Kind: ${kind}`);
-            console.log(`Child Data: ${JSON.stringify(childData)}`);
-
-            // Extract specific information from child data
-            console.log(`Title: ${childData.title}`);
-            console.log(`Author: ${childData.author}`);
-            console.log(`Upvotes: ${childData.ups}`);
-            console.log(`Comments: ${childData.num_comments}`);
-        });
+export async function getAccessToken() {
+    try {
+        const acess_token_data = await get_cache('reddit_access_token');
+        if (acess_token_data && cache_is_valid('reddit_access_token', acess_token_data)) {
+            console.log("valid cache for reddit access token")
+            return acess_token_data.access_token;
+        }
+        const new_acess_token_string= await invoke('fetch_reddit_access_token');
+        const new_acess_token_data = JSON.parse(new_acess_token_string);
+        console.log('Access token:', new_acess_token_data);
+        set_cache('reddit_access_token', new_acess_token_data, new_acess_token_data.expires_in / 60);
+        return new_acess_token_data.access_token;
+    } catch (error) {
+        console.error('Error fetching access token:', error);
+        return "";
     }
 }
+
+export async function fetchSubredditPosts(subreddit) {
+    try {
+        const accessToken = await getAccessToken();
+        if (!accessToken) {
+            throw new Error('Unable to fetch access token.');
+        }
+
+        const posts = await invoke('fetch_reddit_subreddit_posts', {
+            accessToken,
+            subreddit,
+        });
+
+        console.log(`Posts from r/${subreddit}:`, posts);
+        return posts;
+    } catch (error) {
+        console.error('Error fetching subreddit posts:', error);
+        return null;
+    }
+}
+
 

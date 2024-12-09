@@ -1,6 +1,68 @@
 use reqwest::Client;
-use std::error::Error;
+use serde_json::Value;
+use std::{collections::HashMap, error::Error};
 use tauri::command;
+
+use crate::sensitive_constants::{CLIENT_ID, CLIENT_SECRET, REDDIT_API_PASSWORD, REDDIT_API_USERNAME};
+
+#[tauri::command]
+pub async fn fetch_reddit_access_token() -> Result<String, String> {
+    let client = Client::new();
+    let token_url = "https://www.reddit.com/api/v1/access_token";
+
+    let mut params = HashMap::new();
+    params.insert("grant_type", "password");
+    params.insert("username", REDDIT_API_USERNAME);
+    params.insert("password", REDDIT_API_PASSWORD);
+
+    let response = client
+        .post(token_url)
+        .basic_auth(CLIENT_ID, Some(CLIENT_SECRET))
+        .form(&params)
+        .header("User-Agent", "PostmanRuntime/7.39.0")
+        .header("Accept", "*/*")
+        .send()
+        .await
+        .map_err(|e| format!("Failed to request access token: {}", e))?;
+
+    let token_data: Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse token response: {}", e))?;
+
+    println!("{}", token_data);
+
+    // let access_token = token_data["access_token"]
+    //     .as_str()
+    //     .ok_or("Access token not found in response")?;
+
+    Ok(token_data.to_string())
+}
+
+#[tauri::command]
+pub async fn fetch_reddit_subreddit_posts(
+    access_token: &str,
+    subreddit: &str,
+) -> Result<Value, String> {
+    let client = Client::new();
+    let subreddit_url = format!("https://oauth.reddit.com/r/{}/hot", subreddit);
+
+    let response = client
+        .get(&subreddit_url)
+        .bearer_auth(access_token)
+        .header("User-Agent", "PostmanRuntime/7.39.0")
+        .header("Accept", "*/*")
+        .send()
+        .await
+        .map_err(|e| format!("Failed to fetch posts: {}", e))?;
+
+    let posts_data: Value = response
+        .json()
+        .await
+        .map_err(|e| format!("Failed to parse posts response: {}", e))?;
+
+    Ok(posts_data)
+}
 
 /**
  * This function sends a GET request to the provided URL and returns the response text.
