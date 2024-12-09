@@ -36,7 +36,7 @@ export const LoadingTextField = (props) => {
     return (
         <TextField
             {...props}
-            loading={loading}
+            loading={loading ? "true" : "false"}
             autoComplete="off" // Disables autocomplete
             inputProps={{
               autoCorrect: 'off', // Disables autocorrect
