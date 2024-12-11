@@ -161,6 +161,10 @@ export function upload_json(json_data, filename) {
     // link.click();
 }
 
+export function trim_title(title) {
+    return title.length > 100 ? title.substring(0, 100) + "..." : title;
+}
+
 /**
  * Writes multiple json files to the select folder of the user
  * The data will be seperated into file names for each key, with the data in the file being the stringified value 

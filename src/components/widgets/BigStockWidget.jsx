@@ -3,8 +3,8 @@ import {
     get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { generate_ollama_message, get_static_ticker_info, percentage_change, request_yahoo_big, yahoo_to_structured } from "@/app/funcs/stock_api";
-import { format_currency, format_number, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/tools";
+import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { format_currency, format_number, format_number_with_commas, format_percentage, trim_title, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
 import PercentageFormat from "@/components/PercentageFormat";
@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
 import { invoke } from "@tauri-apps/api/core";
+import { fetch_subreddit_posts } from "@/app/funcs/reddit";
 
 /**
  * @param {Object} props
@@ -27,13 +28,14 @@ import { invoke } from "@tauri-apps/api/core";
  * @param {Number} props.percent_change
  * @param {String} props.date
  * @param {Number[]} props.historical_prices
- * @param {Object[]} props.historical_data
+ * @param {HistoricalData} props.historical_data
+ * @param {TotalStockData} props.total_stock_data
  * @param {String} props.size - "big" or "medium" or "mini"
  * @desc Popup on the screen, blocks all other elements to focus on this one.
  * It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
-    const { symbol, name, price, percent_change, historical_prices, marketCap, news, technicals, historical_data } = props;
+    const { symbol, name, price, percent_change, historical_prices, marketCap, news, technicals, historical_data, total_stock_data } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
     const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
@@ -43,6 +45,7 @@ const BigStockWidget = (props) => {
     const [today_high_low, set_today_high_low] = useState("");
     const [forcasted_rsi, set_forcasted_rsi] = useState(0);
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
+    const [subreddit_data, set_subreddit_data] = useState([]);
 
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
@@ -68,6 +71,9 @@ const BigStockWidget = (props) => {
             }).then((forcasted_rsi) => {
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
             });
+
+            const subreddit_data = await fetch_subreddit_posts(symbol);
+            set_subreddit_data(subreddit_data);
         }
         complex_operations();
     }, []);
@@ -230,7 +236,21 @@ const BigStockWidget = (props) => {
                 <div className={"info-title"} >
                     {"Summary"}
                 </div>
-                <div className={""}>{ticker_info.summary}</div>
+                <div className={""}>
+                    {ticker_info.summary}
+                </div>
+                <div className={"info-title"} >
+                    {"Reddit Headlines"}
+                </div>
+                {subreddit_data && <div>
+                    {subreddit_data.map((post, index) => {
+                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                            await open(post.url);
+                        }}>
+                            {post.title}
+                        </div>
+                    })}
+                </div>}
                 <div className={"info-title"} >
                     {"News Headlines"}
                 </div>
@@ -239,7 +259,7 @@ const BigStockWidget = (props) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(get_whole_nasdaq_news_url(article.url));
                         }}>
-                            {article.title}
+                            {trim_title(article.title)}
                         </div>
                     })}
 
