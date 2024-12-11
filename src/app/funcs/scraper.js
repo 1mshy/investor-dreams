@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import localforage from 'localforage';
 import { get_cache, set_cache } from './cache';
-import { clean_ticker, get_company_summary } from './stock_api';
+import { clean_ticker } from './stock_api';
 
 /**
  * gets info on all known stocks using the nasdaq api and returns it as an object in the format:
@@ -35,22 +35,6 @@ export async function get_all_nasdaq_info() {
 export async function ticker_to_name(ticker_symbol) {
     return (await get_all_nasdaq_info())[ticker_symbol].name;
 }
-
-/**
- * fetch local json data
- * @param {String} url 
- * @returns {Object} fetch result
- */
-// export async function fetch_json(url) {
-//     return fetch(url, {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json'
-//         },
-//         mode: 'no-cors'
-//     }).then(res => res.json());
-// }
-
 
 /**
  * NASDAQ SCRAPING

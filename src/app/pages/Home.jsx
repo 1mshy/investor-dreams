@@ -8,7 +8,7 @@ import "@/app/css/Widgets.css";
 import { nasdaq_sorted_by } from "@/app/funcs/stock_api";
 import { invoke } from "@tauri-apps/api/core";
 import { Link } from "react-router-dom";
-import { fetchSubredditPosts } from "../funcs/reddit";
+import { fetch_subreddit_posts } from "../funcs/reddit";
 import HeatMapPopup from "@/components/popups/HeatMapPopup";
 import NewsWidget from "@/components/widgets/NewsWidget";
 import { Button } from "@mui/material";
@@ -22,18 +22,21 @@ export default class Home extends Component {
             bottom_3_changes: [],
             top_favs: [],
             heatmap: false,
+            stock_size: "mini",
         };
     }
 
     async componentDidMount() {
         // Example Usage
         (async () => {
-            const subreddit = 'wallstreetbets';
-            const posts = await fetchSubredditPosts(subreddit);
+            const possibly_good_subreddits = ['pennystocks', 'UndervaluedStonks',
+                 'wallstreetbets', 'smallstreetbets', 'EducatedInvesting', 'investing'];
+            const subreddit = 'pennystocks';
+            const posts = await fetch_subreddit_posts(subreddit);
             if (posts) {
-                posts.data.children.forEach((post) => {
-                    console.log(`Title: ${post.data.title}`);
-                    console.log(post.data)
+                posts.forEach((post) => {
+                    console.log(`Title: ${post.title}`);
+                    console.log(post)
                 });
             }
         })();
@@ -58,7 +61,7 @@ export default class Home extends Component {
     }
 
     render() {
-        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap} =
+        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap, stock_size} =
             this.state;
         const sampleData = [
             { date: "2024-11-19", open: 100, high: 110, low: 95, close: 105, volume: 5000 },
@@ -113,7 +116,7 @@ export default class Home extends Component {
                                     return (
                                         <StockWidget
                                             symbol={ticker_symbol}
-                                            size={"small"}
+                                            size={stock_size}
                                             key={ticker_symbol}
                                         />
                                     );
@@ -128,7 +131,7 @@ export default class Home extends Component {
                                 // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return (
                                     <StockWidget
-                                        size={"small"}
+                                        size={stock_size}
                                         symbol={ticker_symbol}
                                         // name={company}
                                         // price={current_price}
@@ -146,7 +149,7 @@ export default class Home extends Component {
                                 // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return (
                                     <StockWidget
-                                        size={"small"}
+                                        size={stock_size}
                                         symbol={ticker_symbol}
                                         // name={company}
                                         // price={current_price}

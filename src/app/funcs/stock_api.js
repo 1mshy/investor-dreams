@@ -52,6 +52,7 @@ export function clean_ticker_for_yahoo(ticker) {
  * @desc Request stock data from the API
  * @desc This function is rate limited to 8 requests per minute
  * @desc If the limit is reached, the function will wait for a minute and then resume
+ * @deprecated use {@link request_yahoo_big} instead
  */
 export async function request_ticker_data(ticker_symbol) {
     if (api_keys.length === 0) {
@@ -104,13 +105,15 @@ export async function request_ticker_data(ticker_symbol) {
 *   news: Array<Object>, // Array of news objects related to the ticker symbol.
 *   technicals: Object, // An object containing technical indicators for the stock.
 *   historical_data: HistoricalData, // Array of historical stock data points.
+*   total_stock_data: TotalStockData, // An object containing all stock data.
 *   [key: string]: any // Additional metadata from Nasdaq ticker information.
 * }>} A promise that resolves to an object containing stock widget data.
 */
 export async function fetch_widget_data(ticker_symbol) {
     ticker_symbol = clean_ticker(ticker_symbol);
     const company_name = await ticker_to_name(ticker_symbol) // gets the name of the company
-    const ticker_data = yahoo_to_structured(await request_yahoo_big(ticker_symbol)).data.reverse(); // gets the stock data for the company, mostly historical prices
+    const total_stock_data = yahoo_to_structured(await request_yahoo_big(ticker_symbol)); // gets the stock data for the company, mostly historical prices
+    const ticker_data = total_stock_data.data;
     const nasdaq_info = await get_all_nasdaq_info(); // gets the info on the company
     const nasdaq_news = await get_ticker_news(ticker_symbol);
     const nasdaq_technicals = await get_ticker_technicals(ticker_symbol);
@@ -140,6 +143,7 @@ export async function fetch_widget_data(ticker_symbol) {
         historical_prices: historical_prices,
         news: news,
         technicals: technicals,
+        total_stock_data: total_stock_data,
         historical_data: historical_data,
         ...nasdaq_ticker_info,
     };
@@ -513,7 +517,7 @@ export function yahoo_to_structured(data) {
         events,
         meta
     };
-    for (let i = 0; i < timestamp.length; i++) {
+    for (let i = timestamp.length-1; i >= 0; i--) {
         total_stock_data.data.push({
             datetime: timestamp[i] * 1000, // converting to milliseconds
             volume: volume[i],
@@ -539,14 +543,15 @@ export async function request_yahoo_big(ticker_symbol) {
         const cache = await get_cache(ticker_symbol, STOCK_CACHE);
         return cache.stock_data;
     }
-
     console.log("requesting " + ticker_symbol)
     const url = yahoo_url(ticker_symbol);
     console.log("requesting: " + url);
     const response = await invoke("get_request_api", { url: url });
     const data = JSON.parse(response);
     if (data && data.code === 404) {
-        console.log("invalid ticker symbol submitted: " + ticker_symbol)
+        console.log("Request failed: " + ticker_symbol)
+        console.log(url);
+        return await request_yahoo_big(ticker_symbol);
     }
     set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
     return data;
