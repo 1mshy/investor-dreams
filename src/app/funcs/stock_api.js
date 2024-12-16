@@ -3,6 +3,7 @@ import localforage from "localforage";
 import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
 import { delay, invoke_with_timeout, unformat_number } from "./tools";
+import { get_percent_change_month } from "./historical_pricing";
 
 /**
  * Twelve data api keys. 
@@ -128,7 +129,7 @@ export async function fetch_widget_data(ticker_symbol) {
     }
     const price = current_price_from_data(ticker_data);
     const change = change_from_data(ticker_data);
-    const change_month = monthly_change_from_data(ticker_data);
+    const percent_change_month = get_percent_change_month(ticker_data);
     const date = last_date_from_data(ticker_data);
     const historical_prices = get_list_prices(ticker_data);
     const historical_data = ticker_data;
@@ -138,7 +139,7 @@ export async function fetch_widget_data(ticker_symbol) {
         name: company_name,
         price: price.toFixed(2),
         percent_change: change.toFixed(2),
-        percent_change_month: change_month.toFixed(2),
+        percent_change_month: percent_change_month,
         date: date,
         historical_prices: historical_prices,
         news: news,
@@ -315,13 +316,6 @@ export function change_from_data(stock_data) {
     const current_stock_price = current_price_from_data(stock_data);
     const yesterday_stock_price = yesterday_close_from_data(stock_data);
     return percentage_change(current_stock_price, yesterday_stock_price)
-}
-
-export function monthly_change_from_data(stock_data) {
-    const THIRTY_DAYS_FROM_TODAY = 29;
-    const current_stock_price = current_price_from_data(stock_data);
-    const thiry_days_past = price_days_out_from_data(stock_data, THIRTY_DAYS_FROM_TODAY);
-    return percentage_change(current_stock_price, thiry_days_past);
 }
 
 function is_error(stock_data) {
