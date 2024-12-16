@@ -20,6 +20,7 @@ export const YTD_AGO = new Date(new Date().getFullYear(), 0, 1);
 export const ONE_YEAR_AGO = new Date(Date.now() - ONE_YEAR);
 export const FIVE_YEARS_AGO = new Date(Date.now() - FIVE_YEARS);
 export const TEN_YEARS_AGO = new Date(Date.now() - TEN_YEARS);
+export const BEGINNING_OF_TIME = new Date(0);
 
 /**
  * 
@@ -60,7 +61,7 @@ export function get_ten_year_prices(historical_data) {
 }
 
 export function get_all_prices(historical_data) {
-    return get_price_range(historical_data, new Date(0));
+    return get_price_range(historical_data, BEGINNING_OF_TIME);
 }
 
 export function get_month_change(historical_data) {
