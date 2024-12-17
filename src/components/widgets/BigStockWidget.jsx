@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 
 import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
+import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
 import { invoke } from "@tauri-apps/api/core";
-import { fetch_subreddit_posts } from "@/app/funcs/reddit";
 
 /**
  * @param {Object} props
@@ -46,6 +46,7 @@ const BigStockWidget = (props) => {
     const [forcasted_rsi, set_forcasted_rsi] = useState(0);
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
     const [subreddit_data, set_subreddit_data] = useState([]);
+    const [common_subreddit_data, set_common_subreddit_data] = useState([]);
 
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
@@ -74,6 +75,18 @@ const BigStockWidget = (props) => {
 
             const subreddit_data = await fetch_subreddit_posts(symbol);
             set_subreddit_data(subreddit_data);
+
+            const common_subreddit_data = await fetch_common_subreddits();
+            console.log(common_subreddit_data)
+            let usefull_subreddits = [];
+            for (let subreddit of Object.keys(common_subreddit_data)) {
+                for (let post of common_subreddit_data[subreddit]) {
+                    if (post.title.toLowerCase().includes(symbol.toLowerCase())) {
+                        usefull_subreddits.push(post);
+                    }
+                }
+            }
+            set_common_subreddit_data(usefull_subreddits);
         }
         complex_operations();
     }, []);
@@ -114,6 +127,8 @@ const BigStockWidget = (props) => {
     }
 
     const dividend_yield = dividend_amount / unformatted_price * 100;
+
+console.log(common_subreddit_data)
 
     return (
         <div className={"big"} data-tauri-drag-region
@@ -244,6 +259,15 @@ const BigStockWidget = (props) => {
                 </div>
                 {subreddit_data && <div>
                     {subreddit_data.map((post, index) => {
+                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                            await open(post.url);
+                        }}>
+                            {post.title}
+                        </div>
+                    })}
+                </div>}
+                {common_subreddit_data && <div>
+                    {common_subreddit_data.map((post, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(post.url);
                         }}>

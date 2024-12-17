@@ -4,6 +4,7 @@
 
 import localforage from "localforage";
 import { NASDAQ_NEWS, NASDAQ_TECHNICALS, OLLAMA_GENERATION } from "./stock_api";
+import { REDDIT_CACHE } from "./reddit";
 
 export const DEFAULT_EXPIRATION = 10; // minutes
 
@@ -97,6 +98,7 @@ export function clear_cache() {
     STOCK_CACHE.clear();
     NASDAQ_NEWS.clear();
     NASDAQ_TECHNICALS.clear();
+    REDDIT_CACHE.clear();
 }
 
 /**
