@@ -17,6 +17,7 @@ import { theme } from './mui/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import Background from './mui/Background';
 import TradingView from './pages/TradingView';
+import Opportunities from './pages/Opportunities';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ const BasePage = () => {
       element: <Analysis />,
     },
     {
+      path: "/opportunities",
+      element: <Opportunities />,
+    },
+    {
       path: "/portfolio",
       element: <Portfolio />,
     },
@@ -50,7 +55,7 @@ const BasePage = () => {
     }
   ]);
 
-  const current_version = "1.0.17";
+  const current_version = "1.0.18";
   const [errors, set_errors] = useState(true);
   const [has_checked, set_has_checked] = useState(false);
   useEffect(() => {

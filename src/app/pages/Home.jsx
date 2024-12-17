@@ -27,19 +27,6 @@ export default class Home extends Component {
     }
 
     async componentDidMount() {
-        // Example Usage
-        (async () => {
-            const possibly_good_subreddits = ['pennystocks', 'UndervaluedStonks',
-                 'wallstreetbets', 'smallstreetbets', 'EducatedInvesting', 'investing'];
-            const subreddit = 'pennystocks';
-            const posts = await fetch_subreddit_posts(subreddit);
-            if (posts) {
-                posts.forEach((post) => {
-                    console.log(`Title: ${post.title}`);
-                    console.log(post)
-                });
-            }
-        })();
         // Only access browser-specific APIs here
         console.log("getting username");
         const username = await invoke("get_username");
@@ -89,6 +76,10 @@ export default class Home extends Component {
                         </Link>
                         <Link to="/analysis" className={"homepage-navButton"}>
                             Analysis
+                        </Link>
+
+                        <Link to="/opportunities" className={"homepage-navButton"}>
+                            Opportunities
                         </Link>
                         <Link to="/tradingview" className={"homepage-navButton"}>
                             Trading View
