@@ -56,6 +56,21 @@ export async function fetch_subreddit_posts(subreddit) {
     }
     return [];
 }
+/**
+ * 
+ * @returns {Promise<{}>}
+ */
+export async function fetch_common_subreddits() {
+    const subreddits = ['pennystocks', 'UndervaluedStonks', 'wallstreetbets', 'smallstreetbets', 'EducatedInvesting', 'investing', ];
+    const subreddit_data = {};
+    for (let subreddit of subreddits) {
+        const posts = await fetch_subreddit_posts(subreddit);
+        if (posts) {
+            subreddit_data[subreddit] = posts;
+        }
+    }
+    return subreddit_data;
+}
 
 export const REDDIT_CACHE = localforage.createInstance({
     name: "reddit_cache"

@@ -45,7 +45,7 @@ pub async fn fetch_reddit_subreddit_posts(
     subreddit: &str,
 ) -> Result<Value, String> {
     let client = Client::new();
-    let subreddit_url = format!("https://oauth.reddit.com/r/{}/hot", subreddit);
+    let subreddit_url = format!("https://oauth.reddit.com/r/{}/new", subreddit);
 
     let response = client
         .get(&subreddit_url)

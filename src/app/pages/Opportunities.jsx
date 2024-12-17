@@ -4,31 +4,20 @@ import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
 import "@/app/css/Portfolio.css";
 import "@/app/css/Widgets.css";
-import { Link } from 'react-router-dom';
-import StockWidget from '@/components/widgets/StockWidget';
-import { fetch_subreddit_posts } from '../funcs/reddit';
 import { open } from '@tauri-apps/plugin-shell';
+import { Link } from 'react-router-dom';
+import { fetch_common_subreddits } from '../funcs/reddit';
 
 export default class Opportunities extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            subreddits: ['pennystocks', 'UndervaluedStonks',
-                'wallstreetbets', 'smallstreetbets', 'EducatedInvesting', 'investing'],
             subreddits_data:  {},
         }
     }
 
     async componentDidMount() {
-        (async () => {
-            for (let subreddit of this.state.subreddits) {
-                const posts = await fetch_subreddit_posts(subreddit);
-                if (posts) {
-                    this.setState({subreddits_data: {...this.state.subreddits_data, [subreddit]: posts}});
-                }
-            }
-            console.log(this.state.subreddits_data);
-        })();
+        this.setState({ subreddits_data: await fetch_common_subreddits() });
     }
 
     render() {
