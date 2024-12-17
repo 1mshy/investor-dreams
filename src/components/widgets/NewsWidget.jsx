@@ -13,7 +13,7 @@ const NewsWidget = () => {
       displayMode: 'adaptive',
       height: 550,
       width: 350,
-      colorTheme: 'light',
+      colorTheme: 'dark',
       locale: 'en',
     });
 
@@ -41,6 +41,11 @@ const NewsWidget = () => {
       clearInterval(interval);
     };
   }, []);
+
+  /**
+   * The TradingView widget container uses a custom overlay
+   * found in the tradingview.css file.
+   */
 
   return (
     <div className="tradingview-widget-container" style={{ width: '350px', height: '550px' }}>

@@ -64,11 +64,6 @@ export function get_all_prices(historical_data) {
     return get_price_range(historical_data, BEGINNING_OF_TIME);
 }
 
-export function get_month_change(historical_data) {
-    const month_prices = get_month_prices(historical_data);
-    return month_prices.length > 0 ? month_prices[month_prices.length - 1] - month_prices[0] : 0;
-}
-
 export function get_ytd_change(historical_data) {
     const ytd_prices = get_ytd_prices(historical_data);
     return ytd_prices.length > 0 ? ytd_prices[ytd_prices.length - 1] - ytd_prices[0] : 0;

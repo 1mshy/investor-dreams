@@ -2,7 +2,7 @@
 
 import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "../PercentageFormat";
-import { get_month_change } from "@/app/funcs/historical_pricing";
+import { get_percent_change_month } from "@/app/funcs/historical_pricing";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -18,7 +18,7 @@ const MiniStockWidget = ({ symbol, name, price, percent_change, onClick, histori
     const [month_change, set_month_change] = useState(0);
     useEffect(() => {
         if (historical_data)
-            set_month_change(get_month_change(historical_data));
+            set_month_change(get_percent_change_month(historical_data));
     });
     return (
         <>
