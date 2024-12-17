@@ -68,7 +68,7 @@ export async function request_database() {
             continue;
         }
         searched_symbols.add(symbol);
-        chunk.push(all_symbols[i++]);
+        chunk.push(all_symbols[i]);
         i++;
     }
     eval_chunks();
