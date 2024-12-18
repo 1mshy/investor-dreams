@@ -487,6 +487,15 @@ export const suited_up = (symbol) => `${yahoo_base_url}${clean_ticker_for_yahoo(
 
 export const yahoo_all = (symbol) => `${yahoo_base_url}${clean_ticker_for_yahoo(symbol)}?period1=0&period2=${Date.now()}&interval=1d`;
 
+/**
+ * 
+ * @param {string} symbol 
+ * @param {string} range -"1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max" 
+ * @param {string} interval 
+ * @param {number} period1 
+ * @param {number} period2 
+ * @returns {string}
+ */
 function yahoo_url(symbol, range = null, interval = "1d", period1 = 0, period2 = Date.now() / 1000) {
     symbol = clean_ticker_for_yahoo(symbol);
     if (range) {
@@ -505,19 +514,23 @@ export function yahoo_to_structured(data) {
     const key_data = data.chart.result[0];
     const { timestamp, events, meta, indicators } = key_data;
     const { volume, open, high, close, low } = indicators.quote[0];
-    const adjusted_close = indicators.adjclose[0].adjclose;
+    let closing_values = close;
+    const has_adjusted_close = indicators.adjclose && indicators.adjclose.length > 0 && indicators.adjclose[0].length > 0;
+    if (has_adjusted_close) {
+        closing_values = indicators.adjclose[0].adjclose;
+    }
     let total_stock_data = {
         data: [],
         events,
         meta
     };
-    for (let i = timestamp.length-1; i >= 0; i--) {
+    for (let i = timestamp.length - 1; i >= 0; i--) {
         total_stock_data.data.push({
             datetime: timestamp[i] * 1000, // converting to milliseconds
             volume: volume[i],
             open: open[i],
             high: high[i],
-            close: adjusted_close[i],
+            close: closing_values[i],
             low: low[i]
         });
     }
@@ -549,4 +562,61 @@ export async function request_yahoo_big(ticker_symbol) {
     }
     set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
     return data;
+}
+/**
+ * 
+ * @param {string} ticker_symbol 
+ * @param {string} timeset 
+ * @returns {Promise<{meta:{},values:[]}>}
+ */
+async function request_yahoo_timeset(ticker_symbol, timeset) {
+    console.log("")
+    let range = null;
+    let interval = "1d";
+    switch (timeset.toUpperCase()) {
+        case "M":
+            range = "30d";
+            interval = "1h";
+            break;
+        case "W":
+            range = "7d";
+            interval = "1m";
+            break;
+        case "D":
+            range = "1d";
+            interval = "1m";
+            break;
+        default:
+            return await request_yahoo_big(ticker_symbol);
+    }
+    ticker_symbol = clean_ticker(ticker_symbol);
+    const key = `${ticker_symbol}_${timeset}`
+    const valid_cache = await stock_cache_is_valid(key);
+    if (valid_cache) {
+        const cache = await get_cache(key, STOCK_CACHE);
+        return cache.stock_data;
+    }
+    console.log("requesting " + ticker_symbol)
+    const url = yahoo_url(ticker_symbol, range, interval);
+    console.log("requesting: " + url);
+    const response = await invoke("get_request_api", { url: url });
+    const data = JSON.parse(response);
+    if (data && data.code === 404) {
+        console.log("Request failed: " + ticker_symbol)
+        console.log(url);
+        return await request_yahoo_big(ticker_symbol);
+    }
+    set_cache(key, { stock_data: data }, 10, STOCK_CACHE);
+    return data;
+}
+
+/**
+ * @param {String} ticker_symbol
+ * @param {String} timeset
+ * @returns {Promise<TotalStockData>}
+ */
+export async function fetch_yahoo_timeset(ticker_symbol, timeset = null) {
+    console.log(timeset)
+    const yahoo_data = await request_yahoo_timeset(ticker_symbol, timeset);
+    return yahoo_to_structured(yahoo_data);
 }
