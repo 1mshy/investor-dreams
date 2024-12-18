@@ -13,6 +13,9 @@ const PercentageFormat = ({ percent_change, timeset }) => {
   useEffect(() => {
     setIsPositive(percent_change >= 0);
   }, [percent_change]);
+
+  if(isNaN(percent_change)) return <div></div>;
+
   return (
     <div
       className={"percent-container"}
