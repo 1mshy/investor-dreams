@@ -257,7 +257,7 @@ console.log(common_subreddit_data)
                 <div className={"info-title"} >
                     {"Reddit Headlines"}
                 </div>
-                {subreddit_data && <div>
+                {subreddit_data && <div className="reddit-news">
                     {subreddit_data.map((post, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(post.url);
@@ -266,7 +266,7 @@ console.log(common_subreddit_data)
                         </div>
                     })}
                 </div>}
-                {common_subreddit_data && <div>
+                {common_subreddit_data && <div className="common-reddit">
                     {common_subreddit_data.map((post, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(post.url);
