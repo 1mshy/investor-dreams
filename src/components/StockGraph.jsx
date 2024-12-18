@@ -66,6 +66,7 @@ const StockGraph = ({ symbol, size, timeset = "D" }) => {
                     pointHoverRadius: 0,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.4,
+                    spanGaps: true,
                 },
             ],
         };
