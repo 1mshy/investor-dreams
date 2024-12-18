@@ -239,7 +239,7 @@ console.log(common_subreddit_data)
                 </div>
                 <div className={"info-section"}>
                     <div className={"info-title"}>Yesterday</div>
-                    <div className={"info-value"}>${yesterday_price}</div>
+                    <div className={"info-value"}>${format_number_with_commas(yesterday_price)}</div>
                     <div className={"info-title"}>Currently</div>
                     <div className={"price"}>${format_number_with_commas(price)}</div>
                     <div className={"info-title"}>Market Cap</div>
