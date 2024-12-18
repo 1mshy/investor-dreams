@@ -18,6 +18,7 @@ import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
 import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
 import { invoke } from "@tauri-apps/api/core";
+import StockGraph from "../StockGraph";
 
 /**
  * @param {Object} props
@@ -47,6 +48,7 @@ const BigStockWidget = (props) => {
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
     const [subreddit_data, set_subreddit_data] = useState([]);
     const [common_subreddit_data, set_common_subreddit_data] = useState([]);
+    const [timeset, set_timeset] = useState("M");
 
     useEffect(() => {
         get_static_ticker_info(symbol).then((info) => {
@@ -189,17 +191,17 @@ console.log(common_subreddit_data)
 
                 </div>
                 }
-                <PriceGraph prices={graph_prices} size={"big"} historical_data={historical_data} />
+                <StockGraph symbol={symbol}  size={"big"} timeset={timeset} />
                 <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
-                        <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_graph_prices(get_month_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_graph_prices(get_month_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_graph_prices(get_ytd_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_graph_prices(get_year_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_graph_prices(get_five_year_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_graph_prices(get_ten_year_prices(historical_data)) }} />
-                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_graph_prices(get_all_prices(historical_data)) }} />
+                        <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_timeset("D") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_timeset("M") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_timeset("YTD") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_timeset("Y") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_timeset("5Y") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_timeset("10Y") }} />
+                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_timeset("ALL") }} />
                     </div>
                     <div className={"date"}>
                         Updated {new Date(historical_data[0].datetime).toLocaleDateString()}
