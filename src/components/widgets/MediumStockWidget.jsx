@@ -1,5 +1,5 @@
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
-import { get_month_prices } from "@/app/funcs/historical_pricing";
+import { get_month_prices, get_percent_change_month, get_percent_change_ytd } from "@/app/funcs/historical_pricing";
 import { format_currency, format_currency_with_symbols } from "@/app/funcs/tools";
 import { SoftPaper } from "@/app/mui/theme";
 import CustomSector from "@/components/popups/CustomSector";
@@ -24,12 +24,17 @@ import { useEffect } from "react";
  * @desc Medium sized stock widget, includes a price graph and a price change percentage
  */
 const MediumStockWidget = (props) => {
-    const { symbol, name, price, percent_change, percent_change_month, date, historical_prices, marketCap, onClick, historical_data } = props;
+    const { symbol, name, price, percent_change, marketCap, onClick, historical_data } = props;
     const [is_favourite, set_favourite] = useState(false);
-    const month_prices = get_month_prices(historical_data);
+    const [month_prices, set_month_prices] = useState(null);
+    const [percent_change_month, set_percent_change_month] = useState(null);
+    const [percent_change_ytd, set_percent_change_ytd] = useState(null);
 
     useEffect(() => {
         set_favourite(is_ticker_favourite(symbol));
+        set_month_prices(get_month_prices(historical_data));
+        set_percent_change_month(get_percent_change_month(historical_data));
+        set_percent_change_ytd(get_percent_change_ytd(historical_data));
     }, [symbol]);
 
     return (
@@ -69,12 +74,12 @@ const MediumStockWidget = (props) => {
                     <PriceGraph prices={month_prices} historical_data={historical_data} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            {percent_change && <PercentageFormat percent_change={percent_change} />}
-                            {percent_change_month && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
+                            <PercentageFormat percent_change={percent_change} timeset={"D"} />
+                            <PercentageFormat percent_change={percent_change_month} timeset={"M"} />
+                            <PercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} />
                         </div>
                         <div className={"date"}>
                             {marketCap && <div className={"market-cap"}>MC: {format_currency_with_symbols(marketCap)}</div>}
-                            {date}
                         </div>
                     </div>
                 </div>
