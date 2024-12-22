@@ -1,6 +1,14 @@
+import React, { Component } from 'react';
 import { user_settings } from '@/app/config/settings';
-import { get_all_prices, get_five_year_prices, get_month_prices, get_ten_year_prices, get_year_prices, get_ytd_prices } from '@/app/funcs/historical_pricing';
-import { fetch_widget_data, fetch_yahoo_timeset, percentage_change } from '@/app/funcs/stock_api';
+import {
+    get_all_prices,
+    get_five_year_prices,
+    get_month_prices,
+    get_ten_year_prices,
+    get_year_prices,
+    get_ytd_prices,
+} from '@/app/funcs/historical_pricing';
+import { fetch_yahoo_timeset, percentage_change } from '@/app/funcs/stock_api';
 import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
 import {
     CategoryScale,
@@ -13,27 +21,22 @@ import {
     Title,
     Tooltip,
 } from 'chart.js';
-import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
-const StockGraph = ({ symbol, size, timeset = "D" }) => {
-    const [historical_data, set_historical_data] = useState([]);
-    const [chart_data, set_chart_data] = useState(null);
-    const [chart_options, set_chart_options] = useState(null);
-    const [dimensions, set_dimensions] = useState({ width: '300px', height: '200px' });
+class StockGraph extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            historical_data: [],
+            chart_data: null,
+            chart_options: null,
+            dimensions: { width: '300px', height: '200px' },
+        };
+    }
 
-    const calculateDimensions = (size) => {
+    calculateDimensions(size) {
         switch (size) {
             case 'big':
                 return { width: '50%', height: '50%' };
@@ -42,9 +45,9 @@ const StockGraph = ({ symbol, size, timeset = "D" }) => {
             default:
                 return { width: '300px', height: '200px' };
         }
-    };
+    }
 
-    const setupChart = (prices) => {
+    setupChart(prices) {
         const data = {
             labels: prices,
             datasets: [
@@ -109,14 +112,16 @@ const StockGraph = ({ symbol, size, timeset = "D" }) => {
                             const value = tooltipModel.dataPoints[0].raw;
                             const current_price = prices[prices.length - 1];
                             const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
-                            const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', {
-                                year: 'numeric', month: 'long', day: 'numeric',
-                            });
+                            const formatDate = (dateString) =>
+                                new Date(dateString).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                });
 
                             const index = tooltipModel.dataPoints[0].dataIndex;
-                            const date = historical_data[prices.length - 1 - index]?.datetime;
+                            const date = this.state.historical_data[prices.length - 1 - index]?.datetime;
 
-                            console.log(index)
                             tooltipEl.innerHTML = `
                                 <div><strong>Price:</strong> ${format_currency(value)}</div>
                                 ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Relatively:</strong> ${format_percentage(percent_change || 0)}</div>` : ''}
@@ -133,58 +138,72 @@ const StockGraph = ({ symbol, size, timeset = "D" }) => {
             },
         };
 
-        set_chart_data(data);
-        set_chart_options(options);
-    };
+        this.setState({ chart_data: data, chart_options: options });
+    }
 
-    const fetchData = async () => {
+    async fetchData() {
+        const { symbol, timeset } = this.props;
+
+        if (!symbol) return;
+
         try {
-            if (symbol) {
-                const yahoo_timeset = await fetch_yahoo_timeset(symbol, timeset);
-                const historical = yahoo_timeset.data;
-                set_historical_data(historical);
-                switch (timeset) {
-                    case "D":
-                        setupChart(get_all_prices(historical));
-                        break;
-                    case "M":
-                        setupChart(get_month_prices(historical));
-                        break;
-                    case "YTD":
-                        setupChart(get_ytd_prices(historical));
-                        break;
-                    case "Y":
-                        setupChart(get_year_prices(historical));
-                        break;
-                    case "5Y":
-                        setupChart(get_five_year_prices(historical));
-                        break;
-                    case "10Y":
-                        setupChart(get_ten_year_prices(historical));
-                        break;
-                    default:
-                        setupChart(get_all_prices(historical));
-                        break;
-                }
+            const yahoo_timeset = await fetch_yahoo_timeset(symbol, timeset);
+            const historical = yahoo_timeset.data;
+            this.setState({ historical_data: historical });
 
+            switch (timeset) {
+                case 'D':
+                    this.setupChart(get_all_prices(historical));
+                    break;
+                case 'M':
+                    this.setupChart(get_month_prices(historical));
+                    break;
+                case 'YTD':
+                    this.setupChart(get_ytd_prices(historical));
+                    break;
+                case 'Y':
+                    this.setupChart(get_year_prices(historical));
+                    break;
+                case '5Y':
+                    this.setupChart(get_five_year_prices(historical));
+                    break;
+                case '10Y':
+                    this.setupChart(get_ten_year_prices(historical));
+                    break;
+                default:
+                    this.setupChart(get_all_prices(historical));
+                    break;
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-    };
+    }
 
-    useEffect(() => {
-        fetchData();
-        set_dimensions(calculateDimensions(size));
-    }, [symbol, size, timeset]);
+    componentDidMount() {
+        const { size } = this.props;
+        this.fetchData();
+        this.setState({ dimensions: this.calculateDimensions(size) });
+    }
 
-    if (!chart_data || !chart_options) return <div>Loading Chart...</div>;
+    componentDidUpdate(prevProps) {
+        const { symbol, size, timeset } = this.props;
+        if (prevProps.symbol !== symbol || prevProps.size !== size || prevProps.timeset !== timeset) {
+            this.fetchData();
+            this.setState({ dimensions: this.calculateDimensions(size) });
+        }
+    }
 
-    return (
-        <div style={dimensions}>
-            <Line data={chart_data} options={chart_options} />
-        </div>
-    );
-};
+    render() {
+        const { chart_data, chart_options, dimensions } = this.state;
+
+        if (!chart_data || !chart_options) return <div>Loading Chart...</div>;
+
+        return (
+            <div style={dimensions}>
+                <Line data={chart_data} options={chart_options} />
+            </div>
+        );
+    }
+}
 
 export default StockGraph;
