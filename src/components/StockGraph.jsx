@@ -121,7 +121,6 @@ class StockGraph extends Component {
 
                             const index = tooltipModel.dataPoints[0].dataIndex;
                             const date = this.state.historical_data[prices.length - 1 - index]?.datetime;
-
                             tooltipEl.innerHTML = `
                                 <div><strong>Price:</strong> ${format_currency(value)}</div>
                                 ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Relatively:</strong> ${format_percentage(percent_change || 0)}</div>` : ''}
