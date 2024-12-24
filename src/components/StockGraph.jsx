@@ -118,13 +118,20 @@ class StockGraph extends Component {
                                     month: 'long',
                                     day: 'numeric',
                                 });
-
+                            const formatTime = (dateString) =>
+                                new Date(dateString).toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    second: 'numeric',
+                                });
                             const index = tooltipModel.dataPoints[0].dataIndex;
                             const date = this.state.historical_data[prices.length - 1 - index]?.datetime;
+                            const relative_change = format_percentage(percent_change)
                             tooltipEl.innerHTML = `
                                 <div><strong>Price:</strong> ${format_currency(value)}</div>
-                                ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Relatively:</strong> ${format_percentage(percent_change || 0)}</div>` : ''}
+                                ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Relatively:</strong> ${relative_change}</div>` : ''}
                                 ${date ? `<div><strong>Date:</strong> ${formatDate(date)}</div>` : ''}
+                                ${this.props.timeset === "D" ? `<div>${formatTime(date)}</div>` : ''}
                             `;
                         }
 
