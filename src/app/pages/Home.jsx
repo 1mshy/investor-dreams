@@ -22,7 +22,7 @@ export default class Home extends Component {
             bottom_3_changes: [],
             top_favs: [],
             heatmap: false,
-            stock_size: "mini",
+            stock_size: "small",
         };
     }
 
@@ -50,11 +50,6 @@ export default class Home extends Component {
     render() {
         const { username, top_3_changes, bottom_3_changes, top_favs, heatmap, stock_size} =
             this.state;
-        const sampleData = [
-            { date: "2024-11-19", open: 100, high: 110, low: 95, close: 105, volume: 5000 },
-            { date: "2024-11-20", open: 105, high: 115, low: 100, close: 110, volume: 6000 },
-            { date: "2024-11-21", open: 110, high: 120, low: 105, close: 115, volume: 7000 },
-        ];
         return (
             <div className={"homepage-mainPage"}>
                 <div className={"homepage-header"} data-tauri-drag-region>
@@ -64,9 +59,6 @@ export default class Home extends Component {
                     >
                         Welcome, {username}
                     </h1>
-                    {/* <div style={{ display: "inline-flex" }}>
-                        <StockSearch label="" variant="standard" fullWidth />
-                    </div> */}
                     <div className={"homepage-nav"}>
                         <Link to="/playground" className={"homepage-navButton"}>
                             Playground
@@ -78,12 +70,12 @@ export default class Home extends Component {
                             Analysis
                         </Link>
 
-                        <Link to="/opportunities" className={"homepage-navButton"}>
+                        {/* <Link to="/opportunities" className={"homepage-navButton"}>
                             Opportunities
                         </Link>
                         <Link to="/tradingview" className={"homepage-navButton"}>
                             Trading View
-                        </Link>
+                        </Link> */}
                         {/* <Link href="/playground" className={"homepage-navButton"}>Pages</Link>
                         <Link
                             href={{
@@ -97,13 +89,11 @@ export default class Home extends Component {
                     </div>
                 </div>
                 <div className={"homepage-content"} data-tauri-drag-region>
-                    {/* <div className={"widgets-container"}> */}
                     {has_favourites() && (
                         <div className={"homepage-columns"}>
                             <h3>Favourites:</h3>
                             <div className={"homepage-favourties"}>
                                 {top_favs.map((ticker_symbol) => {
-                                    // console.log(top_favs)
                                     return (
                                         <StockWidget
                                             symbol={ticker_symbol}
@@ -119,14 +109,10 @@ export default class Home extends Component {
                         <h3>Best Performing</h3>
                         <div className={"top3-list"}>
                             {top_3_changes.map((ticker_symbol) => {
-                                // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return (
                                     <StockWidget
                                         size={stock_size}
                                         symbol={ticker_symbol}
-                                        // name={company}
-                                        // price={current_price}
-                                        // percent_change={percent_change}
                                         key={ticker_symbol}
                                     />
                                 );
@@ -137,14 +123,10 @@ export default class Home extends Component {
                         <h3>Worst performing</h3>
                         <div className={"bottom3-list"}>
                             {bottom_3_changes.map((ticker_symbol) => {
-                                // const { change, ticker_symbol, company, current_price, percent_change, portfolio_percent } = ticker_data;
                                 return (
                                     <StockWidget
                                         size={stock_size}
                                         symbol={ticker_symbol}
-                                        // name={company}
-                                        // price={current_price}
-                                        // percent_change={percent_change}
                                         key={ticker_symbol}
                                     />
                                 );

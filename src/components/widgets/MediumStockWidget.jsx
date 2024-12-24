@@ -11,6 +11,7 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import PercentageFormat from "@/components/PercentageFormat";
 import { useEffect } from "react";
+import StockGraph from "../StockGraph";
 
 /**
  * @param {String} symbol
@@ -71,7 +72,7 @@ const MediumStockWidget = (props) => {
                 </div>
                 <div className={"content"}>
                     <div className={"price"}>${price}</div>
-                    <PriceGraph prices={month_prices} historical_data={historical_data} />
+                    <StockGraph timeset={"M"} symbol={symbol} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
                             <PercentageFormat percent_change={percent_change} timeset={"D"} />

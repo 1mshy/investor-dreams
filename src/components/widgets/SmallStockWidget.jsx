@@ -5,6 +5,7 @@ import PercentageFormat from "../PercentageFormat";
 import PriceGraph from "../PriceGraph";
 import { SoftPaper } from "@/app/mui/theme";
 import { format_currency_with_symbols } from "@/app/funcs/tools";
+import StockGraph from "../StockGraph";
 
 /**
  * @param {String} symbol
@@ -39,7 +40,7 @@ const SmallStockWidget = ({ symbol, name, price, percent_change, onClick, histor
                     </div>
                 </div>
                 <div className={"content"}>
-                    <PriceGraph prices={month_prices} size={"full"} historical_data={historical_data} />
+                    <StockGraph timeset={"M"} symbol={symbol} size={"full"} />
                 </div>
             </SoftPaper>
         </>
