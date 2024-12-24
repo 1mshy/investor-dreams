@@ -149,9 +149,8 @@ class StockGraph extends Component {
 
     async fetchData() {
         const { symbol, timeset } = this.props;
-
         if (!symbol) return;
-
+        
         try {
             const yahoo_timeset = await fetch_yahoo_timeset(symbol, timeset);
             const historical = yahoo_timeset.data;
