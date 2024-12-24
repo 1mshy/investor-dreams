@@ -56,7 +56,7 @@ export function format_number_with_commas(number) {
  * @example unformat_number("$1,000") => 1000
  */
 export function unformat_number(number) {
-    if (!number) return NaN;
+    if (!number && number !== 0) return NaN;
     return Number(`${number}`.replaceAll("$", "").replaceAll(",", "").replaceAll("'", "").replaceAll("%", ""));
 }
 /**
