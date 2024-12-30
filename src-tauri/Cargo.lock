@@ -1785,6 +1785,7 @@ dependencies = [
  "rust_ti",
  "serde",
  "serde_json",
+ "ta",
  "tauri",
  "tauri-build",
  "tauri-plugin-decorum",
@@ -3752,6 +3753,12 @@ dependencies = [
  "toml 0.8.2",
  "version-compare",
 ]
+
+[[package]]
+name = "ta"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "609409d472a0a7d8d4dd9e19891bbdef546b9dce670c3057d0e02192dc541226"
 
 [[package]]
 name = "tao"
