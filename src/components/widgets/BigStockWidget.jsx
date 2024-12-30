@@ -194,7 +194,7 @@ console.log(common_subreddit_data)
                 </div>
                 }
                 <StockGraph symbol={symbol}  size={"big"} timeset={timeset} />
-                <PriceGraph prices={rsi_values.slice(-30)} />
+                {/* <PriceGraph prices={rsi_values.slice(-30)} /> */}
                 <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
