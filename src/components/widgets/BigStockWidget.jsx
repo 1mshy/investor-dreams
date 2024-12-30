@@ -1,6 +1,6 @@
 import {
-    get_all_prices, get_five_year_prices, get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
-    get_percent_change_year, get_percent_change_ytd, get_ten_year_prices, get_year_prices, get_ytd_prices
+    get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
+    get_percent_change_year, get_percent_change_ytd
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
@@ -8,7 +8,6 @@ import { format_currency, format_number, format_number_with_commas, format_perce
 import { MarketColouredBadge } from "@/app/mui/other";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
 import PercentageFormat from "@/components/PercentageFormat";
-import PriceGraph from "@/components/PriceGraph";
 import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 import { Button } from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
@@ -18,7 +17,9 @@ import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
 import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
 import { invoke } from "@tauri-apps/api/core";
-import StockGraph from "../StockGraph";
+import StockGraph from "../Graphing/StockGraph";
+import IndicatorGraph from "../Graphing/IndicatorGraph";
+import CombinedGraph from "../Graphing/CombinedGraph";
 
 /**
  * @param {Object} props
@@ -132,7 +133,15 @@ const BigStockWidget = (props) => {
 
     const dividend_yield = dividend_amount / unformatted_price * 100;
 
-console.log(common_subreddit_data)
+    const rsi_dataset = {
+        data: rsi_values,
+        label: 'RSI',
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+    }
+
+    console.log(common_subreddit_data)
 
     return (
         <div className={"big"} data-tauri-drag-region
@@ -193,7 +202,9 @@ console.log(common_subreddit_data)
 
                 </div>
                 }
-                <StockGraph symbol={symbol}  size={"big"} timeset={timeset} />
+                <StockGraph symbol={symbol} size={"big"} timeset={timeset} />
+                {/* <IndicatorGraph symbol={symbol} size={"big"} timeset={timeset} indicators={["rsi"]}/> */}
+                {/* <CombinedGraph symbol={symbol} size={"big"} timeset={timeset}/> */}
                 {/* <PriceGraph prices={rsi_values.slice(-30)} /> */}
                 <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>

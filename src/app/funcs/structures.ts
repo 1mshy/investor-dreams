@@ -226,3 +226,22 @@ type RedditPost = {
     visited: boolean;
     wls: number | null;
 };
+
+
+type GraphDataset = {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    fill: boolean;
+    pointRadius: number;
+    pointHoverRadius: number;
+    pointHitRadius: number;
+    pointBackgroundColor: string;
+    pointBorderColor: string;
+    pointHoverBackgroundColor: string;
+    pointHoverBorderColor: string;
+    lineTension: number;
+    borderWidth: number;
+    hidden: boolean;
+}

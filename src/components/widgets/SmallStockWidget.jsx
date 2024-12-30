@@ -1,11 +1,10 @@
 ;
 
 import { get_month_prices, get_percent_change_month } from "@/app/funcs/historical_pricing";
-import PercentageFormat from "../PercentageFormat";
-import PriceGraph from "../PriceGraph";
-import { SoftPaper } from "@/app/mui/theme";
 import { format_currency_with_symbols } from "@/app/funcs/tools";
-import StockGraph from "../StockGraph";
+import { SoftPaper } from "@/app/mui/theme";
+import StockGraph from "../Graphing/StockGraph";
+import PercentageFormat from "../PercentageFormat";
 
 /**
  * @param {String} symbol
@@ -16,7 +15,6 @@ import StockGraph from "../StockGraph";
  * Small stock WIdget includes the same info as the mini, but includes a small graph of the month's pricing
  */
 const SmallStockWidget = ({ symbol, name, price, percent_change, onClick, historical_prices, historical_data, show_name = true }) => {
-    const month_prices = get_month_prices(historical_data);
     const percent_change_month = get_percent_change_month(historical_data);
     return (
         <>
