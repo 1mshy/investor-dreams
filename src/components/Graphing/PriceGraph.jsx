@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-import { Line } from 'react-chartjs-2';
+import { user_settings } from '@/app/config/settings';
+import { percentage_change } from '@/app/funcs/stock_api';
+import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
 import {
-    Chart as ChartJS,
     CategoryScale,
+    Chart as ChartJS,
+    Filler,
+    Legend,
     LinearScale,
-    PointElement,
     LineElement,
+    PointElement,
     Title,
     Tooltip,
-    Legend,
-    Filler,
 } from 'chart.js';
-import PercentageFormat from './PercentageFormat';
-import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
-import { percentage_change } from '@/app/funcs/stock_api';
-import { user_settings } from '@/app/config/settings';
+import React, { Component } from 'react';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
     CategoryScale,

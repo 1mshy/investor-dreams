@@ -26,6 +26,13 @@ import { Line } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 class StockGraph extends Component {
+    /**
+     * 
+     * @param {object} props 
+     * @param {string} props.symbol - ticker symbol of the stock
+     * @param {string} props.size - the size of the container
+     * @param {object} props.datasets - datasets / indicators that will be displayed on the graph
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -150,7 +157,7 @@ class StockGraph extends Component {
     async fetchData() {
         const { symbol, timeset } = this.props;
         if (!symbol) return;
-        
+
         try {
             const yahoo_timeset = await fetch_yahoo_timeset(symbol, timeset);
             const historical = yahoo_timeset.data;
@@ -206,6 +213,7 @@ class StockGraph extends Component {
         return (
             <div style={dimensions}>
                 <Line data={chart_data} options={chart_options} />
+                {/* {this.props.datasets && <Line data={{datasets: this.props.datasets, labels: this.props.datasets[0].data}} options={chart_options}/>} */}
             </div>
         );
     }
