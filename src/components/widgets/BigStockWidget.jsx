@@ -43,6 +43,7 @@ const BigStockWidget = (props) => {
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
     const [rsi, set_rsi] = useState(0);
+    const [rsi_values, set_rsi_values] = useState([]);
     const [today_high_low, set_today_high_low] = useState("");
     const [forcasted_rsi, set_forcasted_rsi] = useState(0);
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
@@ -64,6 +65,7 @@ const BigStockWidget = (props) => {
             invoke("rsi", {
                 prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
             }).then((rsi_values) => {
+                set_rsi_values(rsi_values);
                 set_rsi(format_number(rsi_values[rsi_values.length - 1]));
             });
 
@@ -192,6 +194,7 @@ console.log(common_subreddit_data)
                 </div>
                 }
                 <StockGraph symbol={symbol}  size={"big"} timeset={timeset} />
+                <PriceGraph prices={rsi_values.slice(-30)} />
                 <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
