@@ -1,17 +1,13 @@
 https://github.com/user-attachments/assets/1c5b1dc6-037e-4c1e-8bd2-42790a2decf0
 
 # Investors Dream
-This project is made to show the daily changes of us based stocks that are part of the s&p 500. 
+This project is made to show the daily changes of US based stocks that are part of the s&p 500. 
 I have wanted to visualize the changes to the stocks that are part of the Standard & Poor’s 500 
-index fund but cannot find any tools online that can easily do so.
-If you want to contribute, please change the api token used to your own, as to not spam mine. You can get a free api token [here](https://twelvedata.com/).
+index fund but cannot find any tools online that can easily do so. It has now transformed to encapulate most equities traded on the NYSE and NASDAQ.
+If you want to contribute, all the power to you.
 **With data come great power** - Aspiring software engineer
 
-# TODO Reddit browsing
-Browse through reddit threads to feel the underlying sentiment of targeted stocks or markets
-
-
-This is a tauri application, using nextjs as the front end
+This is a tauri application, using reactjs as the front end and rust in the backend
 ## Getting Started
 Install all the required packages
 ```bash
