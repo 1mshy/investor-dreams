@@ -1,23 +1,23 @@
-import { cache_is_valid, STOCK_CACHE } from "@/app/funcs/cache";
+import "@/app/css/Analysis.css";
+import "@/app/css/Homepage.css";
+import "@/app/css/Playground.css";
+import { filter_tickers, filter_tickers_async, request_database } from "@/app/funcs/analysis";
+import { cache_is_valid, clear_cache, STOCK_CACHE } from "@/app/funcs/cache";
 import { get_all_nasdaq_info } from "@/app/funcs/scraper";
+import { save_dynamic_sector } from "@/app/funcs/sectors";
 import { get_state } from "@/app/funcs/states";
-import { clear_all_technical_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, get_ticker_technicals, NASDAQ_NEWS, NASDAQ_TECHNICALS } from "@/app/funcs/stock_api";
+import { fetch_widget_data, get_all_symbols, get_all_technical_data, get_all_technical_data_keys, get_cached_ticker_technicals, is_complex_ticker, NASDAQ_NEWS, NASDAQ_TECHNICALS } from "@/app/funcs/stock_api";
 import { delay } from "@/app/funcs/tools";
 import { BackGroundPaper, theme } from "@/app/mui/theme";
-import TableDownloadPopup from "@/components/popups/TableDownloadPopup"; 
+import MarketCapSlider from "@/components/misc/MarketCapSlider";
+import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
+import TableDownloadPopup from "@/components/popups/TableDownloadPopup";
 import StockWidget from "@/components/widgets/StockWidget";
 import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography } from '@mui/material';
 import localforage from "localforage";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import "@/app/css/Analysis.css";
-import "@/app/css/Homepage.css";
-import "@/app/css/Playground.css";
-import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
-import { filter_tickers, request_database } from "@/app/funcs/analysis";
-import { save_dynamic_sector } from "@/app/funcs/sectors";
-import MarketCapSlider from "@/components/misc/MarketCapSlider";
 
 export default class Analysis extends Component {
     constructor(props) {
@@ -72,14 +72,14 @@ export default class Analysis extends Component {
      * @returns {Promise<void>}
      */
     async fetch_all_data(skip_cached = true) {
-        const all_symbols = await get_all_symbols();
+        const all_symbols = await filter_tickers_async({min_market_cap: 10_000_000});
         const random_num_hash = `${Math.random()}_${Date.now()}`;
         let state = get_state();
         state['getting_all_nums'] = random_num_hash; // used to ensure two instances of this function are not running simultaneously.
         let searched_symbols = skip_cached ? new Set(await get_all_technical_data_keys()) : new Set();
         this.setState({ searched_symbols });
 
-        const MAX_CHUNK_SIZE = 20; // Number of symbols to fetch at once
+        const MAX_CHUNK_SIZE = 5; // Number of symbols to fetch at once
         let symbol_chunks = []; // array of the chunks
         let i = 0; // index in all_symbols
         let chunk = []; // current chunk
@@ -92,8 +92,11 @@ export default class Analysis extends Component {
         while (i < all_symbols.length) {
             eval_chunks();
             const symbol = all_symbols[i];
-            if ((skip_cached && searched_symbols.has(symbol)) || (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol)))) {
-                searched_symbols.add(symbol);
+            if ((skip_cached && searched_symbols.has(symbol))
+                || (!skip_cached && await cache_is_valid(symbol, await get_cached_ticker_technicals(symbol)))) {
+                if (!is_complex_ticker(symbol)) {
+                    searched_symbols.add(symbol);
+                }
                 i++;
                 continue;
             }
@@ -110,15 +113,15 @@ export default class Analysis extends Component {
                 // if (skip_cached && searched_symbols.has(symbol)) {
                 //     return Promise.resolve(); // Skip cached symbols
                 // }
-                return get_ticker_technicals(symbol).then(() => {
+                return fetch_widget_data(symbol).then(() => {
                     searched_symbols.add(symbol);
                     this.setState({ searched_symbols, search_value: symbol });
                 }).catch(() => {
                     toast.error(`${symbol} failed to fetch`);
                 });
             });
-            promises.push(delay(900)); // Delay between each chunk
-            await Promise.all(promises); // Wait for all 3 requests to complete
+            promises.push(delay(5000)); // Delay between each chunk
+            await Promise.all(promises);
             const end = Date.now();
             // console.log(`Chunk took ${(end - start) / 1000}s`);
             if (state['getting_all_nums'] !== random_num_hash) {
@@ -201,7 +204,7 @@ export default class Analysis extends Component {
                             Analysis Options
                         </Button>
                         <div style={{ flex: 1, paddingRight: "1rem" }}>
-                            <Button onClick={clear_all_technical_data} style={{ float: "right" }}>
+                            <Button onClick={clear_cache} style={{ float: "right" }}>
                                 Clear Cache
                             </Button>
                         </div>

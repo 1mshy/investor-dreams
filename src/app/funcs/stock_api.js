@@ -46,6 +46,17 @@ export function clean_ticker_for_yahoo(ticker) {
     if (!ticker) return "";
     return `${ticker}`.replace("/", "-").replace("^", "-").replace("*", "-").replace(".", "-").replace(",", "-")
 }
+/**
+ * Does ticker have any special characters
+ * @param {string} ticker 
+ * @returns {bool}
+ */
+export function is_complex_ticker(ticker) {
+    if (!ticker) return true;
+    return ticker.includes("/") || ticker.includes("^") || ticker.includes("*") || ticker.includes(".") || ticker.includes(",")
+}
+
+
 
 /**
  * @param {String} ticker_symbol 

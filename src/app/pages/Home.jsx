@@ -12,6 +12,7 @@ import { fetch_subreddit_posts } from "../funcs/reddit";
 import HeatMapPopup from "@/components/popups/HeatMapPopup";
 import NewsWidget from "@/components/widgets/NewsWidget";
 import { Button } from "@mui/material";
+import MACDChart from "@/components/Graphing/MACDChart";
 
 export default class Home extends Component {
     constructor(props) {
