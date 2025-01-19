@@ -3,7 +3,9 @@ use serde_json::Value;
 use std::{collections::HashMap, error::Error};
 use tauri::command;
 
-use crate::sensitive_constants::{CLIENT_ID, CLIENT_SECRET, REDDIT_API_PASSWORD, REDDIT_API_USERNAME};
+use crate::sensitive_constants::{
+    CLIENT_ID, CLIENT_SECRET, REDDIT_API_PASSWORD, REDDIT_API_USERNAME,
+};
 
 #[tauri::command]
 pub async fn fetch_reddit_access_token() -> Result<String, String> {
@@ -102,7 +104,11 @@ async fn reddit_request(url: &str) -> Result<String, Box<dyn Error>> {
 pub async fn get_request_api(url: String) -> Result<String, String> {
     match get_request(&url).await {
         Ok(body) => Ok(body),
-        Err(e) => Err(format!("Failed to send GET request: {}", e)),
+        Err(e) => {
+            let error_info = format!("Failed to send GET request: {}", e);
+            println!("{}", error_info);
+            Err(error_info)
+        }
     }
 }
 
