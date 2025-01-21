@@ -31,7 +31,7 @@ export function remove_decimal_zeros(number) {
  * @returns {String}
  */
 export function format_number(number) {
-    if(isNaN(number)) return 0;
+    if (isNaN(number)) return 0;
     const formatting_suffixed = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "De", "UnDe", "DuDe", "TrDe", "QaDe", "QiDe", "SxDe", "SpDe", "OcDe", "NoDe", "Vi"]; // making sure it will be inflation proof :)
     let usable_num = Number(number);
     while (usable_num >= 1000) {
@@ -46,7 +46,7 @@ export function format_number(number) {
  * @returns {String} - formatted with commas
  */
 export function format_number_with_commas(number) {
-    if(isNaN(number)) return ""; 
+    if (isNaN(number)) return "";
     return `${Number(number).toFixed(2)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace(".00", "");
 }
 
@@ -132,7 +132,7 @@ export async function open_external_link(url) {
  * @returns {Array<String>} 
  */
 export function format_api_keys(keys) {
-    if(!keys || keys=== "") return null;
+    if (!keys || keys === "") return null;
     let api_keys = keys.trim().split(",").map(key => key.trim()).filter(a => a !== "");
     if (Math.random() > 0.5) {
         api_keys = api_keys.reverse();
@@ -192,4 +192,28 @@ export async function write_chunks(json_data, folder) {
     Promise.all(promises).then((results) => {
         toast.success("Saved all data to downloads folder.");
     });
+}
+
+/**
+ * 
+ * @param {BigStockWidgetRange} range 
+ * @returns {TradingViewRange}
+ */
+export function to_tradingview_range(range) {
+    switch (range) {
+        case "D":
+            return "1D";
+        case "M":
+            return "1M";
+        case "YTD":
+            return "YTD";
+        case "Y":
+            return "1Y";
+        case "5Y":
+            return "5Y";
+        case "10Y":
+        case "ALL":
+            return "ALL";
+    }
+    return "1Y";
 }

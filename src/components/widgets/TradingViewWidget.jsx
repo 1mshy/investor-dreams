@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, memo } from 'react';
 
-function TradingViewWidget(props) {
+function TradingViewWidget({symbol, range="12M"}) {
     const container = useRef();
 
     useEffect(() => {
         // Reset the container
         container.current.innerHTML = "";
+
+        console.log(range)
 
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -21,12 +23,15 @@ function TradingViewWidget(props) {
             allow_symbol_change: false,
             calendar: false,
             interval: "D",
-            symbol: props.symbol ? props.symbol : "AAPL",
+            symbol: symbol ? symbol : "AAPL",
             timezone: "Etc/UTC",
             theme: "dark",
             style: "1",
             locale: "en",
-            range: "12M",
+            /**
+             * Allowed Range values: 1D, 5D, 1M, 3M, 6M, YTD, 1Y, 5Y, ALL
+             */
+            range: range,
             studies: ["STD;RSI"],
             support_host: "https://www.tradingview.com",
         });

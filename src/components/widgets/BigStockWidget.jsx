@@ -4,7 +4,7 @@ import {
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
-import { format_currency, format_number, format_number_with_commas, format_percentage, trim_title, unformat_number } from "@/app/funcs/tools";
+import { format_currency, format_number, format_number_with_commas, format_percentage, to_tradingview_range, trim_title, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
 import PercentageFormat from "@/components/PercentageFormat";
@@ -50,6 +50,10 @@ const BigStockWidget = (props) => {
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
     const [subreddit_data, set_subreddit_data] = useState([]);
     const [common_subreddit_data, set_common_subreddit_data] = useState([]);
+    /**
+     * @desc The time set for the graph
+     * @type {BigStockWidgetRange}
+     */
     const [timeset, set_timeset] = useState("M");
 
     useEffect(() => {
@@ -206,7 +210,7 @@ const BigStockWidget = (props) => {
                 {/* <IndicatorGraph symbol={symbol} size={"big"} timeset={timeset} indicators={["rsi"]}/> */}
                 {/* <CombinedGraph symbol={symbol} size={"big"} timeset={timeset}/> */}
                 {/* <PriceGraph prices={rsi_values.slice(-30)} /> */}
-                <TradingViewPopup {...props} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
+                <TradingViewPopup {...props} range={to_tradingview_range(timeset)} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_timeset("D") }} />

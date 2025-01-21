@@ -245,3 +245,7 @@ type GraphDataset = {
     borderWidth: number;
     hidden: boolean;
 }
+
+type BigStockWidgetRange = "D" | "M" | "YTD" | "Y" | "5Y" | "10Y" | "ALL";
+type TradingViewRange = "1D" | "5D" | "1M" | "3M" | "6M" | "YTD" | "1Y" | "5Y" | "ALL";
+type TradingViewInterval = "1m" | "5m" | "15m" | "30m" | "1h" | "1D" | "1W" | "1MO";

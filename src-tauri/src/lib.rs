@@ -4,23 +4,23 @@
 use std::env;
 use tauri::{LogicalSize, Manager, Size, Url};
 
+use crate::algorithms::{monte_carlo_rsi, rsi};
 use crate::ollama::ollama_generate;
 use crate::requesting::{
-    get_all_static_ticker_info, get_request_api, reddit_request_api, req_nasdaq_info, request_deep,
-    fetch_reddit_subreddit_posts, fetch_reddit_access_token
+    fetch_reddit_access_token, fetch_reddit_subreddit_posts, get_all_static_ticker_info,
+    get_request_api, reddit_request_api, req_nasdaq_info, request_deep,
 };
 use crate::sensitive_data::{
     get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
 };
-use crate::algorithms::{rsi, monte_carlo_rsi};
 use crate::tools::{close_window, is_macos, save_json_file, save_json_to_folder};
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
+mod algorithms;
 mod ollama;
 mod requesting;
 mod sensitive_constants;
 mod sensitive_data;
 mod tools;
-mod algorithms;
 
 use ollama_rs::Ollama;
 use once_cell::sync::Lazy; // Import Ollama from the `ollama-rs` crate
@@ -42,10 +42,8 @@ pub fn run() {
                     let current_monitor = monitor.unwrap();
                     let scale_factor = current_monitor.scale_factor();
                     let two_thirds_screen = (2f64 / 3f64) / scale_factor;
-                    let width =
-                        current_monitor.size().width as f64 * two_thirds_screen;
-                    let height =
-                        current_monitor.size().height as f64 * two_thirds_screen;
+                    let width = current_monitor.size().width as f64 * two_thirds_screen;
+                    let height = current_monitor.size().height as f64 * two_thirds_screen;
                     match window.set_size(Size::Logical(LogicalSize { width, height })) {
                         Ok(_) => {
                             println!("Set window size to: {}x{}", width, height);
@@ -99,7 +97,7 @@ pub fn run() {
             is_macos,
             monte_carlo_rsi,
             rsi,
-            fetch_reddit_subreddit_posts, 
+            fetch_reddit_subreddit_posts,
             fetch_reddit_access_token,
         ])
         .run(tauri::generate_context!())
