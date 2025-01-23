@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Stock price graph component using Chart.js.
+ * Displays historical stock prices in an interactive line chart.
+ */
+
 import React, { Component } from 'react';
 import { user_settings } from '@/app/config/settings';
 import {
@@ -25,13 +30,23 @@ import { Line } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
+/**
+ * A React component that renders a stock price chart using Chart.js.
+ * Fetches and displays historical price data with interactive tooltips.
+ * 
+ * @component
+ * @extends {Component}
+ * @param {Object} props - Component props
+ * @param {string} props.symbol - Stock ticker symbol
+ * @param {string} [props.size='small'] - Chart size ('small', 'big', 'full')
+ * @param {string} [props.timeset='1Y'] - Time period to display
+ * @param {Object} [props.datasets] - Additional datasets to display
+ */
 class StockGraph extends Component {
     /**
+     * Initializes the component with empty state.
      * 
-     * @param {object} props 
-     * @param {string} props.symbol - ticker symbol of the stock
-     * @param {string} props.size - the size of the container
-     * @param {object} props.datasets - datasets / indicators that will be displayed on the graph
+     * @param {Object} props - Component props
      */
     constructor(props) {
         super(props);
@@ -43,6 +58,12 @@ class StockGraph extends Component {
         };
     }
 
+    /**
+     * Calculates chart dimensions based on size prop.
+     * 
+     * @param {string} size - Desired chart size
+     * @returns {Object} Width and height dimensions
+     */
     calculateDimensions(size) {
         switch (size) {
             case 'big':
@@ -54,6 +75,11 @@ class StockGraph extends Component {
         }
     }
 
+    /**
+     * Configures and sets up the chart with price data.
+     * 
+     * @param {Array<number>} prices - Array of historical prices
+     */
     setupChart(prices) {
         const data = {
             labels: prices,
@@ -93,60 +119,7 @@ class StockGraph extends Component {
                     mode: 'index',
                     intersect: false,
                     enabled: false,
-                    external: (context) => {
-                        const tooltipModel = context.tooltip;
-                        let tooltipEl = document.getElementById('custom-tooltip');
-
-                        if (!tooltipEl) {
-                            tooltipEl = document.createElement('div');
-                            tooltipEl.id = 'custom-tooltip';
-                            tooltipEl.style.position = 'absolute';
-                            tooltipEl.style.background = 'rgba(0, 0, 0, 0.7)';
-                            tooltipEl.style.color = 'white';
-                            tooltipEl.style.padding = '5px 10px';
-                            tooltipEl.style.borderRadius = '5px';
-                            tooltipEl.style.pointerEvents = 'none';
-                            tooltipEl.style.transition = 'opacity 0.2s ease, left 0.2s ease, top 0.2s ease';
-                            document.body.appendChild(tooltipEl);
-                        }
-
-                        if (tooltipModel.opacity === 0) {
-                            tooltipEl.style.opacity = 0;
-                            return;
-                        }
-
-                        if (tooltipModel.body) {
-                            const value = tooltipModel.dataPoints[0].raw;
-                            const current_price = prices[prices.length - 1];
-                            const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
-                            const formatDate = (dateString) =>
-                                new Date(dateString).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                });
-                            const formatTime = (dateString) =>
-                                new Date(dateString).toLocaleTimeString('en-US', {
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                    second: 'numeric',
-                                });
-                            const index = tooltipModel.dataPoints[0].dataIndex;
-                            const date = this.state.historical_data[prices.length - 1 - index]?.datetime;
-                            const relative_change = format_percentage(percent_change)
-                            tooltipEl.innerHTML = `
-                                <div><strong>Price:</strong> ${format_currency(value)}</div>
-                                ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Relatively:</strong> ${relative_change}</div>` : ''}
-                                ${date ? `<div><strong>Date:</strong> ${formatDate(date)}</div>` : ''}
-                                ${this.props.timeset === "D" ? `<div>${formatTime(date)}</div>` : ''}
-                            `;
-                        }
-
-                        const position = context.chart.canvas.getBoundingClientRect();
-                        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                        tooltipEl.style.opacity = 1;
-                    },
+                    external: this.renderCustomTooltip.bind(this),
                 },
             },
         };
@@ -154,6 +127,70 @@ class StockGraph extends Component {
         this.setState({ chart_data: data, chart_options: options });
     }
 
+    /**
+     * Renders a custom tooltip for the chart.
+     * 
+     * @param {Object} context - Chart tooltip context
+     */
+    renderCustomTooltip(context) {
+        const tooltipModel = context.tooltip;
+        let tooltipEl = document.getElementById('custom-tooltip');
+
+        if (!tooltipEl) {
+            tooltipEl = document.createElement('div');
+            tooltipEl.id = 'custom-tooltip';
+            tooltipEl.style.position = 'absolute';
+            tooltipEl.style.background = 'rgba(0, 0, 0, 0.7)';
+            tooltipEl.style.color = 'white';
+            tooltipEl.style.padding = '5px 10px';
+            tooltipEl.style.borderRadius = '5px';
+            tooltipEl.style.pointerEvents = 'none';
+            tooltipEl.style.transition = 'opacity 0.2s ease, left 0.2s ease, top 0.2s ease';
+            document.body.appendChild(tooltipEl);
+        }
+
+        if (tooltipModel.opacity === 0) {
+            tooltipEl.style.opacity = 0;
+            return;
+        }
+
+        if (tooltipModel.body) {
+            const value = tooltipModel.dataPoints[0].raw;
+            const current_price = this.state.historical_data[this.state.historical_data.length - 1]?.close;
+            const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
+            const formatDate = (dateString) =>
+                new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                });
+            const formatTime = (dateString) =>
+                new Date(dateString).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                });
+            const index = tooltipModel.dataPoints[0].dataIndex;
+            const date = this.state.historical_data[this.state.historical_data.length - 1 - index]?.datetime;
+            tooltipEl.innerHTML = `
+                <div><strong>Price:</strong> ${format_currency(value)}</div>
+                ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Change:</strong> ${format_percentage(percent_change)}</div>` : ''}
+                ${date ? `<div><strong>Date:</strong> ${formatDate(date)}</div>` : ''}
+                ${this.props.timeset === "D" ? `<div>${formatTime(date)}</div>` : ''}
+            `;
+        }
+
+        const position = context.chart.canvas.getBoundingClientRect();
+        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+        tooltipEl.style.opacity = 1;
+    }
+
+    /**
+     * Fetches historical price data based on symbol and timeframe.
+     * 
+     * @async
+     */
     async fetchData() {
         const { symbol, timeset } = this.props;
         if (!symbol) return;
@@ -191,12 +228,20 @@ class StockGraph extends Component {
         }
     }
 
+    /**
+     * Lifecycle method: Fetches data after component mounts.
+     */
     componentDidMount() {
         const { size } = this.props;
         this.fetchData();
         this.setState({ dimensions: this.calculateDimensions(size) });
     }
 
+    /**
+     * Lifecycle method: Updates data when props change.
+     * 
+     * @param {Object} prevProps - Previous component props
+     */
     componentDidUpdate(prevProps) {
         const { symbol, size, timeset } = this.props;
         if (prevProps.symbol !== symbol || prevProps.size !== size || prevProps.timeset !== timeset) {
@@ -205,6 +250,11 @@ class StockGraph extends Component {
         }
     }
 
+    /**
+     * Renders the stock price chart.
+     * 
+     * @returns {JSX.Element} The rendered chart or loading indicator
+     */
     render() {
         const { chart_data, chart_options, dimensions } = this.state;
 
@@ -213,7 +263,6 @@ class StockGraph extends Component {
         return (
             <div style={dimensions}>
                 <Line data={chart_data} options={chart_options} />
-                {/* {this.props.datasets && <Line data={{datasets: this.props.datasets, labels: this.props.datasets[0].data}} options={chart_options}/>} */}
             </div>
         );
     }
