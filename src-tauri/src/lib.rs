@@ -11,7 +11,7 @@ use crate::requesting::{
     get_request_api, reddit_request_api, req_nasdaq_info, request_deep,
 };
 use crate::sensitive_data::{
-    get_all_windows, get_api_keys, get_current_monitor_info, get_username, set_base_size,
+    get_all_windows, get_current_monitor_info, get_username, set_base_size,
 };
 use crate::tools::{close_window, is_macos, save_json_file, save_json_to_folder};
 use window_vibrancy::{apply_acrylic, apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
@@ -80,7 +80,6 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            get_api_keys,
             get_username,
             get_all_static_ticker_info,
             req_nasdaq_info,
