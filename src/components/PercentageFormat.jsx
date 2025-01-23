@@ -1,15 +1,26 @@
+/**
+ * @fileoverview Percentage format display component.
+ * Renders percentage changes with color coding and optional time period.
+ */
+
 import { useEffect, useState } from "react";
 import "../app/css/Formatting.css";
 
 /**
- *
- * @param {Number} percent_change change in percent that will be shown
- * @param {String} timeset the time period that the percentage change is over
- * @desc affects colour if positive or negative (green or red) and adds + or - to the percentage
+ * Displays a formatted percentage change with color coding.
+ * Green for positive changes, red for negative changes.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {number} props.percent_change - The percentage change value to display
+ * @param {string} [props.timeset] - Optional time period for the percentage change
+ * @returns {JSX.Element} Formatted percentage display with optional time period
+ * @example
+ * <PercentageFormat percent_change={-2.5} timeset="1D" />
  */
 const PercentageFormat = ({ percent_change, timeset }) => {
   const [isPositive, setIsPositive] = useState(percent_change >= 0);
-  // Optionally, use an effect to update isPositive when the change prop updates
+
   useEffect(() => {
     setIsPositive(percent_change >= 0);
   }, [percent_change]);
