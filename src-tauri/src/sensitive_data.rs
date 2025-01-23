@@ -4,15 +4,6 @@ use tauri::{command, PhysicalSize};
 use crate::sensitive_constants;
 
 #[command]
-pub fn get_api_keys() -> String {
-    let env_keys = env::var("API_KEY");
-    match env_keys {
-        Ok(keys) => keys,
-        Err(_) => sensitive_constants::BUILD_API_KEYS.to_string(),
-    }
-}
-
-#[command]
 pub fn get_username() -> String {
     whoami::realname()
 }
