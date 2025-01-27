@@ -11,10 +11,14 @@ import { Link } from "react-router-dom";
 import { fetch_subreddit_posts } from "../funcs/reddit";
 import HeatMapPopup from "@/components/popups/HeatMapPopup";
 import NewsWidget from "@/components/widgets/NewsWidget";
-import { Button } from "@mui/material";
+import { Button, Icon, IconButton } from "@mui/material";
 import MACDChart from "@/components/Graphing/MACDChart";
+import SettingsIcon from '@mui/icons-material/Settings';
+import { SettingsContext } from '@/app/settings/SettingsContext';
+import TradingViewWidget from '@/components/widgets/TradingViewWidget';
 
 export default class Home extends Component {
+    static contextType = SettingsContext;
     constructor(props) {
         super(props);
         this.state = {
@@ -49,7 +53,7 @@ export default class Home extends Component {
     }
 
     render() {
-        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap, stock_size} =
+        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap, stock_size } =
             this.state;
         return (
             <div className={"homepage-mainPage"}>
@@ -70,6 +74,14 @@ export default class Home extends Component {
                         <Link to="/analysis" className={"homepage-navButton"}>
                             Analysis
                         </Link>
+                        <IconButton component={Link} to="/settings">
+                            <SettingsIcon />
+                        </IconButton>
+                        {/* <Link to="/settings" className={"homepage-navButton"} component={<IconButton >
+                            <SettingsIcon/>
+                        </IconButton>}>
+                            
+                        </Link> */}
 
                         {/* <Link to="/opportunities" className={"homepage-navButton"}>
                             Opportunities
@@ -135,13 +147,25 @@ export default class Home extends Component {
                         </div>
                     </div>
                     <div className={"homepage-columns"}>
-                            <h3>Extra</h3>
-                            <div className={"homepage-favourties"}>
-                                <Button onClick={() => this.setState({ heatmap: true })}>Open Heat Map</Button>
-                                <HeatMapPopup open={heatmap} onClick={() => this.setState({ heatmap: false })} />
-                                <NewsWidget />
-                            </div>
+                        <h3>Extra</h3>
+                        <div className={"homepage-favourties"}>
+                            <Button onClick={() => this.setState({ heatmap: true })}>Open Heat Map</Button>
+                            <HeatMapPopup open={heatmap} onClick={() => this.setState({ heatmap: false })} />
+                            <NewsWidget />
                         </div>
+                    </div>
+                    
+                    {/* TradingView Widget Section */}
+                    {this.context.settings.TradingView_Widget?.settings?.show_tradingview_on_home?.value && (
+                        <div className="homepage-columns" style={{ width: "80%", marginTop: "2rem" }}>
+                            <h3>Market Overview</h3>
+                            <TradingViewWidget 
+                                symbol={this.context.settings.TradingView_Widget.settings.default_symbol.value} 
+                                range={this.context.settings.TradingView_Widget.settings.default_range.value}
+                                theme={this.context.settings.TradingView_Widget.settings.dark_theme.value ? 'dark' : 'light'}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         );

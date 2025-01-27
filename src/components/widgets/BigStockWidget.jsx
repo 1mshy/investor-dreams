@@ -11,7 +11,8 @@ import PercentageFormat from "@/components/PercentageFormat";
 import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 import { Button } from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { SettingsContext } from '@/app/settings/SettingsContext';
 
 import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
@@ -37,6 +38,8 @@ import CombinedGraph from "../Graphing/CombinedGraph";
  * It is large and includes the most detail out of all the stock widgets
  */
 const BigStockWidget = (props) => {
+    const { settings } = useContext(SettingsContext);
+    const bigSettings = settings.Big_Stock_Widget.settings;
     const { symbol, name, price, percent_change, historical_prices, marketCap, news, technicals, historical_data, total_stock_data } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
     const [ticker_info, set_ticker_info] = useState({});
@@ -162,7 +165,7 @@ const BigStockWidget = (props) => {
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"} >
-                {technicals && <div className={"elements"}>
+                {bigSettings.show_technicals.value && technicals && <div className={"elements"}>
                     <div className={"data-element"}>
                         <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
                         <div className={"info-value"}>{`${technicals.FiftTwoWeekHighLow.value.replace("/", " / ")}`}</div>
@@ -266,8 +269,7 @@ const BigStockWidget = (props) => {
                     <div className={"price"}>{format_currency(marketCap)}</div>
                 </div>
 
-            </div>
-            {ticker_info && <div className="summary" style={{ width: "100%" }}>
+            </div>                {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
                     {"Summary"}
                 </div>
@@ -277,7 +279,7 @@ const BigStockWidget = (props) => {
                 <div className={"info-title"} >
                     {"Reddit Headlines"}
                 </div>
-                {subreddit_data && <div className="reddit-news">
+                {bigSettings.show_reddit_data.value && subreddit_data && <div className="reddit-news">
                     {subreddit_data.map((post, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(post.url);
@@ -298,7 +300,7 @@ const BigStockWidget = (props) => {
                 <div className={"info-title"} >
                     {"News Headlines"}
                 </div>
-                {news && <div>
+                {bigSettings.show_news.value && news && <div>
                     {news.map((article, index) => {
                         return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
                             await open(get_whole_nasdaq_news_url(article.url));

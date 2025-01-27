@@ -4,7 +4,7 @@
  * and interactive tooltips.
  */
 
-import { user_settings } from '@/app/config/settings';
+import { user_settings } from '@/app/settings/settings';
 import { percentage_change } from '@/app/funcs/stock_api';
 import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
 import {

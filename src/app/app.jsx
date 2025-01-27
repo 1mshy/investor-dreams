@@ -18,6 +18,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import Background from './mui/Background';
 import TradingView from './pages/TradingView';
 import Opportunities from './pages/Opportunities';
+import WidgetSettingsPanel from './settings/WidgetSettingsPanel';
 const BasePage = () => {
   const router = createBrowserRouter([
     {
@@ -47,6 +48,10 @@ const BasePage = () => {
     {
       path: "/tradingview",
       element: <TradingView />,
+    },
+    {
+      path: "/settings",
+      element: <WidgetSettingsPanel />,
     },
     {
       path: "*",

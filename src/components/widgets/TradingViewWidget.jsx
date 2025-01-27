@@ -41,9 +41,8 @@ import React, { useEffect, useRef, memo } from 'react';
  *   />
  * )
  * 
- * @param {Object} props - Component props
- * @param {string} [props.symbol='AAPL'] - The trading symbol to display (e.g., "AAPL", "MSFT")
- * @param {string} [props.range='12M'] - The time range to display (e.g., "1D", "5D", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL")
+ * @param {string} [symbol='AAPL'] - The trading symbol to display (e.g., "AAPL", "MSFT")
+ * @param {string} [range='12M'] - The time range to display (e.g., "1D", "5D", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL")
  * @returns {JSX.Element} The rendered chart widget
  */
 function TradingViewWidget({ symbol = 'AAPL', range = '12M' }) {

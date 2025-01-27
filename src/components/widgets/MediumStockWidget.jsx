@@ -11,7 +11,7 @@ import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import StockGraph from "../Graphing/StockGraph";
 import { invoke } from "@tauri-apps/api/core";
-import { user_settings } from "@/app/config/settings";
+import { user_settings } from "@/app/settings/settings";
 
 const MediumStockWidgetSettings = user_settings.Medium_Stock_Widget.settings; // shallow copy
 

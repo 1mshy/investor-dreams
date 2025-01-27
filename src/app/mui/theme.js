@@ -92,4 +92,4 @@ export const SolidPaper = styled(SoftPaper)`
  */
 export const BackGroundPaper = styled(SoftPaper)`
   background-color: rgba(30, 41, 59, 0.5) !important;
-`;
+`;
