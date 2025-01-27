@@ -31,13 +31,21 @@ const defined_user_settings = () => {
                     value: true,
                 },
                 show_ytd: {
-                    display_name: "Show YTD",
+                    display_name: "Show YTD price change",
                     value: true,
                 },
                 show_month: {
-                    display_name: "Show Month",
+                    display_name: "Show Month price change",
                     value: true,
                 },
+                show_day: {
+                    display_name: "Show Day price change",
+                    value: true,
+                },
+                show_market_cap: {
+                    display_name: "Show Market Cap",
+                    value: true,
+                }
             }
         },
     }

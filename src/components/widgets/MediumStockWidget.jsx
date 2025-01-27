@@ -42,17 +42,18 @@ const MediumStockWidget = (props) => {
         set_percent_change_ytd(get_percent_change_ytd(historical_data));
         if (!historical_data) return;
         const old_first_historical_data = historical_data.slice().reverse();
-        if(MediumStockWidgetSettings.show_rsi.value)
-        invoke("rsi", {
-            prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
-        }).then((rsi_values) => {
-            set_rsi(format_number(rsi_values[rsi_values.length - 1]));
-        });
+        if (MediumStockWidgetSettings.show_rsi.value) {
+            invoke("rsi", {
+                prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
+            }).then((rsi_values) => {
+                set_rsi(format_number(rsi_values[rsi_values.length - 1]));
+            });
+        }
     }, [symbol]);
 
     useEffect(() => {
-        if(!historical_data) return;
-       
+        if (!historical_data) return;
+
     }, [historical_data]);
 
     return (
@@ -92,12 +93,12 @@ const MediumStockWidget = (props) => {
                     <StockGraph timeset={"M"} symbol={symbol} />
                     <div className={"price-data"}>
                         <div className={"price-change"}>
-                            <PercentageFormat percent_change={percent_change} timeset={"D"} />
-                            <PercentageFormat percent_change={percent_change_month} timeset={"M"} />
-                            <PercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} />
+                            {MediumStockWidgetSettings.show_day.value && <PercentageFormat percent_change={percent_change} timeset={"D"} />}
+                            {MediumStockWidgetSettings.show_month.value && <PercentageFormat percent_change={percent_change_month} timeset={"M"} />}
+                            {MediumStockWidgetSettings.show_ytd.value && <PercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} />}
                         </div>
                         <div className={"date"}>
-                            {marketCap && <div className={"market-cap"}>MC: {format_currency_with_symbols(marketCap)}</div>}
+                            {MediumStockWidgetSettings.show_market_cap.value && marketCap && <div className={"market-cap"}>MC: {format_currency_with_symbols(marketCap)}</div>}
                             {MediumStockWidgetSettings.show_rsi.value && rsi && <div className={"rsi"}>RSI: {rsi}</div>}
                         </div>
                     </div>
