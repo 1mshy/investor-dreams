@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { user_settings } from '@/app/config/settings';
+import { user_settings } from '@/app/settings/settings';
 import {
     get_all_prices,
     get_five_year_prices,
