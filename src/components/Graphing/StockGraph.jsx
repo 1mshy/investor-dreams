@@ -156,7 +156,8 @@ class StockGraph extends Component {
 
         if (tooltipModel.body) {
             const value = tooltipModel.dataPoints[0].raw;
-            const current_price = this.state.historical_data[this.state.historical_data.length - 1]?.close;
+            const historical_data = this.state.historical_data;
+            const current_price = historical_data[0]?.close;
             const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
             const formatDate = (dateString) =>
                 new Date(dateString).toLocaleDateString('en-US', {
@@ -174,7 +175,7 @@ class StockGraph extends Component {
             const date = this.state.historical_data[this.state.historical_data.length - 1 - index]?.datetime;
             tooltipEl.innerHTML = `
                 <div><strong>Price:</strong> ${format_currency(value)}</div>
-                ${user_settings.show_relative_prices_on_graph.value ? `<div><strong>Change:</strong> ${format_percentage(percent_change)}</div>` : ''}
+                ${user_settings.Global.settings.show_relative_prices_on_graph.value ? `<div><strong>Change:</strong> ${format_percentage(percent_change)}</div>` : ''}
                 ${date ? `<div><strong>Date:</strong> ${formatDate(date)}</div>` : ''}
                 ${this.props.timeset === "D" ? `<div>${formatTime(date)}</div>` : ''}
             `;

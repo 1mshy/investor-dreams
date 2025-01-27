@@ -181,7 +181,7 @@ class PriceGraph extends Component {
             
             let tooltipContent = `<div><strong>Price:</strong> ${format_currency(value)}</div>`;
             
-            if (user_settings.show_relative_prices_on_graph.value && are_different_numbers) {
+            if (user_settings.Global.settings.show_relative_prices_on_graph.value && are_different_numbers) {
                 tooltipContent += `<div><strong>Relatively:</strong> ${format_percentage(!isNaN(percent_change) ? percent_change : 0)}</div>`;
             }
 
