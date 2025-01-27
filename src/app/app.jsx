@@ -4,6 +4,7 @@ import { clear_cache, complex_retrieve, complex_store, retrieve, store } from '.
 import { log } from './funcs/logger';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { SettingsProvider } from './settings/SettingsContext';
 import Portfolio from './pages/Portfolio';
 import Home from './pages/Home';
 import Playground from './pages/Playground';
@@ -90,7 +91,8 @@ const BasePage = () => {
   }, []);
 
   return (
-    <Background router={router}>
+    <SettingsProvider>
+      <Background router={router}>
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -106,7 +108,8 @@ const BasePage = () => {
       />
       {!errors && <RouterProvider router={router} />}
       {errors && has_checked && <div> <Setup /> </div>}
-    </Background>
+      </Background>
+    </SettingsProvider>
   );
 };
 

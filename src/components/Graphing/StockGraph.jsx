@@ -4,7 +4,6 @@
  */
 
 import React, { Component } from 'react';
-import { user_settings } from '@/app/settings/settings';
 import {
     get_all_prices,
     get_five_year_prices,
@@ -27,6 +26,7 @@ import {
     Tooltip,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { SettingsContext } from '@/app/settings/SettingsContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -43,6 +43,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
  * @param {Object} [props.datasets] - Additional datasets to display
  */
 class StockGraph extends Component {
+    static contextType = SettingsContext;
     /**
      * Initializes the component with empty state.
      * 
@@ -173,9 +174,11 @@ class StockGraph extends Component {
                 });
             const index = tooltipModel.dataPoints[0].dataIndex;
             const date = this.state.historical_data[this.state.historical_data.length - 1 - index]?.datetime;
+            const { settings } = this.context;
+            const showRelativePrices = settings?.Global?.settings?.show_relative_prices_on_graph?.value ?? true;
             tooltipEl.innerHTML = `
                 <div><strong>Price:</strong> ${format_currency(value)}</div>
-                ${user_settings.Global.settings.show_relative_prices_on_graph.value ? `<div><strong>Change:</strong> ${format_percentage(percent_change)}</div>` : ''}
+                ${showRelativePrices ? `<div><strong>Change:</strong> ${format_percentage(percent_change)}</div>` : ''}
                 ${date ? `<div><strong>Date:</strong> ${formatDate(date)}</div>` : ''}
                 ${this.props.timeset === "D" ? `<div>${formatTime(date)}</div>` : ''}
             `;

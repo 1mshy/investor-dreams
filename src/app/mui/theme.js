@@ -90,6 +90,13 @@ export const SolidPaper = styled(SoftPaper)`
  *   </BackGroundPaper>
  * )
  */
-export const BackGroundPaper = styled(SoftPaper)`
-  background-color: rgba(30, 41, 59, 0.5) !important;
+export const BackGroundPaper = styled(Paper)`
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #ffffff;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 `;

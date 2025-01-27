@@ -276,40 +276,43 @@ const BigStockWidget = (props) => {
                 <div className={""}>
                     {ticker_info.summary}
                 </div>
-                <div className={"info-title"} >
-                    {"Reddit Headlines"}
-                </div>
-                {bigSettings.show_reddit_data.value && subreddit_data && <div className="reddit-news">
-                    {subreddit_data.map((post, index) => {
-                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
-                            await open(post.url);
-                        }}>
-                            {post.title}
-                        </div>
-                    })}
-                </div>}
-                {common_subreddit_data && <div className="common-reddit">
-                    {common_subreddit_data.map((post, index) => {
-                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
-                            await open(post.url);
-                        }}>
-                            {post.title}
-                        </div>
-                    })}
-                </div>}
-                <div className={"info-title"} >
+                {bigSettings.show_reddit_data.value && subreddit_data && <>
+                    <div className={"info-title"} >
+                        {"Reddit Headlines"}
+                    </div>
+                    <div className="reddit-news">
+                        {subreddit_data.map((post, index) => {
+                            return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                                await open(post.url);
+                            }}>
+                                {post.title}
+                            </div>
+                        })}
+                    </div>
+                    {common_subreddit_data && <div className="common-reddit">
+                        {common_subreddit_data.map((post, index) => {
+                            return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                                await open(post.url);
+                            }}>
+                                {post.title}
+                            </div>
+                        })}
+                    </div>}
+                </>}
+                {bigSettings.show_news.value && news && <><div className={"info-title"} >
                     {"News Headlines"}
                 </div>
-                {bigSettings.show_news.value && news && <div>
-                    {news.map((article, index) => {
-                        return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
-                            await open(get_whole_nasdaq_news_url(article.url));
-                        }}>
-                            {trim_title(article.title)}
-                        </div>
-                    })}
+                    <div>
+                        {news.map((article, index) => {
+                            return <div className={"news-row"} key={index} style={{ cursor: "pointer" }} onClick={async () => {
+                                await open(get_whole_nasdaq_news_url(article.url));
+                            }}>
+                                {trim_title(article.title)}
+                            </div>
+                        })}
 
-                </div>}
+                    </div>
+                </>}
 
                 {/* <div className={"info-title"} >
                     {"LLM generated summary"}
