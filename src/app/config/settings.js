@@ -14,10 +14,32 @@
  */
 const defined_user_settings = () => {
     return {
-        show_relative_prices_on_graph: {
-            display_name: "Show relative pricing on graphs",
-            value: true,
-        }
+        Global: {
+            display_name: "Global Settings",
+            settings: {
+                show_relative_prices_on_graph: {
+                    display_name: "Show relative pricing on graphs",
+                    value: true,
+                },
+            },
+        },
+        Medium_Stock_Widget: {
+            display_name: "Medium Stock Widget",
+            settings: {
+                show_rsi: {
+                    display_name: "Show RSI",
+                    value: true,
+                },
+                show_ytd: {
+                    display_name: "Show YTD",
+                    value: true,
+                },
+                show_month: {
+                    display_name: "Show Month",
+                    value: true,
+                },
+            }
+        },
     }
 }
 

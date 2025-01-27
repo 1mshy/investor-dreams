@@ -1,6 +1,6 @@
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices, get_percent_change_month, get_percent_change_ytd } from "@/app/funcs/historical_pricing";
-import { format_currency_with_symbols } from "@/app/funcs/tools";
+import { format_currency_with_symbols, format_number } from "@/app/funcs/tools";
 import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "@/components/PercentageFormat";
 import CustomSector from "@/components/popups/CustomSector";
@@ -10,6 +10,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 import StockGraph from "../Graphing/StockGraph";
+import { invoke } from "@tauri-apps/api/core";
+import { user_settings } from "@/app/config/settings";
+
+const MediumStockWidgetSettings = user_settings.Medium_Stock_Widget.settings; // shallow copy
 
 /**
  * @param {String} symbol
@@ -28,13 +32,28 @@ const MediumStockWidget = (props) => {
     const [month_prices, set_month_prices] = useState(null);
     const [percent_change_month, set_percent_change_month] = useState(null);
     const [percent_change_ytd, set_percent_change_ytd] = useState(null);
+    const [rsi, set_rsi] = useState("");
 
     useEffect(() => {
         set_favourite(is_ticker_favourite(symbol));
+        // console.log(JSON.stringify(historical_data));
         set_month_prices(get_month_prices(historical_data));
         set_percent_change_month(get_percent_change_month(historical_data));
         set_percent_change_ytd(get_percent_change_ytd(historical_data));
+        if (!historical_data) return;
+        const old_first_historical_data = historical_data.slice().reverse();
+        if(MediumStockWidgetSettings.show_rsi.value)
+        invoke("rsi", {
+            prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
+        }).then((rsi_values) => {
+            set_rsi(format_number(rsi_values[rsi_values.length - 1]));
+        });
     }, [symbol]);
+
+    useEffect(() => {
+        if(!historical_data) return;
+       
+    }, [historical_data]);
 
     return (
         <>
@@ -79,6 +98,7 @@ const MediumStockWidget = (props) => {
                         </div>
                         <div className={"date"}>
                             {marketCap && <div className={"market-cap"}>MC: {format_currency_with_symbols(marketCap)}</div>}
+                            {MediumStockWidgetSettings.show_rsi.value && rsi && <div className={"rsi"}>RSI: {rsi}</div>}
                         </div>
                     </div>
                 </div>
