@@ -65,7 +65,7 @@
 }
 
 .top3-list, .bottom3-list, .homepage-favourties {
-    overflow-y: scroll;
-    height: 100%;
-    padding-bottom: 10rem;
+    overflow-y: auto;
+    height: calc(100vh - 120px); /* Account for header and some padding */
+    padding: 1rem;
 }

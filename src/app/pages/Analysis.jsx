@@ -150,6 +150,8 @@ export default class Analysis extends Component {
     render() {
         const { all_symbols, search_value, searched_symbols, filtered_tickers, downloadable_stores,
             show_searching_options, searching_options } = this.state;
+        const { settings } = this.context;
+        const widgetSize = settings?.Analysis_Page?.settings?.default_widget_size?.value || 'small';
 
         return <ThemeProvider theme={theme}>
             <div className={"analysis-whole"}>
@@ -290,7 +292,7 @@ export default class Analysis extends Component {
                 </BackGroundPaper>}
                 <div className={"widgets-container"} data-tauri-drag-region style={{ height: "auto", flex: 7 }}>
                     {filtered_tickers.map((data) => {
-                        return <StockWidget symbol={data.symbol} size="small" key={data.symbol} />
+                        return <StockWidget symbol={data.symbol} size={widgetSize} key={data.symbol} />
                     })}
                 </div>
             </div>

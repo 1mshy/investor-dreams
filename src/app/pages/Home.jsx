@@ -27,7 +27,6 @@ export default class Home extends Component {
             bottom_3_changes: [],
             top_favs: [],
             heatmap: false,
-            stock_size: "small",
         };
     }
 
@@ -53,8 +52,9 @@ export default class Home extends Component {
     }
 
     render() {
-        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap, stock_size } =
-            this.state;
+        const { username, top_3_changes, bottom_3_changes, top_favs, heatmap } = this.state;
+        const { settings } = this.context;
+        const widgetSize = settings.Home_Page.settings.default_widget_size.value || 'small';
         return (
             <div className={"homepage-mainPage"}>
                 <div className={"homepage-header"} data-tauri-drag-region>
@@ -110,7 +110,7 @@ export default class Home extends Component {
                                     return (
                                         <StockWidget
                                             symbol={ticker_symbol}
-                                            size={stock_size}
+                                            size={widgetSize}
                                             key={ticker_symbol}
                                         />
                                     );
@@ -124,7 +124,7 @@ export default class Home extends Component {
                             {top_3_changes.map((ticker_symbol) => {
                                 return (
                                     <StockWidget
-                                        size={stock_size}
+                                        size={widgetSize}
                                         symbol={ticker_symbol}
                                         key={ticker_symbol}
                                     />
@@ -138,7 +138,7 @@ export default class Home extends Component {
                             {bottom_3_changes.map((ticker_symbol) => {
                                 return (
                                     <StockWidget
-                                        size={stock_size}
+                                        size={widgetSize}
                                         symbol={ticker_symbol}
                                         key={ticker_symbol}
                                     />
@@ -146,26 +146,14 @@ export default class Home extends Component {
                             })}
                         </div>
                     </div>
-                    <div className={"homepage-columns"}>
+                    {this.context.settings.TradingView_Widget?.settings?.show_tradingview_on_home?.value && <div className={"homepage-columns"}>
                         <h3>Extra</h3>
                         <div className={"homepage-favourties"}>
                             <Button onClick={() => this.setState({ heatmap: true })}>Open Heat Map</Button>
                             <HeatMapPopup open={heatmap} onClick={() => this.setState({ heatmap: false })} />
                             <NewsWidget />
                         </div>
-                    </div>
-                    
-                    {/* TradingView Widget Section */}
-                    {this.context.settings.TradingView_Widget?.settings?.show_tradingview_on_home?.value && (
-                        <div className="homepage-columns" style={{ width: "80%", marginTop: "2rem" }}>
-                            <h3>Market Overview</h3>
-                            <TradingViewWidget 
-                                symbol={this.context.settings.TradingView_Widget.settings.default_symbol.value} 
-                                range={this.context.settings.TradingView_Widget.settings.default_range.value}
-                                theme={this.context.settings.TradingView_Widget.settings.dark_theme.value ? 'dark' : 'light'}
-                            />
-                        </div>
-                    )}
+                    </div>}
                 </div>
             </div>
         );

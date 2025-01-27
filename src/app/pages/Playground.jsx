@@ -21,7 +21,10 @@ import { LoadingTextField } from '../mui/other';
 
 import "@/app/css/Playground.css";
 import "@/app/css/Widgets.css";
+import { SettingsContext } from '../settings/SettingsContext';
 export default class Playground extends Component {
+    static contextType = SettingsContext;
+    
     constructor(props) {
         super(props);
         /**
@@ -242,7 +245,8 @@ export default class Playground extends Component {
 
     render() {
         const { ticker_symbols, sort_method, ticker_search, show_loading_ticker_search, custom_sectors, default_sector, show_sort_button } = this.state;
-        console.log(ticker_symbols)
+        const { settings } = this.context;
+        const widgetSize = settings.Playground_Page.settings.default_widget_size.value || 'medium';
         return (
             <ThemeProvider theme={theme}>
                 <div className={"playground"} >
@@ -265,7 +269,7 @@ export default class Playground extends Component {
                     <div className={"playground-content"} >
                         <div className={"widgets-container"} style={{ paddingTop: "3rem" }}>
                             {ticker_symbols && ticker_symbols.map(ticker_symbol => {
-                                return <StockWidget size={"medium"} symbol={ticker_symbol} key={ticker_symbol} /> // {...stock_data[ticker_symbol]}
+                                return <StockWidget size={widgetSize} symbol={ticker_symbol} key={ticker_symbol} /> // {...stock_data[ticker_symbol]}
                             })}
                         </div>
                     </div>

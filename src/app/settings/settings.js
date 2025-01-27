@@ -66,6 +66,33 @@ const defined_user_settings = () => {
                 }
             }
         },
+        Home_Page: {
+            display_name: "Home Page Settings",
+            settings: {
+                default_widget_size: {
+                    display_name: "Widget Size",
+                    value: "small",
+                },
+            },
+        },
+        Playground_Page: {
+            display_name: "Playground Page Settings",
+            settings: {
+                default_widget_size: {
+                    display_name: "Widget Size",
+                    value: "medium",
+                },
+            },
+        },
+        Analysis_Page: {
+            display_name: "Analysis Page Settings",
+            settings: {
+                default_widget_size: {
+                    display_name: "Widget Size",
+                    value: "small",
+                },
+            },
+        },
         Big_Stock_Widget: {
             display_name: "Big Stock Widget",
             settings: {
@@ -73,8 +100,8 @@ const defined_user_settings = () => {
                     display_name: "Show Technicals section",
                     value: true,
                 },
-                show_rsi: {
-                    display_name: "Show RSI information",
+                show_company_info: {
+                    display_name: "Show Company Information",
                     value: true,
                 },
                 show_reddit_data: {
@@ -84,10 +111,6 @@ const defined_user_settings = () => {
                 show_news: {
                     display_name: "Show News headlines",
                     value: true,
-                },
-                show_company_info: {
-                    display_name: "Show Company Information",
-                    value: true,
                 }
             }
         },
@@ -96,20 +119,8 @@ const defined_user_settings = () => {
             settings: {
                 show_tradingview_on_home: {
                     display_name: "Show TradingView widget on Home page",
-                    value: false,
-                },
-                dark_theme: {
-                    display_name: "Use dark theme",
                     value: true,
                 },
-                default_symbol: {
-                    display_name: "Default symbol",
-                    value: "AAPL",
-                },
-                default_range: {
-                    display_name: "Default time range",
-                    value: "3M",
-                }
             }
         }
     }
