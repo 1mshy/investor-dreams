@@ -3,24 +3,22 @@ import {
     get_percent_change_year, get_percent_change_ytd
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { fetch_ticker_summary, generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { fetch_ticker_summary, generate_ollama_message, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, to_tradingview_range, trim_title, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
+import { SettingsContext } from '@/app/settings/SettingsContext';
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
 import PercentageFormat from "@/components/PercentageFormat";
 import TradingViewPopup from "@/components/tradingview/TradingViewPopup";
 import { Button } from "@mui/material";
 import { open } from "@tauri-apps/plugin-shell";
-import { useEffect, useState, useContext } from "react";
-import { SettingsContext } from '@/app/settings/SettingsContext';
+import { useContext, useEffect, useState } from "react";
 
 import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
 import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
 import { invoke } from "@tauri-apps/api/core";
 import StockGraph from "../Graphing/StockGraph";
-import IndicatorGraph from "../Graphing/IndicatorGraph";
-import CombinedGraph from "../Graphing/CombinedGraph";
 
 /**
  * @param {Object} props

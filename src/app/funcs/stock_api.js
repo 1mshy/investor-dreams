@@ -160,26 +160,6 @@ export async function fetch_widget_data(ticker_symbol) {
         ...nasdaq_ticker_info,
     };
 }
-/**
- * @returns {Promise<{}>}
- * @example {A: {symbol: 'A', name: 'Agilent Technologies, Inc.', summary: 'Agilent Technologies, Inc. provides application fo… and is headquartered in Santa Clara, California.', currency: 'USD', sector: 'Health Care', …}}
- * @desc possible keys: city, composite_figi, country, currency, description, cusip, exchange, figi, industry, industry_group, isin, market, market_cap, name, sector, shareclass_figi, state, summary, symbol, website, zipcode
-*/
-export async function get_all_static_ticker_info() {
-    if (!all_data)
-        all_data = await fetch("/json/global_stock_info.json").then(response => response.json());
-    return all_data;
-}
-
-/**
- * Gets static/offline information on a ticker from the current json database in the app
- * @param {String} ticker 
- * @returns {Promise<{}>}
- */
-export async function get_static_ticker_info(ticker) {
-    const data = await get_all_static_ticker_info();
-    return data[ticker];
-}
 
 /**
  * returns all the possible sectors
