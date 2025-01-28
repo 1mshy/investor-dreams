@@ -5,6 +5,8 @@
  */
 
 import React, { useEffect, useRef, memo } from 'react';
+import { useContext } from 'react';
+import { SettingsContext } from '@/app/settings/SettingsContext';
 
 /**
  * @typedef {Object} ChartConfig
@@ -46,6 +48,8 @@ import React, { useEffect, useRef, memo } from 'react';
  * @returns {JSX.Element} The rendered chart widget
  */
 function TradingViewWidget({ symbol = 'AAPL', range = '12M' }) {
+  const { settings } = useContext(SettingsContext);
+  const tvSettings = settings?.TradingView_Widget?.settings;
   /** @type {React.RefObject<HTMLDivElement>} */
   const containerRef = useRef(null);
 
@@ -72,7 +76,12 @@ function TradingViewWidget({ symbol = 'AAPL', range = '12M' }) {
       style: '1',
       locale: 'en',
       range,
-      studies: ['STD;RSI'],
+      studies: [
+        ...(tvSettings?.show_rsi?.value ? ['STD;RSI'] : []),
+        ...(tvSettings?.show_macd?.value ? ['STD;MACD'] : []),
+        ...(tvSettings?.show_bollinger_bands?.value ? ['STD;BB'] : []),
+        ...(tvSettings?.show_volume?.value ? ['STD;Volume'] : [])
+      ],
       support_host: 'https://www.tradingview.com',
     };
 
