@@ -21,7 +21,7 @@ pub async fn save_json_file(filename: String, json_content: String) -> String {
 pub async fn is_macos() -> bool {
     #[cfg(target_os = "macos")]
     return true;
-    
+
     #[cfg(not(target_os = "macos"))]
     return false;
 }

@@ -54,7 +54,6 @@ export default class SectorSelect extends React.Component {
     render() {
         const { sector, generated_sectors } = this.state;
         const {custom_sectors} = this.props;
-        console.log(this.props.default_sector)
         return (
             <Box sx={{ minWidth: 120 }}>
                 <FormControl sx={{ m: 1, width: 300 }}>

@@ -43,6 +43,91 @@ type StockPoint = {
 }
 
 
+type FormattedValue = {
+    fmt: string | null;
+    longFmt?: string;
+    raw: number;
+};
+
+type CompanyOfficer = {
+    age?: number;
+    exercisedValue: FormattedValue;
+    fiscalYear: number;
+    maxAge: number;
+    name: string;
+    title: string;
+    totalPay?: FormattedValue;
+    unexercisedValue: FormattedValue;
+    yearBorn?: number;
+};
+
+type AssetProfile = {
+    address1: string;
+    auditRisk: number;
+    boardRisk: number;
+    city: string;
+    companyOfficers: CompanyOfficer[];
+    compensationAsOfEpochDate: number;
+    compensationRisk: number;
+    country: string;
+    executiveTeam: any[];
+    fullTimeEmployees: number;
+    governanceEpochDate: number;
+    industry: string;
+    industryDisp: string;
+    industryKey: string;
+    irWebsite: string;
+    longBusinessSummary: string;
+    maxAge: number;
+    overallRisk: number;
+    phone: string;
+    sector: string;
+    sectorDisp: string;
+    sectorKey: string;
+    shareHolderRightsRisk: number;
+    state: string;
+    website: string;
+    zip: string;
+};
+
+type FinancialData = {
+    currentPrice: FormattedValue;
+    currentRatio: FormattedValue;
+    debtToEquity: FormattedValue;
+    earningsGrowth: FormattedValue;
+    ebitda: FormattedValue;
+    ebitdaMargins: FormattedValue;
+    financialCurrency: string;
+    freeCashflow: FormattedValue;
+    grossMargins: FormattedValue;
+    grossProfits: FormattedValue;
+    maxAge: number;
+    numberOfAnalystOpinions: FormattedValue;
+    operatingCashflow: FormattedValue;
+    operatingMargins: FormattedValue;
+    profitMargins: FormattedValue;
+    quickRatio: FormattedValue;
+    recommendationKey: string;
+    recommendationMean: FormattedValue;
+    returnOnAssets: FormattedValue;
+    returnOnEquity: FormattedValue;
+    revenueGrowth: FormattedValue;
+    revenuePerShare: FormattedValue;
+    targetHighPrice: FormattedValue;
+    targetLowPrice: FormattedValue;
+    targetMeanPrice: FormattedValue;
+    targetMedianPrice: FormattedValue;
+    totalCash: FormattedValue;
+    totalCashPerShare: FormattedValue;
+    totalDebt: FormattedValue;
+    totalRevenue: FormattedValue;
+};
+
+type QuoteSummary = {
+    assetProfile: AssetProfile;
+    financialData: FinancialData;
+};
+
 type Events = {
     dividends: {
         [key: string]: {
