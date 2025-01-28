@@ -121,6 +121,22 @@ const defined_user_settings = () => {
                     display_name: "Show TradingView widget on Home page",
                     value: true,
                 },
+                show_rsi: {
+                    display_name: "Show RSI",
+                    value: true,
+                },
+                show_macd: {
+                    display_name: "Show MACD",
+                    value: true,
+                },
+                show_bollinger_bands: {
+                    display_name: "Show Bollinger Bands",
+                    value: false,
+                },
+                show_volume: {
+                    display_name: "Show Volume",
+                    value: false,
+                }
             }
         }
     }
