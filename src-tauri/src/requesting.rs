@@ -3,6 +3,8 @@ use serde_json::Value;
 use std::{collections::HashMap, error::Error};
 use tauri::command;
 
+use crate::YahooFinanceState;
+
 use crate::sensitive_constants::{
     CLIENT_ID, CLIENT_SECRET, REDDIT_API_PASSWORD, REDDIT_API_USERNAME,
 };
@@ -65,7 +67,17 @@ pub async fn fetch_reddit_subreddit_posts(
 
     Ok(posts_data)
 }
-
+#[tauri::command]
+pub async fn fetch_yahoo_private(
+    state: tauri::State<'_, YahooFinanceState>,
+    url: String,
+) -> Result<Value, String> {
+    let mut client_guard = state.0.lock().await;
+    client_guard
+        .fetch_url(&url)
+        .await
+        .map_err(|e| format!("Failed to fetch Yahoo quote: {}", e))
+}
 /**
  * This function sends a GET request to the provided URL and returns the response text.
  */
@@ -77,21 +89,6 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
         .header("User-Agent", "PostmanRuntime/7.39.0")
         .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
         .header("Connection", "keep-alive")
-        .send()
-        .await?;
-    let response_text = response.text().await?;
-    Ok(response_text)
-}
-
-async fn reddit_request(url: &str) -> Result<String, Box<dyn Error>> {
-    let client = Client::new();
-    let response = client
-        .get(url)
-        // Set headers to mimic a browser request
-        .header("User-Agent", "PostmanRuntime/7.39.0")
-        .header("Accept", "*/*")
-        .header("Connection", "keep-alive")
-        .header("Authorization", "bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlNIQTI1NjpzS3dsMnlsV0VtMjVmcXhwTU40cWY4MXE2OWFFdWFyMnpLMUdhVGxjdWNZIiwidHlwIjoiSldUIn0.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNzI5NjQ5ODcxLjk2NjE4OCwiaWF0IjoxNzI5NTYzNDcxLjk2NjE4NywianRpIjoiUEFaTGtQVUp3emlSQXhwNlYxZmx4ZXJEU2daU0RBIiwiY2lkIjoiZDB1ZzN6UGdKNWdJZV9FNlpVTE9tUSIsImxpZCI6InQyXzE5NnZyd21pb3giLCJhaWQiOiJ0Ml8xOTZ2cndtaW94IiwibGNhIjoxNzI2ODQ0OTk0NDMzLCJzY3AiOiJlSnlLVnRKU2lnVUVBQURfX3dOekFTYyIsImZsbyI6OX0.B-c7B1ISgSlsTuCzcaNockK3Sr48MNFxL-eCGkTyNead_R0FCswp6tH5Sub7rwq15SK2A0KGf_cim8j-NFk9cL-unTUa5nM8PbfQJbeGCEgDiTua0S_lHtSN4fIhUvbkc5ftJCmBVVHgI3walX9EJx2UeiNOIf-kCAvolTZlZr6BEiKeTEwr3hfZ6lDhN1Lt6Ho0n5UVRSUfrR0Oc7Si4sr9UwMwy8150bHEzhbEiGXnbIgEucE0UiYym8fF1kvBqHrIU4xQloF3M8XJSYu3l45BTHEaLBvhEMTlDXOnDaXcTQAO0eqOOIEaODMn8gERnoo21iHQpgPb1ivx4SL6fw")
         .send()
         .await?;
     let response_text = response.text().await?;
@@ -109,14 +106,6 @@ pub async fn get_request_api(url: String) -> Result<String, String> {
             println!("{}", error_info);
             Err(error_info)
         }
-    }
-}
-
-#[command]
-pub async fn reddit_request_api(url: String) -> Result<String, String> {
-    match reddit_request(&url).await {
-        Ok(body) => Ok(body),
-        Err(e) => Err(format!("Failed to send GET request: {}", e)),
     }
 }
 

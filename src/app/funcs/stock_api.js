@@ -581,7 +581,6 @@ export async function request_yahoo_big(ticker_symbol) {
  * @returns {Promise<{meta:{},values:[]}>}
  */
 async function request_yahoo_timeset(ticker_symbol, timeset) {
-    console.log("")
     let range = null;
     let interval = "1d";
     switch (timeset.toUpperCase()) {
@@ -627,7 +626,20 @@ async function request_yahoo_timeset(ticker_symbol, timeset) {
  * @returns {Promise<TotalStockData>}
  */
 export async function fetch_yahoo_timeset(ticker_symbol, timeset = null) {
-    console.log(timeset)
     const yahoo_data = await request_yahoo_timeset(ticker_symbol, timeset);
     return yahoo_to_structured(yahoo_data);
+}
+/**
+ * 
+ * @param {String} ticker_symbol 
+ * @returns {Promise<QuoteSummary>}
+ */
+export async function fetch_ticker_summary(ticker_symbol) {
+    const summary = await invoke("fetch_yahoo_private", 
+        {url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData`});
+    const parsed = summary.quoteSummary?.result;
+    return {
+        assetProfile: parsed[0]?.assetProfile,
+        financialData: parsed[0]?.financialData,
+    }
 }

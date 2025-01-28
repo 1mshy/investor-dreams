@@ -3,7 +3,7 @@ import {
     get_percent_change_year, get_percent_change_ytd
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
+import { fetch_ticker_summary, generate_ollama_message, get_static_ticker_info, percentage_change } from "@/app/funcs/stock_api";
 import { format_currency, format_number, format_number_with_commas, format_percentage, to_tradingview_range, trim_title, unformat_number } from "@/app/funcs/tools";
 import { MarketColouredBadge } from "@/app/mui/other";
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
@@ -42,7 +42,7 @@ const BigStockWidget = (props) => {
     const bigSettings = settings.Big_Stock_Widget.settings;
     const { symbol, name, price, percent_change, historical_prices, marketCap, news, technicals, historical_data, total_stock_data } = props;
     const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
-    const [ticker_info, set_ticker_info] = useState({});
+    const [ticker_info, set_ticker_info] = useState("");
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
@@ -60,9 +60,6 @@ const BigStockWidget = (props) => {
     const [timeset, set_timeset] = useState("M");
 
     useEffect(() => {
-        get_static_ticker_info(symbol).then((info) => {
-            set_ticker_info(info);
-        });
         const complex_operations = async () => {
             const today_high = format_number(historical_data[0].high);
             const today_low = format_number(historical_data[0].low);
@@ -85,6 +82,9 @@ const BigStockWidget = (props) => {
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
             });
 
+            const ticker_info = await fetch_ticker_summary(symbol);
+            set_ticker_info(ticker_info);
+
             const subreddit_data = await fetch_subreddit_posts(symbol);
             set_subreddit_data(subreddit_data);
 
@@ -99,6 +99,7 @@ const BigStockWidget = (props) => {
                 }
             }
             set_common_subreddit_data(usefull_subreddits);
+
         }
         complex_operations();
     }, []);
@@ -148,7 +149,9 @@ const BigStockWidget = (props) => {
         tension: 0.1
     }
 
-    console.log(common_subreddit_data)
+    const single_name = String(name).split(" ")[0];
+
+    console.log(ticker_info)
 
     return (
         <div className={"big"} data-tauri-drag-region
@@ -160,7 +163,7 @@ const BigStockWidget = (props) => {
         >
             <div className={"head"} data-tauri-drag-region>
                 <MarketColouredBadge >
-                    <div className={"ticker_symbol"}>{symbol}</div>
+                    <div className={"ticker_symbol"}>{single_name}</div>
                 </MarketColouredBadge>
                 <div className={"company_name"}>{name}</div>
             </div>
@@ -230,17 +233,15 @@ const BigStockWidget = (props) => {
                 </div>}
 
             </div>
-            <div className={"info"}>
+            {ticker_info && <div className={"info"}>
                 <div className={"info-section"}>
                     {ticker_info && <>
-                        <h2>Info on {String(ticker_info.name).split(",")[0]}</h2>
+                        <h1> {symbol}</h1>
                         <div>
-                            <div className={"info-title"}>Exchange</div>
-                            <div className={"info-value"}>{ticker_info.exchange}</div>
                             <div className={"info-title"}>Sector</div>
-                            <div className={"info-value"}>{ticker_info.sector}</div>
+                            <div className={"info-value"}>{ticker_info.assetProfile.sector}</div>
                             <div className={"info-title"}>Industry</div>
-                            <div className={"info-value"}>{`${ticker_info.industry} (${ticker_info.industry_group})`}</div>
+                            <div className={"info-value"}>{`${ticker_info.assetProfile.industry}`}</div>
                         </div>
                     </>}
                 </div>
@@ -248,15 +249,14 @@ const BigStockWidget = (props) => {
                     {ticker_info &&
                         <div>
                             <div className={"info-title"}>Headquarters Location</div>
-                            <div className={"info-value"}>{`${ticker_info.state},
-                             ${ticker_info.city}, ${ticker_info.country}`}</div>
-                            <div className={"info-title"}>Market</div>
-                            <div className={"info-value"}>{ticker_info.market}</div>
+                            <div className={"info-value"}>
+                                {`${ticker_info.assetProfile.city}, ${ticker_info.assetProfile.state}, ${ticker_info.assetProfile.country}`}
+                            </div>
                             <div className={"info-title"}>Website</div>
                             <div className={"info-value"} style={{ cursor: "pointer" }} onClick={async () => {
-                                await open(ticker_info.website);
+                                await open(ticker_info.assetProfile.website);
                             }}>
-                                {ticker_info.website}
+                                {ticker_info.assetProfile.website}
                             </div>
                         </div>}
                 </div>
@@ -269,12 +269,13 @@ const BigStockWidget = (props) => {
                     <div className={"price"}>{format_currency(marketCap)}</div>
                 </div>
 
-            </div>                {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
+            </div>}
+            {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
                     {"Summary"}
                 </div>
                 <div className={""}>
-                    {ticker_info.summary}
+                    {ticker_info.assetProfile.longBusinessSummary}
                 </div>
                 {bigSettings.show_reddit_data.value && subreddit_data && <>
                     <div className={"info-title"} >
