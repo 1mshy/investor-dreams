@@ -219,13 +219,13 @@ const BigStockWidget = (props) => {
                 <TradingViewPopup {...props} range={to_tradingview_range(timeset)} open={trading_view_popup} onClick={() => { set_trading_view_popup(false) }} />
                 {historical_data && <div className={"price-data"}>
                     <div className={"price-change"}>
-                        <ButtonPercentageFormat percent_change={percent_change} timeset={"D"} func={() => { set_timeset("D") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_month} timeset={"M"} func={() => { set_timeset("M") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_timeset("YTD") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_year} timeset={"Y"} func={() => { set_timeset("Y") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_timeset("5Y") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_timeset("10Y") }} />
-                        <ButtonPercentageFormat percent_change={percent_change_all} timeset={"ALL"} func={() => { set_timeset("ALL") }} />
+                        <ButtonPercentageFormat variant={timeset == "D" ? "outlined" : ""} percent_change={percent_change} timeset={"D"} func={() => { set_timeset("D") }} />
+                        <ButtonPercentageFormat variant={timeset == "M" ? "outlined" : ""} percent_change={percent_change_month} timeset={"M"} func={() => { set_timeset("M") }} />
+                        <ButtonPercentageFormat variant={timeset == "YTD" ? "outlined" : ""} percent_change={percent_change_ytd} timeset={"YTD"} func={() => { set_timeset("YTD") }} />
+                        <ButtonPercentageFormat variant={timeset == "Y" ? "outlined" : ""} percent_change={percent_change_year} timeset={"Y"} func={() => { set_timeset("Y") }} />
+                        <ButtonPercentageFormat variant={timeset == "5Y" ? "outlined" : ""} percent_change={percent_change_five_year} timeset={"5Y"} func={() => { set_timeset("5Y") }} />
+                        <ButtonPercentageFormat variant={timeset == "10Y" ? "outlined" : ""} percent_change={percent_change_ten_year} timeset={"10Y"} func={() => { set_timeset("10Y") }} />
+                        <ButtonPercentageFormat variant={timeset == "ALL" ? "outlined" : ""} percent_change={percent_change_all} timeset={"ALL"} func={() => { set_timeset("ALL") }} />
                     </div>
                     <div className={"date"}>
                         Updated {new Date(historical_data[0].datetime).toLocaleDateString()}
@@ -270,6 +270,79 @@ const BigStockWidget = (props) => {
                 </div>
 
             </div>}
+            {bigSettings.show_financial_data.value && ticker_info && <div className={"info-section"} style={{ overflowX: 'auto' }}>
+                <div className={"info-title"}>Financial Data</div>
+                <div className={"financial-data-grid"}>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Current Ratio</div>
+                        <div className={"info-value"}>{ticker_info.financialData.currentRatio.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Debt to Equity</div>
+                        <div className={"info-value"}>{ticker_info.financialData.debtToEquity.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Earnings Growth</div>
+                        <div className={"info-value"}>{ticker_info.financialData.earningsGrowth.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>EBITDA</div>
+                        <div className={"info-value"}>{ticker_info.financialData.ebitda.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>EBITDA Margins</div>
+                        <div className={"info-value"}>{ticker_info.financialData.ebitdaMargins.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Gross Margins</div>
+                        <div className={"info-value"}>{ticker_info.financialData.grossMargins.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Operating Margins</div>
+                        <div className={"info-value"}>{ticker_info.financialData.operatingMargins.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Profit Margins</div>
+                        <div className={"info-value"}>{ticker_info.financialData.profitMargins.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Quick Ratio</div>
+                        <div className={"info-value"}>{ticker_info.financialData.quickRatio.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Return on Assets</div>
+                        <div className={"info-value"}>{ticker_info.financialData.returnOnAssets.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Return on Equity</div>
+                        <div className={"info-value"}>{ticker_info.financialData.returnOnEquity.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Revenue Growth</div>
+                        <div className={"info-value"}>{ticker_info.financialData.revenueGrowth.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Revenue Per Share</div>
+                        <div className={"info-value"}>{ticker_info.financialData.revenuePerShare.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Total Cash</div>
+                        <div className={"info-value"}>{ticker_info.financialData.totalCash.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Total Cash Per Share</div>
+                        <div className={"info-value"}>{ticker_info.financialData.totalCashPerShare.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Total Debt</div>
+                        <div className={"info-value"}>{ticker_info.financialData.totalDebt.fmt}</div>
+                    </div>
+                    <div className={"data-row"}>
+                        <div className={"info-label"}>Total Revenue</div>
+                        <div className={"info-value"}>{ticker_info.financialData.totalRevenue.fmt}</div>
+                    </div>
+                </div>
+            </div>}
             {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
                     {"Summary"}
@@ -300,6 +373,8 @@ const BigStockWidget = (props) => {
                         })}
                     </div>}
                 </>}
+
+
                 {bigSettings.show_news.value && news && <><div className={"info-title"} >
                     {"News Headlines"}
                 </div>
