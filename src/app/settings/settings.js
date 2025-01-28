@@ -111,6 +111,10 @@ const defined_user_settings = () => {
                 show_news: {
                     display_name: "Show News headlines",
                     value: true,
+                },
+                show_financial_data: {
+                    display_name: "Show Financial Data",
+                    value: true,
                 }
             }
         },

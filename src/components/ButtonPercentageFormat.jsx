@@ -24,10 +24,10 @@ import PercentageFormat from "./PercentageFormat";
  *   func={() => console.log('clicked')} 
  * />
  */
-const ButtonPercentageFormat = ({ percent_change, timeset, func }) => {
+const ButtonPercentageFormat = ({ percent_change, timeset, func, ...params }) => {
   return (
     <div>
-      <Button onClick={func}>
+      <Button onClick={func} {...params}>
         <PercentageFormat percent_change={percent_change} timeset={timeset} />
       </Button>
     </div>
