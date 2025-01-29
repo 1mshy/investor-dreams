@@ -56,6 +56,7 @@ class StockGraph extends Component {
             chart_data: null,
             chart_options: null,
             dimensions: { width: '300px', height: '200px' },
+            points_shown: 0,
         };
     }
 
@@ -125,7 +126,7 @@ class StockGraph extends Component {
             },
         };
 
-        this.setState({ chart_data: data, chart_options: options });
+        this.setState({ chart_data: data, chart_options: options, points_shown: prices.length });
     }
 
     /**
@@ -157,7 +158,7 @@ class StockGraph extends Component {
 
         if (tooltipModel.body) {
             const value = tooltipModel.dataPoints[0].raw;
-            const historical_data = this.state.historical_data;
+            const { historical_data, points_shown } = this.state;
             const current_price = historical_data[0]?.close;
             const percent_change = percentage_change(unformat_number(current_price), unformat_number(value));
             const formatDate = (dateString) =>
@@ -173,7 +174,7 @@ class StockGraph extends Component {
                     second: 'numeric',
                 });
             const index = tooltipModel.dataPoints[0].dataIndex;
-            const date = this.state.historical_data[this.state.historical_data.length - 1 - index]?.datetime;
+            const date = historical_data[points_shown - index]?.datetime;
             const { settings } = this.context;
             const showRelativePrices = settings?.Global?.settings?.show_relative_prices_on_graph?.value ?? true;
             tooltipEl.innerHTML = `
