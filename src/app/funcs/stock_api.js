@@ -615,8 +615,10 @@ export async function fetch_yahoo_timeset(ticker_symbol, timeset = null) {
  * @returns {Promise<QuoteSummary>}
  */
 export async function fetch_ticker_summary(ticker_symbol) {
+    console.log(ticker_symbol)
     const summary = await invoke("fetch_yahoo_private", 
         {url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData`});
+        console.log(summary)
     const parsed = summary.quoteSummary?.result;
     return {
         assetProfile: parsed[0]?.assetProfile,

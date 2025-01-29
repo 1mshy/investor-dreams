@@ -5,10 +5,13 @@ import { BackGroundPaper } from '@/app/mui/theme';
 
 export default function WidgetSettingsPanel() {
     const { settings, updateSetting } = useContext(SettingsContext);
-    const WIDGET_SIZE_OPTIONS = ["mini", "small", "medium"];
 
     const renderSettingControl = (widgetKey, key, setting) => {
-        if (typeof setting.value === 'boolean') {
+        // If possible_values is [true, false], render a checkbox
+        if (Array.isArray(setting.possible_values) && 
+            setting.possible_values.length === 2 && 
+            setting.possible_values.includes(true) && 
+            setting.possible_values.includes(false)) {
             return (
                 <FormControlLabel
                     key={key}
@@ -23,7 +26,8 @@ export default function WidgetSettingsPanel() {
             );
         }
 
-        if (key === "default_widget_size") {
+        // If possible_values is an array with other values, render a select
+        if (Array.isArray(setting.possible_values)) {
             return (
                 <Box key={key} sx={{ mb: 2 }}>
                     <FormControl>
@@ -34,7 +38,7 @@ export default function WidgetSettingsPanel() {
                             onChange={(e) => updateSetting(widgetKey, key, e.target.value)}
                             sx={{ width: 200 }}
                         >
-                            {WIDGET_SIZE_OPTIONS.map((option) => (
+                            {setting.possible_values.map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {option}
                                 </MenuItem>
@@ -45,6 +49,7 @@ export default function WidgetSettingsPanel() {
             );
         }
 
+        // If possible_values is '*' or undefined, render a text display (read-only)
         return (
             <Typography key={key}>
                 {setting.display_name}: {setting.value}

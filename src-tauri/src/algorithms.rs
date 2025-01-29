@@ -111,7 +111,7 @@ pub async fn monte_carlo_rsi(
     // Step 4: Calculate RSI for each simulated path
     let final_rsi_values: Vec<f64> = simulations
         .iter()
-        .map(|simulated_prices| calculate_rsi(&simulated_prices, period))
+        .map(|simulated_prices| calculate_rsi(simulated_prices, period))
         .collect();
 
     // Step 5: Analyze results
