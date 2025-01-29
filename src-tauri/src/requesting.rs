@@ -67,6 +67,7 @@ pub async fn fetch_reddit_subreddit_posts(
 
     Ok(posts_data)
 }
+
 #[tauri::command]
 pub async fn fetch_yahoo_private(
     state: tauri::State<'_, YahooFinanceState>,

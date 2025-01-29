@@ -10,7 +10,7 @@ pub async fn ollama_generate(state: State<'_, Ollama>, prompt: &str) -> Result<S
         .await;
 
     match res {
-        Ok(res) => Ok(format!("{}", res.response)),
+        Ok(res) => Ok(res.response.to_string()),
         Err(e) => Err(format!("{}", e)),
     }
 }

@@ -3,7 +3,7 @@ import { user_settings as defaultSettings } from '@/app/settings/settings';
 import localforage from 'localforage';
 
 // Create a dedicated localforage instance for settings
-const SETTINGS_CACHE = localforage.createInstance({
+export const SETTINGS_CACHE = localforage.createInstance({
     name: "user_settings"
 });
 

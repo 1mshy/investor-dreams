@@ -53,6 +53,8 @@ function TradingViewWidget({ symbol = 'AAPL', range = '12M' }) {
   /** @type {React.RefObject<HTMLDivElement>} */
   const containerRef = useRef(null);
 
+  console.log(tvSettings?.chart_style?.value)
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -73,7 +75,7 @@ function TradingViewWidget({ symbol = 'AAPL', range = '12M' }) {
       symbol,
       timezone: 'Etc/UTC',
       theme: 'dark',
-      style: '1',
+      style: tvSettings?.chart_style?.value,
       locale: 'en',
       range,
       studies: [
