@@ -233,7 +233,7 @@ const BigStockWidget = (props) => {
             </div>
             {ticker_info && <div className={"info"}>
                 <div className={"info-section"}>
-                    {ticker_info && <>
+                    {ticker_info.assetProfile && <>
                         <h1> {symbol}</h1>
                         <div>
                             <div className={"info-title"}>Sector</div>
@@ -244,7 +244,7 @@ const BigStockWidget = (props) => {
                     </>}
                 </div>
                 <div className={"info-section"}>
-                    {ticker_info &&
+                    {ticker_info.assetProfile &&
                         <div>
                             <div className={"info-title"}>Headquarters Location</div>
                             <div className={"info-value"}>
@@ -346,7 +346,7 @@ const BigStockWidget = (props) => {
                     {"Summary"}
                 </div>
                 <div className={""}>
-                    {ticker_info.assetProfile.longBusinessSummary}
+                    {ticker_info.assetProfile?.longBusinessSummary}
                 </div>
                 {bigSettings.show_reddit_data.value && subreddit_data && <>
                     <div className={"info-title"} >
