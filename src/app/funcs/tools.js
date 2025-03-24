@@ -26,6 +26,34 @@ export function remove_decimal_zeros(number) {
 }
 
 /**
+ * Removes unwanted characters from a ticker symbol string
+ * @param {String} ticker 
+ * @returns {String}
+ */
+export function clean_ticker(ticker) {
+    if (!ticker) return "";
+    return `${ticker}`.replace("/", ".") //.replace("^", ".");
+}
+/**
+ *  cleans the ticker for the specifications of the yahoo api
+ * @param {string} ticker 
+ * @returns {string}
+ */
+export function clean_ticker_for_yahoo(ticker) {
+    if (!ticker) return "";
+    return `${ticker}`.replace("/", "-").replace("^", "-").replace("*", "-").replace(".", "-").replace(",", "-")
+}
+/**
+ * Does ticker have any special characters
+ * @param {string} ticker 
+ * @returns {bool}
+ */
+export function is_complex_ticker(ticker) {
+    if (!ticker) return true;
+    return ticker.includes("/") || ticker.includes("^") || ticker.includes("*") || ticker.includes(".") || ticker.includes(",")
+}
+
+/**
  * 
  * @param {Number} number 
  * @returns {String}

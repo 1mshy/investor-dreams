@@ -2,103 +2,16 @@ import { invoke } from "@tauri-apps/api/core";
 import localforage from "localforage";
 import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { delay, invoke_with_timeout, unformat_number } from "./tools";
+import { clean_ticker, clean_ticker_for_yahoo, delay, invoke_with_timeout, unformat_number } from "./tools";
 import { get_percent_change_month } from "./historical_pricing";
 
-/**
- * Twelve data api keys. 
- * Each key has a maximum of 500 total requests per day, and 8 requests per minute
- */
-let api_keys = []
-
-export function set_api_keys(new_api_keys) {
-    api_keys = new_api_keys;
-}
-
-export function get_num_keys() {
-    return api_keys.length;
-}
-/**
- * data on stock tickers, not related to price
- * ex: location, sector, industry, etc
- */
-let all_data = undefined;
-
-const api_url = "https://api.twelvedata.com/time_series?interval=1day&format=JSON&outputsize=5000"
-let stop_requesting = false;
-const WAIT_TIME = 61_000; // milliseconds
 
 /**
- * Removes unwanted characters from a ticker symbol string
- * @param {String} ticker 
- * @returns {String}
+ * @param {string} url 
+ * @returns {Promise<string>} the body of the request
  */
-export function clean_ticker(ticker) {
-    if (!ticker) return "";
-    return `${ticker}`.replace("/", ".") //.replace("^", ".");
-}
-/**
- *  cleans the ticker for the specifications of the yahoo api
- * @param {string} ticker 
- * @returns {string}
- */
-export function clean_ticker_for_yahoo(ticker) {
-    if (!ticker) return "";
-    return `${ticker}`.replace("/", "-").replace("^", "-").replace("*", "-").replace(".", "-").replace(",", "-")
-}
-/**
- * Does ticker have any special characters
- * @param {string} ticker 
- * @returns {bool}
- */
-export function is_complex_ticker(ticker) {
-    if (!ticker) return true;
-    return ticker.includes("/") || ticker.includes("^") || ticker.includes("*") || ticker.includes(".") || ticker.includes(",")
-}
-
-
-
-/**
- * @param {String} ticker_symbol 
- * @returns {Promise<{meta:{},values:[]}>}
- * @desc Request stock data from the API
- * @desc This function is rate limited to 8 requests per minute
- * @desc If the limit is reached, the function will wait for a minute and then resume
- * @deprecated use {@link request_yahoo_big} instead
- */
-export async function request_ticker_data(ticker_symbol) {
-    if (api_keys.length === 0) {
-        console.log("Cannot request ticker data as there is not api keys available")
-        return;
-    }
-    ticker_symbol = clean_ticker(ticker_symbol);
-    // console.log(ticker_symbol, stock_cache_is_valid(ticker_symbol))
-    const valid_cache = await stock_cache_is_valid(ticker_symbol);
-    if (valid_cache) {
-        const cache = await get_cache(ticker_symbol, STOCK_CACHE);
-        return cache.stock_data;
-    }
-    while (stop_requesting) {
-        console.log("Too many requests, waiting for a minute to request " + ticker_symbol)
-        await delay(WAIT_TIME); // Wait for the cooldown to end
-        stop_requesting = false;
-        console.log("Minute over, resuming requests")
-    }
-    console.log("requesting " + ticker_symbol)
-    const url = `${api_url}&apikey=${get_next_api_key()}&symbol=${ticker_symbol}`;
-    const response = await invoke("get_request_api", { url: url });
-    const data = JSON.parse(response);
-    if (data && data.code === 404) {
-        console.log("invalid ticker symbol submitted: " + ticker_symbol)
-        return await request_ticker_data("AAPL");
-    }
-
-    if (is_error(data)) {
-        stop_requesting = true;
-        return await request_ticker_data(ticker_symbol);
-    }
-    set_cache(ticker_symbol, { stock_data: data }, 30, STOCK_CACHE);
-    return data;
+export async function get_request(url) {
+    return invoke("get_request_api", { url });
 }
 
 /**
@@ -175,18 +88,6 @@ export async function get_all_sectors() {
     });
     sectors = sectors.filter(item => item !== undefined && item !== null && item !== "")
     return sectors.sort();
-}
-
-
-let current_api_index = 0;
-/**
- * Uses a global index to get the next api key in the list
- * @returns {String}
- */
-function get_next_api_key() {
-    let api_key = api_keys[current_api_index];
-    current_api_index = (current_api_index + 1) % api_keys.length;
-    return api_key;
 }
 
 /**
@@ -346,7 +247,7 @@ export async function get_ticker_news(ticker) {
     }
     const amount_of_articles = 15;
     const url = `https://www.nasdaq.com/api/news/topic/articlebysymbol?q=${ticker}|STOCKS&offset=0&limit=${amount_of_articles}&fallback=true`;
-    const news_data = await invoke("get_request_api", { url: url });
+    const news_data = await get_request(url);
     const parsed_news = JSON.parse(news_data);
     set_cache(local_storage_key, parsed_news, 60, NASDAQ_NEWS);
     return parsed_news;
@@ -359,7 +260,7 @@ export async function get_company_summary(ticker) {
         return cached_summary;
     }
     const url = `https://api.nasdaq.com/api/company/${ticker}/company-profile`;
-    const summary_data = await invoke("get_request_api", { url: url });
+    const summary_data = await get_request(url);
     const parsed_summary = JSON.parse(summary_data);
     set_cache(local_storage_key, parsed_summary, 60 * 24 * 7);
     return parsed_summary;
@@ -544,7 +445,7 @@ export async function request_yahoo_big(ticker_symbol) {
     console.log("requesting " + ticker_symbol)
     const url = yahoo_url(ticker_symbol);
     console.log("requesting: " + url);
-    const response = await invoke("get_request_api", { url: url });
+    const response = await get_request(url);
     const data = JSON.parse(response);
     if (data && data.code === 404) {
         console.log("Request failed: " + ticker_symbol)
@@ -589,7 +490,7 @@ async function request_yahoo_timeset(ticker_symbol, timeset) {
     console.log("requesting " + ticker_symbol)
     const url = yahoo_url(ticker_symbol, range, interval);
     console.log("requesting: " + url);
-    const response = await invoke("get_request_api", { url: url });
+    const response = await get_request(url);
     const data = JSON.parse(response);
     if (data && data.code === 404) {
         console.log("Request failed: " + ticker_symbol)
@@ -616,9 +517,9 @@ export async function fetch_yahoo_timeset(ticker_symbol, timeset = null) {
  */
 export async function fetch_ticker_summary(ticker_symbol) {
     console.log(ticker_symbol)
-    const summary = await invoke("fetch_yahoo_private", 
-        {url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData`});
-        console.log(summary)
+    const summary = await invoke("fetch_yahoo_private",
+        { url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData` });
+    console.log(summary)
     const parsed = summary.quoteSummary?.result;
     return {
         assetProfile: parsed[0]?.assetProfile,
