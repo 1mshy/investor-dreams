@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import localforage from 'localforage';
 import { get_cache, set_cache } from './cache';
-import { clean_ticker } from './stock_api';
+import { get_request } from './stock_api';
+import { clean_ticker } from './tools';
 
 /**
  * gets info on all known stocks using the nasdaq api and returns it as an object in the format:
@@ -58,7 +59,7 @@ export async function get_nasdaq_news_body(news, symbol) {
     const key = `${symbol}_${news.url}`;
     const cached_item = await NASDAQ_SCRAPED_STORAGE.getItem(key);
     if (cached_item) return cached_item;
-    const base_html = await invoke("get_request_api", { url });
+    const base_html = await get_request(url);
     // console.log(base_html);
     const $ = load(base_html);
     const divs = $(".body__content")

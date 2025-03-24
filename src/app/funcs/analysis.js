@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import { get_all_nasdaq_info } from "./scraper";
 import { get_state } from "./states";
-import { clean_ticker, get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "./stock_api";
-import { delay, unformat_number } from "./tools";
+import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "./stock_api";
+import { clean_ticker, delay, unformat_number } from "./tools";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
     const final_list = [];
@@ -63,7 +63,7 @@ export async function request_database() {
     while (i < all_symbols.length) {
         eval_chunks();
         const symbol = clean_ticker(all_symbols[i]);
-        if(symbol.includes("^") || symbol.includes("/")) {
+        if (symbol.includes("^") || symbol.includes("/")) {
             i++;
             continue;
         }

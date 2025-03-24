@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import "../app/css/Widgets.css";
-import { clear_cache, complex_retrieve, complex_store, retrieve, store } from './funcs/cache';
-import { log } from './funcs/logger';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { SettingsProvider } from './settings/SettingsContext';
-import Portfolio from './pages/Portfolio';
-import Home from './pages/Home';
-import Playground from './pages/Playground';
-import Analysis from './pages/Analysis';
-import NotFound from './pages/NotFound';
-import { invoke } from '@tauri-apps/api/core';
-import Setup from './pages/Setup';
-import { set_api_keys } from './funcs/stock_api';
-import { format_api_keys } from './funcs/tools';
-import { theme } from './mui/theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import "../app/css/Widgets.css";
+import { clear_cache, complex_retrieve, complex_store } from './funcs/cache';
 import Background from './mui/Background';
-import TradingView from './pages/TradingView';
+import Analysis from './pages/Analysis';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 import Opportunities from './pages/Opportunities';
+import Playground from './pages/Playground';
+import Portfolio from './pages/Portfolio';
+import Setup from './pages/Setup';
+import TradingView from './pages/TradingView';
+import { SettingsProvider } from './settings/SettingsContext';
 import WidgetSettingsPanel from './settings/WidgetSettingsPanel';
 const BasePage = () => {
   const router = createBrowserRouter([
@@ -93,21 +87,21 @@ const BasePage = () => {
   return (
     <SettingsProvider>
       <Background router={router}>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        limit={4}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
-      {!errors && <RouterProvider router={router} />}
-      {errors && has_checked && <div> <Setup /> </div>}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          limit={4}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        {!errors && <RouterProvider router={router} />}
+        {errors && has_checked && <div> <Setup /> </div>}
       </Background>
     </SettingsProvider>
   );

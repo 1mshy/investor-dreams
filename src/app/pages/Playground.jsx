@@ -3,13 +3,12 @@ import { get_favourite_array } from '@/app/funcs/favourites';
 import { get_all_nasdaq_info } from '@/app/funcs/scraper';
 import { get_custom_sectors } from '@/app/funcs/sectors';
 import {
-    clean_ticker,
     get_all_sectors,
     get_all_symbols,
     get_market_cap,
     nasdaq_sorted_by
 } from "@/app/funcs/stock_api";
-import { unformat_number } from '@/app/funcs/tools';
+import { clean_ticker, unformat_number } from '@/app/funcs/tools';
 import { SoftPaper, theme } from '@/app/mui/theme';
 import EasySelection from '@/components/misc/EasySelection';
 import SectorSelect from '@/components/misc/SectorSelect';
