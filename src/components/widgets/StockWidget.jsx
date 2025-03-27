@@ -1,4 +1,4 @@
-import { fetch_widget_data } from "@/app/funcs/stock_api";
+import { fetch_widget_data } from "@/app/networking/stock_api";
 import { Component } from "react";
 import { DynamicStockWidget } from "./DynamicStockWidget";
 

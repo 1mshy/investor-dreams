@@ -6,7 +6,7 @@ import "@/app/css/Portfolio.css";
 import "@/app/css/Widgets.css";
 import { open } from '@tauri-apps/plugin-shell';
 import { Link } from 'react-router-dom';
-import { fetch_common_subreddits } from '../funcs/reddit';
+import { fetch_common_subreddits } from '../networking/reddit';
 
 export default class Opportunities extends Component {
     constructor(props) {

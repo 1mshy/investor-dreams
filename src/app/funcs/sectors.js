@@ -1,4 +1,4 @@
-import { complex_retrieve, complex_store } from "./cache";
+import { complex_retrieve, complex_store } from "../networking/cache";
 
 /**
  * gets all the custom sectors the user has made and the generated ones

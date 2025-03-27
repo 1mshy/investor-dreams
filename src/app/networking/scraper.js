@@ -1,10 +1,9 @@
-
 import { invoke } from '@tauri-apps/api/core';
 import { load } from 'cheerio';
 import localforage from 'localforage';
 import { get_cache, set_cache } from './cache';
 import { get_request } from './stock_api';
-import { clean_ticker } from "./formatting";
+import { clean_ticker } from "../funcs/formatting";
 
 /**
  * gets info on all known stocks using the nasdaq api and returns it as an object in the format:

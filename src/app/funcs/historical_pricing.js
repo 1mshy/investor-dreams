@@ -5,7 +5,7 @@
  * is the oldest price and the last element is the most recent price
  */
 
-import { percentage_change } from "./stock_api";
+import { percentage_change } from "../networking/stock_api";
 import { unformat_number } from "./formatting";
 
 export const ONE_DAY = 1000* 60 * 60 * 24; // in ms

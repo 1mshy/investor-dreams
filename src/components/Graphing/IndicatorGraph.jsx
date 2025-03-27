@@ -13,7 +13,7 @@ import {
     get_year_prices,
     get_ytd_prices,
 } from '@/app/funcs/historical_pricing';
-import { fetch_yahoo_timeset, percentage_change } from '@/app/funcs/stock_api';
+import { fetch_yahoo_timeset, percentage_change } from '@/app/networking/stock_api';
 import { format_currency, format_percentage, unformat_number } from "@/app/funcs/formatting";
 import { format_number } from "@/app/funcs/formatting";
 import {

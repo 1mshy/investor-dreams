@@ -1,4 +1,4 @@
-import { is_complex_ticker } from "@/app/funcs/stock_api";
+import { is_complex_ticker } from "@/app/networking/stock_api";
 
 test("complex_symbol", () => {
     const symbol = "AAPL";

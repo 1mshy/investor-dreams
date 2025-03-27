@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import "../app/css/Widgets.css";
-import { clear_cache, complex_retrieve, complex_store } from './funcs/cache';
+import { clear_cache, complex_retrieve, complex_store } from './networking/cache';
 import Background from './mui/Background';
 import Analysis from './pages/Analysis';
 import Home from './pages/Home';

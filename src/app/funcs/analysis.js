@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
-import { get_all_nasdaq_info } from "./scraper";
+import { get_all_nasdaq_info } from "../networking/scraper";
 import { get_state } from "./states";
-import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "./stock_api";
+import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "../networking/stock_api";
 import { delay } from "./tools";
 import { unformat_number } from "./formatting";
 import { clean_ticker } from "./formatting";
