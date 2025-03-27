@@ -2,7 +2,9 @@ import { toast } from "react-toastify";
 import { get_all_nasdaq_info } from "./scraper";
 import { get_state } from "./states";
 import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big } from "./stock_api";
-import { clean_ticker, delay, unformat_number } from "./tools";
+import { delay } from "./tools";
+import { unformat_number } from "./formatting";
+import { clean_ticker } from "./formatting";
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
     const final_list = [];

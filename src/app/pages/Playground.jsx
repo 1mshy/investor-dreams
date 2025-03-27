@@ -8,7 +8,8 @@ import {
     get_market_cap,
     nasdaq_sorted_by
 } from "@/app/funcs/stock_api";
-import { clean_ticker, unformat_number } from '@/app/funcs/tools';
+import { unformat_number } from "../funcs/formatting";
+import { clean_ticker } from "../funcs/formatting";
 import { SoftPaper, theme } from '@/app/mui/theme';
 import EasySelection from '@/components/misc/EasySelection';
 import SectorSelect from '@/components/misc/SectorSelect';

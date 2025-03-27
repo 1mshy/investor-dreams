@@ -1,5 +1,5 @@
 import { get_month_prices, get_percent_change_month } from "@/app/funcs/historical_pricing";
-import { format_currency_with_symbols } from "@/app/funcs/tools";
+import { format_currency_with_symbols } from "@/app/funcs/formatting";
 import { SoftPaper } from "@/app/mui/theme";
 import StockGraph from "../Graphing/StockGraph";
 import PercentageFormat from "../PercentageFormat";

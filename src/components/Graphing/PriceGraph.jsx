@@ -6,7 +6,7 @@
 
 import { user_settings } from '@/app/settings/settings';
 import { percentage_change } from '@/app/funcs/stock_api';
-import { format_currency, format_percentage, unformat_number } from '@/app/funcs/tools';
+import { format_currency, format_percentage, unformat_number } from "@/app/funcs/formatting";
 import {
     CategoryScale,
     Chart as ChartJS,
