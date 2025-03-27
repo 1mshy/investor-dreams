@@ -14,7 +14,8 @@ import {
     get_ytd_prices,
 } from '@/app/funcs/historical_pricing';
 import { fetch_yahoo_timeset, percentage_change } from '@/app/funcs/stock_api';
-import { format_currency, format_number, format_percentage, unformat_number } from '@/app/funcs/tools';
+import { format_currency, format_percentage, unformat_number } from "@/app/funcs/formatting";
+import { format_number } from "@/app/funcs/formatting";
 import {
     CategoryScale,
     Chart as ChartJS,

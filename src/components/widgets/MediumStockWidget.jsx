@@ -1,6 +1,7 @@
 import { is_ticker_favourite, toggle_favourite } from "@/app/funcs/favourites";
 import { get_month_prices, get_percent_change_month, get_percent_change_ytd } from "@/app/funcs/historical_pricing";
-import { format_currency_with_symbols, format_number } from "@/app/funcs/tools";
+import { format_currency_with_symbols } from "@/app/funcs/formatting";
+import { format_number } from "@/app/funcs/formatting";
 import { SoftPaper } from "@/app/mui/theme";
 import PercentageFormat from "@/components/PercentageFormat";
 import CustomSector from "@/components/popups/CustomSector";

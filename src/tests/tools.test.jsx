@@ -1,8 +1,8 @@
 import {
-  format_currency,
-  format_number,
-  format_number_with_commas,
-} from "@/app/funcs/tools";
+    format_currency,
+    format_number_with_commas
+} from "@/app/funcs/formatting";
+import { format_number } from "@/app/funcs/formatting";
 import { expect } from "vitest";
 
 test("number formatting with comma", () => {

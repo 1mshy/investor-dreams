@@ -6,7 +6,7 @@
  */
 
 import { percentage_change } from "./stock_api";
-import { unformat_number } from "./tools";
+import { unformat_number } from "./formatting";
 
 export const ONE_DAY = 1000* 60 * 60 * 24; // in ms
 export const THIRTY_DAYS = ONE_DAY * 30; // in ms

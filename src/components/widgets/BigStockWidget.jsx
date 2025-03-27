@@ -4,7 +4,9 @@ import {
 } from "@/app/funcs/historical_pricing";
 import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
 import { fetch_ticker_summary, generate_ollama_message, percentage_change } from "@/app/funcs/stock_api";
-import { format_currency, format_number, format_number_with_commas, format_percentage, to_tradingview_range, trim_title, unformat_number } from "@/app/funcs/tools";
+import { to_tradingview_range, trim_title } from "@/app/funcs/tools";
+import { format_currency, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/formatting";
+import { format_number } from "@/app/funcs/formatting";
 import { MarketColouredBadge } from "@/app/mui/other";
 import { SettingsContext } from '@/app/settings/SettingsContext';
 import ButtonPercentageFormat from "@/components/ButtonPercentageFormat";
