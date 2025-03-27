@@ -19,6 +19,7 @@ import { rsi_reading } from "@/app/funcs/algorithms";
 import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
 import { invoke } from "@tauri-apps/api/core";
 import StockGraph from "../Graphing/StockGraph";
+import { financials_link } from "@/app/funcs/formatting";
 
 /**
  * @param {Object} props
@@ -51,6 +52,7 @@ const BigStockWidget = (props) => {
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
     const [subreddit_data, set_subreddit_data] = useState([]);
     const [common_subreddit_data, set_common_subreddit_data] = useState([]);
+    const [exchange, set_exchange] = useState("");
     /**
      * @desc The time set for the graph
      * @type {BigStockWidgetRange}
@@ -79,6 +81,8 @@ const BigStockWidget = (props) => {
             }).then((forcasted_rsi) => {
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
             });
+
+            set_exchange(total_stock_data.meta.exchangeName);
 
             const ticker_info = await fetch_ticker_summary(symbol);
             set_ticker_info(ticker_info);
@@ -341,6 +345,13 @@ const BigStockWidget = (props) => {
                     </div>
                 </div>
             </div>}
+            <div>
+
+            <div className={"info-title"}>Links:</div>
+            <div className={"info-value"} onClick={async () => {
+                await open(financials_link(symbol))
+            }}>View Historical Finances {exchange}</div>
+            </div>
             {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >
                     {"Summary"}
