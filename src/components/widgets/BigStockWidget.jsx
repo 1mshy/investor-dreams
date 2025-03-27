@@ -2,8 +2,8 @@ import {
     get_month_prices, get_percent_change_all, get_percent_change_five_year, get_percent_change_month, get_percent_change_ten_year,
     get_percent_change_year, get_percent_change_ytd
 } from "@/app/funcs/historical_pricing";
-import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/funcs/scraper";
-import { fetch_ticker_summary, generate_ollama_message, percentage_change } from "@/app/funcs/stock_api";
+import { get_all_news_bodies, get_whole_nasdaq_news_url } from "@/app/networking/scraper";
+import { fetch_ticker_summary, generate_ollama_message, percentage_change } from "@/app/networking/stock_api";
 import { to_tradingview_range, trim_title } from "@/app/funcs/tools";
 import { format_currency, format_number_with_commas, format_percentage, unformat_number } from "@/app/funcs/formatting";
 import { format_number } from "@/app/funcs/formatting";
@@ -18,7 +18,7 @@ import { useContext, useEffect, useState } from "react";
 
 import "@/app/css/Widgets.css";
 import { rsi_reading } from "@/app/funcs/algorithms";
-import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/funcs/reddit";
+import { fetch_common_subreddits, fetch_subreddit_posts } from "@/app/networking/reddit";
 import { invoke } from "@tauri-apps/api/core";
 import StockGraph from "../Graphing/StockGraph";
 import { financials_link } from "@/app/funcs/formatting";

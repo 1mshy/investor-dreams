@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { ListSubheader, OutlinedInput } from '@mui/material';
-import { get_all_sectors } from '@/app/funcs/stock_api';
+import { get_all_sectors } from '@/app/networking/stock_api';
 import Box from '@mui/material/Box';
 
 const ITEM_HEIGHT = 48;

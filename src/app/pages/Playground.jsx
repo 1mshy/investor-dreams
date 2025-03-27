@@ -1,13 +1,13 @@
-import { complex_store, retrieve, store } from '@/app/funcs/cache';
+import { complex_store, retrieve, store } from '@/app/networking/cache';
 import { get_favourite_array } from '@/app/funcs/favourites';
-import { get_all_nasdaq_info } from '@/app/funcs/scraper';
+import { get_all_nasdaq_info } from '@/app/networking/scraper';
 import { get_custom_sectors } from '@/app/funcs/sectors';
 import {
     get_all_sectors,
     get_all_symbols,
     get_market_cap,
     nasdaq_sorted_by
-} from "@/app/funcs/stock_api";
+} from "@/app/networking/stock_api";
 import { unformat_number } from "../funcs/formatting";
 import { clean_ticker } from "../funcs/formatting";
 import { SoftPaper, theme } from '@/app/mui/theme';

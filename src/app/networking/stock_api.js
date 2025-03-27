@@ -2,10 +2,10 @@ import { invoke } from "@tauri-apps/api/core";
 import localforage from "localforage";
 import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
 import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { delay, invoke_with_timeout } from "./tools";
-import { unformat_number } from "./formatting";
-import { clean_ticker, clean_ticker_for_yahoo } from "./formatting";
-import { get_percent_change_month } from "./historical_pricing";
+import { delay, invoke_with_timeout } from "../funcs/tools";
+import { unformat_number } from "../funcs/formatting";
+import { clean_ticker, clean_ticker_for_yahoo } from "../funcs/formatting";
+import { get_percent_change_month } from "../funcs/historical_pricing";
 
 
 /**

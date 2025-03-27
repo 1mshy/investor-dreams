@@ -1,5 +1,5 @@
-import { retrieve, store } from "./cache";
-import { get_all_nasdaq_info } from "./scraper";
+import { retrieve, store } from "../networking/cache";
+import { get_all_nasdaq_info } from "../networking/scraper";
 import { unformat_number } from "./formatting";
 
 const favourite_local_storage_key = "favourites";
