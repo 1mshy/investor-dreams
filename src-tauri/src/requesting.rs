@@ -79,6 +79,7 @@ pub async fn fetch_yahoo_private(
         .await
         .map_err(|e| format!("Failed to fetch Yahoo quote: {}", e))
 }
+
 /**
  * This function sends a GET request to the provided URL and returns the response text.
  */
@@ -95,6 +96,23 @@ async fn get_request(url: &str) -> Result<String, Box<dyn Error>> {
     let response_text = response.text().await?;
     Ok(response_text)
 }
+
+/**
+ * This function sends a GET request to the provided URL and returns the status code associated with the response.
+ */
+async fn code_request(url: &str) -> Result<u16, Box<dyn Error>> {
+    let client = Client::new();
+    let response = client
+        .get(url)
+        // Set headers to mimic a browser request
+        .header("User-Agent", "PostmanRuntime/7.39.0")
+        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+        .header("Connection", "keep-alive")
+        .send()
+        .await?;
+    Ok(response.status().as_u16())
+}
+
 /**
  * Get request that is open to the javascript to call
  */
@@ -106,6 +124,22 @@ pub async fn get_request_api(url: String) -> Result<String, String> {
             let error_info = format!("Failed to send GET request: {}", e);
             println!("{}", error_info);
             Err(error_info)
+        }
+    }
+}
+
+
+/**
+ * Get request that is open to the javascript to call
+ */
+#[command]
+pub async fn code_request_api(url: String) -> Result<u16, u16> {
+    match code_request(&url).await {
+        Ok(code) => Ok(code),
+        Err(e) => {
+            let error_info = format!("Failed to send GET request: {}", e);
+            println!("{}", error_info);
+            Err(500)
         }
     }
 }

@@ -14,6 +14,7 @@ use crate::ollama::ollama_generate;
 use crate::requesting::{
     fetch_reddit_access_token, fetch_reddit_subreddit_posts, fetch_yahoo_private,
     get_all_static_ticker_info, get_request_api, req_nasdaq_info, request_deep,
+    code_request_api,
 };
 use crate::sensitive_data::{
     get_all_windows, get_current_monitor_info, get_username, set_base_size,
@@ -137,6 +138,7 @@ pub async fn run() {
             fetch_reddit_subreddit_posts,
             fetch_reddit_access_token,
             fetch_yahoo_private,
+            code_request_api,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
