@@ -4,7 +4,9 @@
  * 
  */
 
-import { get_request } from "../networking/stock_api";
+import localforage from "localforage";
+
+import {get_request} from "@/app/networking/basic.js";
 
 export function poly_market_overview() {
     return get_request("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?apiKey=" + get_poly_key());

@@ -1,20 +1,12 @@
-import { invoke } from "@tauri-apps/api/core";
+import {invoke} from "@tauri-apps/api/core";
 import localforage from "localforage";
-import { cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid } from "./cache";
-import { get_all_nasdaq_info, ticker_to_name } from "./scraper";
-import { delay, invoke_with_timeout } from "../funcs/tools";
-import { unformat_number } from "../funcs/formatting";
-import { clean_ticker, clean_ticker_for_yahoo } from "../funcs/formatting";
-import { get_percent_change_month } from "../funcs/historical_pricing";
+import {cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid} from "./cache";
+import {get_all_nasdaq_info, ticker_to_name} from "./scraper";
+import {invoke_with_timeout} from "../funcs/tools";
+import {clean_ticker, clean_ticker_for_yahoo, unformat_number} from "../funcs/formatting";
+import {get_percent_change_month} from "../funcs/historical_pricing";
+import {get_request} from "@/app/networking/basic.js";
 
-
-/**
- * @param {string} url 
- * @returns {Promise<string>} the body of the request
- */
-export async function get_request(url) {
-    return invoke("get_request_api", { url });
-}
 
 /**
  * Fetches comprehensive stock widget data for the given ticker symbol.

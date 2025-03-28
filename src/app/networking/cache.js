@@ -90,6 +90,7 @@ export async function get_cache(key, custom_forage = null) {
  * Clears most cache from the application storage
  */
 export function clear_cache() {
+    // clear all the cache instances
     localStorage.clear();
     localforage.clear();
     SETTINGS_CACHE.clear();
@@ -97,9 +98,6 @@ export function clear_cache() {
     NASDAQ_NEWS.clear();
     NASDAQ_TECHNICALS.clear();
     OLLAMA_GENERATION.clear();
-    STOCK_CACHE.clear();
-    NASDAQ_NEWS.clear();
-    NASDAQ_TECHNICALS.clear();
     REDDIT_CACHE.clear();
 }
 
