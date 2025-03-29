@@ -55,7 +55,7 @@ const BasePage = () => {
     }
   ]);
 
-  const current_version = "1.0.20";
+  const current_version = "1.0.21";
   const [errors, set_errors] = useState(true);
   const [has_checked, set_has_checked] = useState(false);
   useEffect(() => {

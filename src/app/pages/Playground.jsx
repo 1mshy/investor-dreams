@@ -85,10 +85,11 @@ export default class Playground extends Component {
     }
 
     /**
-     * 
-     * @param {[string]} ticker_symbols 
+     *
+     * @param {[string]} ticker_symbols
+     * @param func - optional - function run after tickers are set
      */
-    async set_tickers(ticker_symbols, func) {
+    async set_tickers(ticker_symbols, func=()=>{}) {
         if (!func) return this.setState({ ticker_symbols, ticker_symbols_before_sort: ticker_symbols }, () => this.set_sorting(this.state.sort_method));
         this.setState({ ticker_symbols, ticker_symbols_before_sort: ticker_symbols }, func);
     }
@@ -102,7 +103,7 @@ export default class Playground extends Component {
         this.setState({ current_sector: sector });
         if (custom_sectors[sector]) {
             if (custom_sectors[sector].should_sort) {
-                this.set_tickers(custom_sectors[sector].tickers);
+                await this.set_tickers(custom_sectors[sector].tickers);
                 this.setState({ show_sort_button: false }); // show unsort button
             } else {
                 this.set_tickers(custom_sectors[sector].tickers, () => { });
@@ -115,7 +116,7 @@ export default class Playground extends Component {
         const all_nasdaq_info = await get_all_nasdaq_info();
         const top_500 = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
         const tickers_in_sector = top_500.filter(ticker_symbol => all_nasdaq_info[ticker_symbol].sector === sector);
-        this.set_tickers(tickers_in_sector);
+        await this.set_tickers(tickers_in_sector);
     };
 
     async set_sorting(sort_method) {
@@ -197,7 +198,7 @@ export default class Playground extends Component {
                 default: true,
                 should_sort: false,
                 function: `(async () => {
-            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 1000);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(0, 20);
             return { tickers:sorted }
         })()`
@@ -207,8 +208,17 @@ export default class Playground extends Component {
                 default: true,
                 should_sort: false,
                 function: `(async () => {
-            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 500);
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 1000);
             const sorted = (await nasdaq_sorted_by("pctchange", tickers)).slice(-20).reverse();
+            return { tickers:sorted }
+        })()` },
+            "Price Target": {
+                tickers: [],
+                default: true,
+                should_sort: false,
+                function: `(async () => {
+            const tickers = (await nasdaq_sorted_by("marketCap")).slice(0, 1000);
+            const sorted = (await nasdaq_sorted_by("price_target", tickers)).slice(-20).reverse();
             return { tickers:sorted }
         })()` },
             "Favourites": {
