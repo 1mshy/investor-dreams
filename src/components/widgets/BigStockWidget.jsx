@@ -84,10 +84,10 @@ const BigStockWidget = (props) => {
                 set_forcasted_rsi(format_number(forcasted_rsi[0]));
             });
 
-            set_exchange(total_stock_data.meta.exchangeName);
 
             const ticker_info = await fetch_ticker_summary(symbol);
             set_ticker_info(ticker_info);
+            set_exchange(ticker_info.quoteType.exchange);
 
             const subreddit_data = await fetch_subreddit_posts(symbol);
             set_subreddit_data(subreddit_data);
@@ -351,7 +351,7 @@ const BigStockWidget = (props) => {
 
             <div className={"info-title"}>Links:</div>
             <div className={"info-value"} onClick={async () => {
-                await open(financials_link(symbol))
+                await open(financials_link(symbol, exchange))
             }}>View Historical Finances {exchange}</div>
             </div>
             {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
