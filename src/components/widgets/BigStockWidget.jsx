@@ -135,7 +135,7 @@ const BigStockWidget = (props) => {
         unformatted_target = unformat_number(technicals.OneYrTarget.value)
         unformatted_price = unformat_number(price);
         price_target_change = percentage_change(unformatted_target, unformatted_price)
-        dividend_amount = unformat_number(technicals.AnnualizedDividend.value);
+        dividend_amount = unformat_number(technicals.AnnualizedDividend?.value);
         if (dividend_amount === 0) {
             if (technicals.SpecialDividendAmount && technicals.SpecialDividendAmount.value !== "N/A") {
                 dividend_amount = unformat_number(technicals.SpecialDividendAmount.value) * 4;
@@ -190,7 +190,7 @@ const BigStockWidget = (props) => {
                         <div className={"info-value"}>{`${technicals.EarningsPerShare.value} (${format_percentage(unformat_number(technicals.EarningsPerShare.value) / unformatted_price * 100)})`}</div>
                     </div>
                     <div className={"data-element"}>
-                        <div className={"info-title"}>{`${technicals.AnnualizedDividend.label}:`}</div>
+                        <div className={"info-title"}>{`${technicals.AnnualizedDividend?.label}:`}</div>
                         <div className={"info-value"}>{`$${format_number(dividend_amount)} ${isNaN(dividend_amount) ? '' : `(${format_percentage(dividend_yield)})`}`}</div>
                     </div>
                     <div className={"data-element"}>
