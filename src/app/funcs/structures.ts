@@ -126,7 +126,24 @@ type FinancialData = {
 type QuoteSummary = {
     assetProfile: AssetProfile;
     financialData: FinancialData;
+    quoteType: QuoteType;
 };
+
+export interface QuoteType {
+    exchange: string; // this is already mapped to NYSE or NASDAQ
+    firstTradeDateEpochUtc: number;
+    gmtOffSetMilliseconds: number;
+    longName: string;
+    maxAge: number;
+    messageBoardId: string;
+    quoteType: string;
+    shortName: string;
+    symbol: string;
+    timeZoneFullName: string;
+    timeZoneShortName: string;
+    underlyingSymbol: string;
+    uuid: string;
+}
 
 type Events = {
     dividends: {

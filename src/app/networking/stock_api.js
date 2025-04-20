@@ -3,7 +3,7 @@ import localforage from "localforage";
 import {cache_is_valid, complex_retrieve, get_cache, set_cache, STOCK_CACHE, stock_cache_is_valid} from "./cache";
 import {get_all_nasdaq_info, ticker_to_name} from "./scraper";
 import {invoke_with_timeout} from "../funcs/tools";
-import {clean_ticker, clean_ticker_for_yahoo, unformat_number} from "../funcs/formatting";
+import {clean_ticker, clean_ticker_for_yahoo, map_to_exchange, unformat_number} from "../funcs/formatting";
 import {get_percent_change_month} from "../funcs/historical_pricing";
 import {get_request} from "@/app/networking/basic.js";
 
@@ -512,11 +512,18 @@ export async function fetch_yahoo_timeset(ticker_symbol, timeset = null) {
 export async function fetch_ticker_summary(ticker_symbol) {
     console.log(ticker_symbol)
     const summary = await invoke("fetch_yahoo_private",
-        { url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData` });
+        { url: `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker_symbol}?modules=assetProfile%2CfinancialData%2CquoteType` });
     console.log(summary)
-    const parsed = summary.quoteSummary?.result;
+    const parsed = summary.quoteSummary?.result[0];
+    console.log(parsed)
+    if(parsed?.quoteType) {
+        console.log("IT EXISTS!")
+        console.log(map_to_exchange(parsed.quoteType?.exchange))
+        parsed.quoteType["exchange"] = map_to_exchange(parsed.quoteType?.exchange);
+    }
     return {
-        assetProfile: parsed[0]?.assetProfile,
-        financialData: parsed[0]?.financialData,
+        assetProfile: parsed?.assetProfile,
+        financialData: parsed?.financialData,
+        quoteType: parsed?.quoteType,
     }
 }

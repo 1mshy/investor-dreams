@@ -1,6 +1,12 @@
-
-export function financials_link(symbol) {
-    return `https://ca.advfn.com/stock-market/NASDAQ/${symbol}/financials/income-statement`
+/**
+ * Generates a financials income statement link for a given stock symbol and exchange.
+ *
+ * @param {string} symbol - The stock ticker symbol.
+ * @param {string} exchange - The stock market exchange name.
+ * @returns {string} - A URL pointing to the financials income statement page for the specified symbol and exchange.
+ */
+export function financials_link(symbol, exchange) {
+    return `https://ca.advfn.com/stock-market/${exchange}/${symbol}/financials/income-statement`
 }
 /**
  *
@@ -102,6 +108,33 @@ export function format_currency_with_symbols(number) {
 export function format_percentage(number) {
     return `${unformat_number(number).toFixed(2)}%`;
 }
+/**
+ * tries to map exhange name to the nasdaq or nyse (most common ones)
+ * @param exchange {string}
+ * @returns {string} the correct exchange
+ */
+export function map_to_exchange(exchange) {
+    // 2) Map codes → main exchange
+    const map = {
+      NMS:  "NASDAQ",   // Nasdaq Global Market          :contentReference[oaicite:0]{index=0}
+      NDAQ: "NASDAQ",   // (sometimes seen)
+      NAS:  "NASDAQ",   // (rare)
+      NYQ:  "NYSE",     // New York Stock Exchange        :contentReference[oaicite:1]{index=1}
+      NYS:  "NYSE",     // (alias)
+      P:    "NYSE"      // (for some preferred shares)
+      // …add more if you hit other listings (ARCA, AMEX, etc.)
+    };
+
+    // 3) Fallback: look at the exchangeName prefix
+    let mainExchange = map[exchange];
+    if (!mainExchange) {
+      if (name.toUpperCase().startsWith("NASDAQ")) mainExchange = "NASDAQ";
+      else if (name.toUpperCase().startsWith("NYSE")) mainExchange = "NYSE";
+      else mainExchange = name;  // whatever else it is
+    }
+    return mainExchange;
+}
+
 /**
  *
  * @param {String} keys
