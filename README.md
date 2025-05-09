@@ -33,8 +33,25 @@ git update-index --assume-unchanged src-tauri/src/sensitive_constants.rs
 ## Homepage:
 ![Homepage](static/homepage.png)
 
+## Heatmap:
+![Heatmap](static/heatmap.png)
+
 ## Playground:
 ![Playground](static/playground.png)
 
-## Analysis:
+## Sectors:
+![Sectors](static/sectors.png)
+
+## Searching:
+![Search](static/search.png)
+
+## Big Widget:
+![Big Widget](static/big-widget.png)
+## Summary:
+![Summary](static/summary.png)
+
+## Tradingview Chart Integration:
+![Tradingview Chart Integration](static/tradingview-chart.png)
+
+## Analysis (old pic):
 ![Analysis](static/analysis.png)
