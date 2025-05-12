@@ -350,9 +350,9 @@ const BigStockWidget = (props) => {
             <div>
 
             <div className={"info-title"}>Links:</div>
-            <div className={"info-value"} onClick={async () => {
+            <div className={"info-value"} style={{cursor: "pointer", width: "fit-content"}} onClick={async () => {
                 await open(financials_link(symbol, exchange))
-            }}>View Historical Finances {exchange}</div>
+            }}>View Historical Finances of {single_name} on the {exchange} exchange</div>
             </div>
             {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{ width: "100%" }}>
                 <div className={"info-title"} >

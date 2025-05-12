@@ -146,6 +146,8 @@ export function nasdaq_sorted_syncronous(sort_method = "marketCap", ticker_list,
             sorting_variable: formatted_value,
         }
     });
+//    console.log(tickers_with_market_cap.filter(a => a !== null) // removes defective values
+//        .sort((a, b) => b.sorting_variable - a.sorting_variable))
     return tickers_with_market_cap
         .filter(a => a !== null) // removes defective values
         .sort((a, b) => b.sorting_variable - a.sorting_variable)
