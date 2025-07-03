@@ -98,7 +98,8 @@ export function format_currency(number) {
  */
 
 export function format_currency_with_symbols(number) {
-    return `$${format_number(number)}`;
+    if (isNaN(number) || number === null || number === undefined) return "Unknown";
+    return `${format_number(number)}`;
 }
 /**
  * @param {Number} number

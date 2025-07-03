@@ -47,30 +47,30 @@ const BigStockWidget = (props) => {
     const {settings} = useContext(SettingsContext);
     const bigSettings = settings.Big_Stock_Widget.settings;
     const {
-        symbol,
-        name,
-        price,
-        percent_change,
-        historical_prices,
-        marketCap,
-        news,
-        technicals,
-        historical_data,
-        total_stock_data
+        symbol = "Unknown",
+        name = "Unknown",
+        price = "Unknown",
+        percent_change = NaN,
+        historical_prices = [],
+        marketCap = "Unknown",
+        news = [],
+        technicals = {},
+        historical_data = [],
+        total_stock_data = {}
     } = props;
-    const [graph_prices, set_graph_prices] = useState(get_month_prices(historical_data));
-    const [ticker_info, set_ticker_info] = useState("");
+    const [graph_prices, set_graph_prices] = useState([]);
+    const [ticker_info, set_ticker_info] = useState({});
     const [show_ollama_button, set_show_ollama_button] = useState(true);
     const [ollama_summary, set_ollama_summary] = useState("");
     const [trading_view_popup, set_trading_view_popup] = useState(false);
-    const [rsi, set_rsi] = useState(0);
+    const [rsi, set_rsi] = useState(NaN);
     const [rsi_values, set_rsi_values] = useState([]);
-    const [today_high_low, set_today_high_low] = useState("");
-    const [forcasted_rsi, set_forcasted_rsi] = useState(0);
+    const [today_high_low, set_today_high_low] = useState("Unknown");
+    const [forcasted_rsi, set_forcasted_rsi] = useState(NaN);
     const [forcasted_rsi_days, set_forcasted_rsi_days] = useState(10);
     const [subreddit_data, set_subreddit_data] = useState([]);
     const [common_subreddit_data, set_common_subreddit_data] = useState([]);
-    const [exchange, set_exchange] = useState("");
+    const [exchange, set_exchange] = useState("Unknown");
     /**
      * @desc The time set for the graph
      * @type {BigStockWidgetRange}
@@ -79,50 +79,80 @@ const BigStockWidget = (props) => {
 
     useEffect(() => {
         const complex_operations = async () => {
-            const today_high = format_number(historical_data[0].high);
-            const today_low = format_number(historical_data[0].low);
-            set_today_high_low(`${today_high} / ${today_low}`);
+            if (historical_data && historical_data.length > 0) {
+                const today_high = format_number(historical_data[0].high);
+                const today_low = format_number(historical_data[0].low);
+                set_today_high_low(`${today_high || "Unknown"} / ${today_low || "Unknown"}`);
 
-            const old_first_historical_data = historical_data.slice().reverse();
+                const old_first_historical_data = historical_data.slice().reverse();
 
-            invoke("rsi", {
-                prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
-            }).then((rsi_values) => {
-                set_rsi_values(rsi_values);
-                set_rsi(format_number(rsi_values[rsi_values.length - 1]));
-            });
+                try {
+                    const rsi_vals = await invoke("rsi", {
+                        prices: old_first_historical_data.map(data => Number(data.close)), period: 14,
+                    });
+                    set_rsi_values(rsi_vals);
+                    set_rsi(format_number(rsi_vals[rsi_vals.length - 1]));
+                } catch (e) {
+                    console.error("Failed to fetch RSI: ", e);
+                    set_rsi(NaN);
+                }
 
-            invoke("monte_carlo_rsi", {
-                prices: old_first_historical_data.map(data => Number(data.close)), numSimulations: 1000,
-                forecastDays: forcasted_rsi_days,
-                period: 14,
-            }).then((forcasted_rsi) => {
-                set_forcasted_rsi(format_number(forcasted_rsi[0]));
-            });
+                try {
+                    const forcasted_rsi_val = await invoke("monte_carlo_rsi", {
+                        prices: old_first_historical_data.map(data => Number(data.close)), numSimulations: 1000,
+                        forecastDays: forcasted_rsi_days,
+                        period: 14,
+                    });
+                    set_forcasted_rsi(format_number(forcasted_rsi_val[0]));
+                } catch (e) {
+                    console.error("Failed to fetch forecasted RSI: ", e);
+                    set_forcasted_rsi(NaN);
+                }
+            } else {
+                set_today_high_low("Unknown / Unknown");
+                set_rsi(NaN);
+                set_forcasted_rsi(NaN);
+            }
 
+            try {
+                const ticker_info_data = await fetch_ticker_summary(symbol);
+                set_ticker_info(ticker_info_data);
+                set_exchange(ticker_info_data?.quoteType?.exchange || "Unknown");
+            } catch (e) {
+                console.error("Failed to fetch ticker summary: ", e);
+                set_ticker_info({});
+                set_exchange("Unknown");
+            }
 
-            const ticker_info = await fetch_ticker_summary(symbol);
-            set_ticker_info(ticker_info);
-            set_exchange(ticker_info.quoteType.exchange);
+            try {
+                const subreddit_data_val = await fetch_subreddit_posts(symbol);
+                set_subreddit_data(subreddit_data_val);
+            } catch (e) {
+                console.error("Failed to fetch subreddit posts: ", e);
+                set_subreddit_data([]);
+            }
 
-            const subreddit_data = await fetch_subreddit_posts(symbol);
-            set_subreddit_data(subreddit_data);
-
-            const common_subreddit_data = await fetch_common_subreddits();
-            console.log(common_subreddit_data)
-            let usefull_subreddits = [];
-            for (let subreddit of Object.keys(common_subreddit_data)) {
-                for (let post of common_subreddit_data[subreddit]) {
-                    if (post.title.toLowerCase().includes(symbol.toLowerCase())) {
-                        usefull_subreddits.push(post);
+            try {
+                const common_subreddit_data_val = await fetch_common_subreddits();
+                console.log(common_subreddit_data_val);
+                let usefull_subreddits = [];
+                if (common_subreddit_data_val) {
+                    for (let subreddit of Object.keys(common_subreddit_data_val)) {
+                        for (let post of common_subreddit_data_val[subreddit]) {
+                            if (post.title && symbol && post.title.toLowerCase().includes(symbol.toLowerCase())) {
+                                usefull_subreddits.push(post);
+                            }
+                        }
                     }
                 }
+                set_common_subreddit_data(usefull_subreddits);
+            } catch (e) {
+                console.error("Failed to fetch common subreddits: ", e);
+                set_common_subreddit_data([]);
             }
-            set_common_subreddit_data(usefull_subreddits);
-
         }
         complex_operations();
-    }, []);
+    }, [symbol, historical_data, forcasted_rsi_days]);
     /**
      * @desc Generates a current summary using the news articles
      */
@@ -133,24 +163,24 @@ const BigStockWidget = (props) => {
         set_ollama_summary(generated_summary);
     }
 
-    const percent_change_month = get_percent_change_month(historical_data);
-    const percent_change_ytd = get_percent_change_ytd(historical_data);
-    const percent_change_year = get_percent_change_year(historical_data);
-    const percent_change_five_year = get_percent_change_five_year(historical_data);
-    const percent_change_ten_year = get_percent_change_ten_year(historical_data);
-    const percent_change_all = get_percent_change_all(historical_data);
+    const percent_change_month = historical_data && historical_data.length > 0 ? get_percent_change_month(historical_data) : NaN;
+    const percent_change_ytd = historical_data && historical_data.length > 0 ? get_percent_change_ytd(historical_data) : NaN;
+    const percent_change_year = historical_data && historical_data.length > 0 ? get_percent_change_year(historical_data) : NaN;
+    const percent_change_five_year = historical_data && historical_data.length > 0 ? get_percent_change_five_year(historical_data) : NaN;
+    const percent_change_ten_year = historical_data && historical_data.length > 0 ? get_percent_change_ten_year(historical_data) : NaN;
+    const percent_change_all = historical_data && historical_data.length > 0 ? get_percent_change_all(historical_data) : NaN;
 
-    const yesterday_price = historical_prices ? historical_prices[historical_prices.length - 2] : ""
+    const yesterday_price = historical_prices && historical_prices.length >= 2 ? historical_prices[historical_prices.length - 2] : "Unknown";
 
-    let unformatted_target = 0
-    let unformatted_price = 0
-    let price_target_change = 0
-    let dividend_amount = 0
+    let unformatted_target = 0;
+    let unformatted_price = 0;
+    let price_target_change = 0;
+    let dividend_amount = 0;
     // technicals may be null on first render
-    if (technicals) {
-        unformatted_target = unformat_number(technicals.OneYrTarget.value)
+    if (technicals && Object.keys(technicals).length > 0) {
+        unformatted_target = unformat_number(technicals.OneYrTarget?.value);
         unformatted_price = unformat_number(price);
-        price_target_change = percentage_change(unformatted_target, unformatted_price)
+        price_target_change = percentage_change(unformatted_target, unformatted_price);
         dividend_amount = unformat_number(technicals.AnnualizedDividend?.value);
         if (dividend_amount === 0) {
             if (technicals.SpecialDividendAmount && technicals.SpecialDividendAmount.value !== "N/A") {
@@ -159,7 +189,7 @@ const BigStockWidget = (props) => {
         }
     }
 
-    const dividend_yield = dividend_amount / unformatted_price * 100;
+    const dividend_yield = (dividend_amount && unformatted_price) ? (dividend_amount / unformatted_price * 100) : NaN;
 
     const rsi_dataset = {
         data: rsi_values,
@@ -188,9 +218,9 @@ const BigStockWidget = (props) => {
                 <div className={"company_name"}>{name}</div>
             </div>
             <div className={"content"}>
-                {bigSettings.show_technicals.value && technicals && <div className={"elements"}>
-                    {technicals.FiftTwoWeekHighLow && <div className={"data-element"}>
-                        <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label}:`}</div>
+                {bigSettings.show_technicals.value && technicals && Object.keys(technicals).length > 0 && <div className={"elements"}>
+                    {technicals.FiftTwoWeekHighLow?.value && <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.FiftTwoWeekHighLow.label || "52 Week High/Low"}:`}</div>
                         <div
                             className={"info-value"}>{`${technicals.FiftTwoWeekHighLow.value.replace("/", " / ")}`}</div>
                     </div>}
@@ -198,45 +228,51 @@ const BigStockWidget = (props) => {
                         <div className={"info-title"}>{`Today's High/Low:`}</div>
                         <div className={"info-value"}>{`${today_high_low}`}</div>
                     </div>
-                    {technicals.PERatio && <div className={"data-element"}>
+                    {(technicals.PERatio?.value || technicals.ForwardPE1Yr?.value) && <div className={"data-element"}>
                         <div className={"info-title"}>{`(PE/FPE):`}</div>
                         <div
-                            className={"info-value"}>{`${technicals.PERatio.value} / ${technicals.ForwardPE1Yr.value}`}</div>
+                            className={"info-value"}>{`${technicals.PERatio?.value || "Unknown"} / ${technicals.ForwardPE1Yr?.value || "Unknown"}`}</div>
                     </div>}
 
-                    {technicals.EarningsPerShare && <div className={"data-element"}>
+                    {technicals.EarningsPerShare?.value && <div className={"data-element"}>
                         <div className={"info-title"}>{`(EPS/TTP):`}</div>
                         <div
                             className={"info-value"}>{`${technicals.EarningsPerShare.value} (${format_percentage(unformat_number(technicals.EarningsPerShare.value) / unformatted_price * 100)})`}</div>
                     </div>}
-                    {technicals.AnnualizedDividend && <div className={"data-element"}>
-                        <div className={"info-title"}>{`${technicals.AnnualizedDividend?.label}:`}</div>
+
+                    {(technicals.AnnualizedDividend?.value || technicals.SpecialDividendAmount?.value) && <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.AnnualizedDividend?.label || "Annualized Dividend"}:`}</div>
                         <div
-                            className={"info-value"}>{`$${format_number(dividend_amount)} ${isNaN(dividend_amount) ? '' : `(${format_percentage(dividend_yield)})`}`}</div>
+                            className={"info-value"}>{`${format_number(dividend_amount)} ${isNaN(dividend_amount) ? '' : `(${format_percentage(dividend_yield)})`}`}</div>
                     </div>}
-                    <div className={"data-element"}>
+
+                    {!isNaN(rsi) && <div className={"data-element"}>
                         <div className={"info-title"}>{`RSI:`}</div>
                         <div className={"info-value"}>{`${rsi} (${rsi_reading(rsi)})`}</div>
-                    </div>
-                    <div className={"data-element"}>
+                    </div>}
+
+                    {!isNaN(forcasted_rsi) && <div className={"data-element"}>
                         <div className={"info-title"}>{`Forcasted RSI (${forcasted_rsi_days} days):`}</div>
                         <div className={"info-value"}>{`${forcasted_rsi} (${rsi_reading(forcasted_rsi)})`}</div>
-                    </div>
-                    {technicals.OneYrTarget && <div className={"data-element"}>
-                        <div className={"info-title"}>{`${technicals.OneYrTarget.label}:`}</div>
+                    </div>}
+
+                    {technicals.OneYrTarget?.value && <div className={"data-element"}>
+                        <div className={"info-title"}>{`${technicals.OneYrTarget.label || "1 Yr Target"}:`}</div>
                         <div className={"info-value"}>
                             <div className={"data-element"}>
                                 <div>{`${technicals.OneYrTarget.value}`}</div>
-                                (<PercentageFormat percent_change={price_target_change}/>)
+                                {!isNaN(price_target_change) && (<PercentageFormat percent_change={price_target_change}/>)}
                             </div>
                         </div>
                     </div>}
+
                     <Button onClick={() => {
                         set_trading_view_popup(!trading_view_popup);
                     }}>View on tradingview</Button>
 
                 </div>
                 }
+
                 <StockGraph symbol={symbol} size={"big"} timeset={timeset}/>
                 {/* <IndicatorGraph symbol={symbol} size={"big"} timeset={timeset} indicators={["rsi"]}/> */}
                 {/* <CombinedGraph symbol={symbol} size={"big"} timeset={timeset}/> */}
@@ -245,7 +281,7 @@ const BigStockWidget = (props) => {
                                   onClick={() => {
                                       set_trading_view_popup(false)
                                   }}/>
-                {historical_data && <div className={"price-data"}>
+                {historical_data && historical_data.length > 0 && <div className={"price-data"}>
                     <div className={"price-change"}>
                         <ButtonPercentageFormat variant={timeset == "D" ? "outlined" : ""}
                                                 percent_change={percent_change} timeset={"D"} func={() => {
@@ -277,20 +313,20 @@ const BigStockWidget = (props) => {
                         }}/>
                     </div>
                     <div className={"date"}>
-                        Updated {new Date(historical_data[0].datetime).toLocaleDateString()}
+                        Updated {historical_data[0].datetime ? new Date(historical_data[0].datetime).toLocaleDateString() : "Unknown"}
                     </div>
                 </div>}
 
             </div>
-            {ticker_info && <div className={"info"}>
+            {ticker_info && Object.keys(ticker_info).length > 0 && <div className={"info"}>
                 <div className={"info-section"}>
                     {ticker_info.assetProfile && <>
                         <h1> {symbol}</h1>
                         <div>
                             <div className={"info-title"}>Sector</div>
-                            <div className={"info-value"}>{ticker_info.assetProfile.sector}</div>
+                            <div className={"info-value"}>{ticker_info.assetProfile.sector || "Unknown"}</div>
                             <div className={"info-title"}>Industry</div>
-                            <div className={"info-value"}>{`${ticker_info.assetProfile.industry}`}</div>
+                            <div className={"info-value"}>{`${ticker_info.assetProfile.industry || "Unknown"}`}</div>
                         </div>
                     </>}
                 </div>
@@ -299,13 +335,15 @@ const BigStockWidget = (props) => {
                         <div>
                             <div className={"info-title"}>Headquarters Location</div>
                             <div className={"info-value"}>
-                                {`${ticker_info.assetProfile.city}, ${ticker_info.assetProfile.state}, ${ticker_info.assetProfile.country}`}
+                                {`${ticker_info.assetProfile.city || "Unknown"}, ${ticker_info.assetProfile.state || "Unknown"}, ${ticker_info.assetProfile.country || "Unknown"}`}
                             </div>
                             <div className={"info-title"}>Website</div>
                             <div className={"info-value"} style={{cursor: "pointer"}} onClick={async () => {
-                                await open(ticker_info.assetProfile.website);
+                                if (ticker_info.assetProfile.website) {
+                                    await open(ticker_info.assetProfile.website);
+                                }
                             }}>
-                                {ticker_info.assetProfile.website}
+                                {ticker_info.assetProfile.website || "Unknown"}
                             </div>
                         </div>}
                 </div>
@@ -319,96 +357,100 @@ const BigStockWidget = (props) => {
                 </div>
 
             </div>}
-            {bigSettings.show_financial_data.value && ticker_info &&
+
+            {bigSettings.show_financial_data.value && ticker_info && Object.keys(ticker_info).length > 0 && ticker_info.financialData &&
                 <div className={"info-section"} style={{overflowX: 'auto'}}>
                     <div className={"info-title"}>Financial Data</div>
                     <div className={"financial-data-grid"}>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Current Ratio</div>
-                            <div className={"info-value"}>{ticker_info.financialData.currentRatio.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.currentRatio?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Debt to Equity</div>
-                            <div className={"info-value"}>{ticker_info.financialData.debtToEquity.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.debtToEquity?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Earnings Growth</div>
-                            <div className={"info-value"}>{ticker_info.financialData.earningsGrowth.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.earningsGrowth?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>EBITDA</div>
-                            <div className={"info-value"}>{ticker_info.financialData.ebitda.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.ebitda?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>EBITDA Margins</div>
-                            <div className={"info-value"}>{ticker_info.financialData.ebitdaMargins.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.ebitdaMargins?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Gross Margins</div>
-                            <div className={"info-value"}>{ticker_info.financialData.grossMargins.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.grossMargins?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Operating Margins</div>
-                            <div className={"info-value"}>{ticker_info.financialData.operatingMargins.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.operatingMargins?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Profit Margins</div>
-                            <div className={"info-value"}>{ticker_info.financialData.profitMargins.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.profitMargins?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Quick Ratio</div>
-                            <div className={"info-value"}>{ticker_info.financialData.quickRatio.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.quickRatio?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Return on Assets</div>
-                            <div className={"info-value"}>{ticker_info.financialData.returnOnAssets.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.returnOnAssets?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Return on Equity</div>
-                            <div className={"info-value"}>{ticker_info.financialData.returnOnEquity.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.returnOnEquity?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Revenue Growth</div>
-                            <div className={"info-value"}>{ticker_info.financialData.revenueGrowth.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.revenueGrowth?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Revenue Per Share</div>
-                            <div className={"info-value"}>{ticker_info.financialData.revenuePerShare.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.revenuePerShare?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Total Cash</div>
-                            <div className={"info-value"}>{ticker_info.financialData.totalCash.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.totalCash?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Total Cash Per Share</div>
-                            <div className={"info-value"}>{ticker_info.financialData.totalCashPerShare.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.totalCashPerShare?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Total Debt</div>
-                            <div className={"info-value"}>{ticker_info.financialData.totalDebt.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.totalDebt?.fmt || "Unknown"}</div>
                         </div>
                         <div className={"data-row"}>
                             <div className={"info-label"}>Total Revenue</div>
-                            <div className={"info-value"}>{ticker_info.financialData.totalRevenue.fmt}</div>
+                            <div className={"info-value"}>{ticker_info.financialData.totalRevenue?.fmt || "Unknown"}</div>
                         </div>
                     </div>
                 </div>}
+
             <div>
 
                 <div className={"info-title"}>Links:</div>
                 <div className={"info-value"} style={{cursor: "pointer", width: "fit-content"}} onClick={async () => {
-                    await open(financials_link(symbol, exchange))
+                    if (symbol && exchange) {
+                        await open(financials_link(symbol, exchange));
+                    }
                 }}>View Historical Finances of {single_name} on the {exchange} exchange
                 </div>
             </div>
-            {bigSettings.show_company_info.value && ticker_info && <div className="summary" style={{width: "100%"}}>
+            {bigSettings.show_company_info.value && ticker_info && Object.keys(ticker_info).length > 0 && <div className="summary" style={{width: "100%"}}>
                 <div className={"info-title"}>
                     {"Summary"}
                 </div>
                 <div className={""}>
-                    {ticker_info.assetProfile?.longBusinessSummary}
+                    {ticker_info.assetProfile?.longBusinessSummary || "No summary available."}
                 </div>
-                {bigSettings.show_reddit_data.value && subreddit_data && <>
+                {bigSettings.show_reddit_data.value && subreddit_data && subreddit_data.length > 0 && <>
                     <div className={"info-title"}>
                         {"Reddit Headlines"}
                     </div>
@@ -416,26 +458,30 @@ const BigStockWidget = (props) => {
                         {subreddit_data.map((post, index) => {
                             return <div className={"news-row"} key={index} style={{cursor: "pointer"}}
                                         onClick={async () => {
-                                            await open(post.url);
+                                            if (post.url) {
+                                                await open(post.url);
+                                            }
                                         }}>
-                                {post.title}
+                                {post.title || "Unknown Title"}
                             </div>
                         })}
                     </div>
-                    {common_subreddit_data && <div className="common-reddit">
+                    {common_subreddit_data && common_subreddit_data.length > 0 && <div className="common-reddit">
                         {common_subreddit_data.map((post, index) => {
                             return <div className={"news-row"} key={index} style={{cursor: "pointer"}}
                                         onClick={async () => {
-                                            await open(post.url);
+                                            if (post.url) {
+                                                await open(post.url);
+                                            }
                                         }}>
-                                {post.title}
+                                {post.title || "Unknown Title"}
                             </div>
                         })}
                     </div>}
                 </>}
 
 
-                {bigSettings.show_news.value && news && <>
+                {bigSettings.show_news.value && news && news.length > 0 && <>
                     <div className={"info-title"}>
                         {"News Headlines"}
                     </div>
@@ -443,9 +489,11 @@ const BigStockWidget = (props) => {
                         {news.map((article, index) => {
                             return <div className={"news-row"} key={index} style={{cursor: "pointer"}}
                                         onClick={async () => {
-                                            await open(get_whole_nasdaq_news_url(article.url));
+                                            if (article.url) {
+                                                await open(get_whole_nasdaq_news_url(article.url));
+                                            }
                                         }}>
-                                {trim_title(article.title)}
+                                {trim_title(article.title) || "Unknown Title"}
                             </div>
                         })}
 

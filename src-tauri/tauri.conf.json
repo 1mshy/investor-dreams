@@ -31,18 +31,14 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/icon.icns",
-      "icons/icon.ico",
-      "icons/icon.png"
-    ],
+    "icon": ["icons/icon.icns", "icons/icon.ico", "icons/icon.png"],
     "publisher": "Luca Lapenna",
     "category": "Utility",
     "shortDescription": "Investment Screener"
   },
   "plugins": {
     "shell": {
-        "open": true
+      "open": true
     }
   }
 }
