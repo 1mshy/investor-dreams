@@ -17,20 +17,22 @@ import { useEffect } from "react";
 const MiniStockWidget = ({ symbol, name, price, percent_change, onClick, historical_data }) => {
     const [month_change, set_month_change] = useState(0);
     useEffect(() => {
-        if (historical_data)
+        if (historical_data && historical_data.length > 0)
             set_month_change(get_percent_change_month(historical_data));
-    });
+        else
+            set_month_change(NaN); // Set to NaN to be handled by PercentageFormat
+    }, [historical_data]);
     return (
         <>
             <SoftPaper className={"container"} style={{ height: "max-content" }} onClick={onClick}>
                 <div className={"widget-header"}>
                     <div>
-                        <div className={"ticker_symbol"}>{symbol}</div>
-                        <div className={"company_name"}>{name}</div>
+                        <div className={"ticker_symbol"}>{symbol || "Unknown"}</div>
+                        <div className={"company_name"}>{name || "Unknown"}</div>
                     </div>
                 </div>
                 <div className={"content"}>
-                    <div className={"price"}>${price}</div>
+                    <div className={"price"}>${price || "Unknown"}</div>
                     <div className={"price-data"}>
                         <div className={"price-change"}>
                             <PercentageFormat percent_change={percent_change} timeset={"D"} />

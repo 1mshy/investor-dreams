@@ -17,7 +17,7 @@ const SmallStockWidget = ({
 }) => {
     const { settings } = useContext(SettingsContext);
     const smallSettings = settings.Small_Stock_Widget.settings;
-    const percent_change_month = get_percent_change_month(historical_data);
+    const percent_change_month = historical_data ? get_percent_change_month(historical_data) : NaN;
 
     return (
         <>
@@ -27,9 +27,9 @@ const SmallStockWidget = ({
             }}>
                 <div className={"widget-header"}>
                     <div className={"small-widget-names"}>
-                        <div className={"ticker_symbol"}>{symbol}</div>
+                        <div className={"ticker_symbol"}>{symbol || "Unknown"}</div>
                         {smallSettings.show_name.value && (
-                            <div className={"small_company_name"}>{name}</div>
+                            <div className={"small_company_name"}>{name || "Unknown"}</div>
                         )}
                     </div>
                     <div style={{ background: "inherit" }}>
