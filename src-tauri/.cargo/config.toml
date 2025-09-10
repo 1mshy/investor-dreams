@@ -1,0 +1,23 @@
+# Cargo configuration for build optimizations
+
+[build]
+# Use optimal number of jobs (remove this line to use default auto-detection)
+# jobs = 8
+
+# Faster linker for macOS (you're on macOS)
+[target.x86_64-apple-darwin]
+rustflags = [
+    # Enable CPU-specific optimizations
+    "-C", "target-cpu=native",
+]
+
+[target.aarch64-apple-darwin]
+rustflags = [
+    # Enable CPU-specific optimizations
+    "-C", "target-cpu=native",
+]
+
+# Enable unstable features for faster builds (optional, use with caution)
+[unstable]
+# Use newer resolver for faster dependency resolution
+resolver = true
