@@ -128,7 +128,6 @@ pub async fn get_request_api(url: String) -> Result<String, String> {
     }
 }
 
-
 /**
  * Get request that is open to the javascript to call
  */

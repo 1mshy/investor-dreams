@@ -1,0 +1,6 @@
+{
+  "identifier": "notifications",
+  "description": "Allow notifications in main window",
+  "windows": ["main"],
+  "permissions": ["notification:default"]
+}
