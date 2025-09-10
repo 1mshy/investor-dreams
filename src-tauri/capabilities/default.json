@@ -16,6 +16,7 @@
     "core:window:allow-set-focus",
     "core:window:allow-start-dragging",
     "decorum:allow-show-snap-overlay",
-    "shell:default"
+    "shell:default",
+    "notification:default"
   ]
 }

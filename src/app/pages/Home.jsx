@@ -9,6 +9,14 @@ import NewsWidget from "@/components/widgets/NewsWidget";
 import { Button, IconButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { SettingsContext } from "@/app/settings/SettingsContext";
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from '@tauri-apps/plugin-notification';
+// when using `"withGlobalTauri": true`, you may use
+// const { isPermissionGranted, requestPermission, sendNotification, } = window.__TAURI__.notification;
+
 
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
@@ -43,6 +51,19 @@ const Home = () => {
             .slice(top_500_change.length - 4, top_500_change.length - 1)
             .reverse(),
         );
+                // Do you have permission to send a notification?
+        let permissionGranted = await isPermissionGranted();
+
+        // If not we need to request it
+        if (!permissionGranted) {
+          const permission = await requestPermission();
+          permissionGranted = permission === 'granted';
+        }
+        console.log(permissionGranted);
+        // Once permission has been granted we can send the notification
+        if (permissionGranted) {
+          sendNotification({ title: 'Tauri', body: 'Tauri is awesome!' });
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }

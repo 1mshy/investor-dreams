@@ -12,9 +12,8 @@ use yahoo_finance::YahooFinanceClient;
 use crate::algorithms::{monte_carlo_rsi, rsi};
 use crate::ollama::ollama_generate;
 use crate::requesting::{
-    fetch_reddit_access_token, fetch_reddit_subreddit_posts, fetch_yahoo_private,
+    code_request_api, fetch_reddit_access_token, fetch_reddit_subreddit_posts, fetch_yahoo_private,
     get_all_static_ticker_info, get_request_api, req_nasdaq_info, request_deep,
-    code_request_api,
 };
 use crate::sensitive_data::{
     get_all_windows, get_current_monitor_info, get_username, set_base_size,
@@ -49,6 +48,7 @@ pub async fn run() {
     let ollama_instance = Ollama::new("http://localhost".to_string(), 11434);
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_shell::init())
         .manage(ollama_instance)
         .manage(YahooFinanceState(Arc::new(Mutex::new(
