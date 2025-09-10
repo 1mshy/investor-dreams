@@ -46,7 +46,6 @@ impl YahooFinanceState {
 
 pub async fn run() {
     println!("Starting Investor Dreams...");
-    dotenv::dotenv().ok();
     let ollama_instance = Ollama::new("http://localhost".to_string(), 11434);
 
     tauri::Builder::default()

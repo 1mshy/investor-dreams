@@ -6,19 +6,43 @@ authors = ["Luca Lapenna"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-[profile.dev]
-incremental = true # Compile your binary in smaller steps.
-codegen-units = 256 # Allows LLVM to perform better optimization.
-opt-level = 2 # Prioritizes small binary size. Use `3` if you prefer speed.
-strip = false # Ensures debug symbols are removed.
 
+# Development profile - optimized for fast compilation
+[profile.dev]
+incremental = true         # Enable incremental compilation for faster rebuilds
+codegen-units = 256       # More codegen units = faster parallel compilation
+opt-level = 0             # No optimization for fastest compilation
+debug = true              # Full debug info for better debugging
+debug-assertions = true   # Enable debug assertions
+overflow-checks = true    # Enable integer overflow checks
+lto = false              # Disable LTO for faster linking
+panic = "unwind"         # Standard panic behavior for better debugging
+rpath = false            # Disable rpath for faster linking
+
+# Release profile - maximum optimization
 [profile.release]
-incremental = true # Compile your binary in smaller steps.
-codegen-units = 256 # Allows LLVM to perform better optimization.
-lto = true # Enables link-time-optimizations.
-opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
-panic = "abort" # Higher performance by disabling panic handlers.
-strip = true # Ensures debug symbols are removed.
+incremental = false       # Disable incremental for maximum optimization
+codegen-units = 1        # Single codegen unit for better optimization
+opt-level = 3            # Maximum optimization for speed
+debug = false            # No debug info in release
+debug-assertions = false # Disable debug assertions
+overflow-checks = false  # Disable overflow checks for performance
+lto = true              # Enable Link Time Optimization
+panic = "abort"         # Abort on panic for smaller binary
+strip = true            # Remove debug symbols and metadata
+rpath = false           # Disable rpath
+
+# Custom profile for development with some optimization (useful for testing performance)
+[profile.dev-opt]
+inherits = "dev"
+opt-level = 1           # Light optimization
+debug-assertions = false
+overflow-checks = false
+
+# Dependencies optimization - compile dependencies with optimization even in dev mode
+[profile.dev.package."*"]
+opt-level = 3           # Optimize all dependencies for better runtime performance
+debug = false           # Don't include debug info for dependencies
 
 [lib]
 name = "investor_dreams_lib"
@@ -37,7 +61,6 @@ tokio = { version = "1", features = ["full"] }
 tauri-plugin-decorum = "1.0.0"
 window-vibrancy = "0.5.2"
 whoami = "1.5.1"
-dotenv = "0.15.0"
 ollama-rs = "0.2.0"
 once_cell = "1.19.0"
 directories = "5.0"
