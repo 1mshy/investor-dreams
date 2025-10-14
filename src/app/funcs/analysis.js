@@ -1,10 +1,72 @@
 import { toast } from "react-toastify";
 import { get_all_nasdaq_info } from "../networking/scraper";
 import { get_state } from "./states";
-import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big, fetch_widget_data, get_all_technical_data_keys } from "../networking/stock_api";
+import { get_all_symbols, get_all_technical_data, percentage_change, request_yahoo_big, fetch_widget_data, get_all_technical_data_keys, nasdaq_sorted_by } from "../networking/stock_api";
 import { delay } from "./tools";
 import { unformat_number } from "./formatting";
 import { clean_ticker } from "./formatting";
+
+// Global state for background data fetching
+const BACKGROUND_FETCH_STATE = {
+    is_running: false,
+    current_symbol: '',
+    progress: 0,
+    total: 0,
+    status: 'idle',
+    session_id: null,
+    listeners: new Set(),
+};
+
+/**
+ * Subscribe to background fetch updates
+ * @param {Function} callback - Function called with (state) on updates
+ * @returns {Function} Unsubscribe function
+ */
+export function subscribeToBackgroundFetch(callback) {
+    BACKGROUND_FETCH_STATE.listeners.add(callback);
+    // Immediately call with current state
+    callback({ ...BACKGROUND_FETCH_STATE });
+    return () => BACKGROUND_FETCH_STATE.listeners.delete(callback);
+}
+
+/**
+ * Notify all listeners of state changes
+ */
+function notifyListeners() {
+    const state = {
+        is_running: BACKGROUND_FETCH_STATE.is_running,
+        current_symbol: BACKGROUND_FETCH_STATE.current_symbol,
+        progress: BACKGROUND_FETCH_STATE.progress,
+        total: BACKGROUND_FETCH_STATE.total,
+        status: BACKGROUND_FETCH_STATE.status,
+    };
+    BACKGROUND_FETCH_STATE.listeners.forEach(listener => listener(state));
+}
+
+/**
+ * Get current background fetch state
+ */
+export function getBackgroundFetchState() {
+    return {
+        is_running: BACKGROUND_FETCH_STATE.is_running,
+        current_symbol: BACKGROUND_FETCH_STATE.current_symbol,
+        progress: BACKGROUND_FETCH_STATE.progress,
+        total: BACKGROUND_FETCH_STATE.total,
+        status: BACKGROUND_FETCH_STATE.status,
+    };
+}
+
+/**
+ * Stop the background fetch process
+ */
+export function stopBackgroundFetch() {
+    if (BACKGROUND_FETCH_STATE.session_id) {
+        BACKGROUND_FETCH_STATE.session_id = null;
+        BACKGROUND_FETCH_STATE.is_running = false;
+        BACKGROUND_FETCH_STATE.status = 'stopped';
+        notifyListeners();
+    }
+}
 
 export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all_technical_data) {
     const final_list = [];
@@ -140,111 +202,114 @@ export async function request_database() {
     }
 }
 /**
- * Efficiently fetches missing stock data for analysis with progress tracking
- * @param {Object} searching_options - The search criteria for filtering stocks
- * @param {Function} onProgress - Callback function to track progress (symbol, progress_percent)
- * @param {Function} onStatusChange - Callback function for status updates
- * @returns {Promise<Array>} Array of filtered ticker data
+ * Get statistics about cached data
+ * @returns {Promise<{total_symbols: number, cached_symbols: number, missing_symbols: number, cache_percentage: number}>}
  */
-export async function fetch_and_filter_stocks(searching_options, onProgress = null, onStatusChange = null) {
-    const random_num_hash = `${Math.random()}_${Date.now()}`;
-    const state_key = 'fetching_analysis_data';
-    let state = get_state();
-    state[state_key] = random_num_hash;
+export async function getCacheStatistics() {
+    const all_symbols = await get_all_symbols();
+    const existing_keys = new Set(await get_all_technical_data_keys());
+    
+    return {
+        total_symbols: all_symbols.length,
+        cached_symbols: existing_keys.size,
+        missing_symbols: all_symbols.length - existing_keys.size,
+        cache_percentage: Math.round((existing_keys.size / all_symbols.length) * 100)
+    };
+}
+
+/**
+ * Starts background fetching of all stock data ordered by market cap (largest first)
+ * This runs in the background and can be monitored via subscribeToBackgroundFetch
+ * @param {boolean} force_restart - If true, restarts even if already running
+ */
+export async function startBackgroundStockFetch(force_restart = false) {
+    // Don't start if already running (unless forced)
+    if (BACKGROUND_FETCH_STATE.is_running && !force_restart) {
+        console.log("Background fetch already running");
+        return;
+    }
+
+    // Generate session ID to allow cancellation
+    const session_id = `${Math.random()}_${Date.now()}`;
+    BACKGROUND_FETCH_STATE.session_id = session_id;
+    BACKGROUND_FETCH_STATE.is_running = true;
+    BACKGROUND_FETCH_STATE.status = 'initializing';
+    BACKGROUND_FETCH_STATE.progress = 0;
+    notifyListeners();
 
     try {
-        if (onStatusChange) onStatusChange("Loading basic stock data...");
+        // Get all symbols sorted by market cap
+        BACKGROUND_FETCH_STATE.status = 'loading stock list';
+        notifyListeners();
         
-        // Get all available symbols first
         const all_symbols = await get_all_symbols();
-        const all_nasdaq_info = await get_all_nasdaq_info();
+        const sorted_symbols = await nasdaq_sorted_by("marketCap", all_symbols);
         
-        if (state[state_key] !== random_num_hash) {
-            if (onStatusChange) onStatusChange("Cancelled");
-            return [];
+        if (BACKGROUND_FETCH_STATE.session_id !== session_id) {
+            BACKGROUND_FETCH_STATE.status = 'cancelled';
+            BACKGROUND_FETCH_STATE.is_running = false;
+            notifyListeners();
+            return;
         }
 
-        // Filter symbols by market cap first to reduce the workload
-        const pre_filtered_symbols = all_symbols.filter(symbol => {
-            const nasdaq_data = all_nasdaq_info[symbol];
-            if (!nasdaq_data || !nasdaq_data.marketCap) return false;
-            
-            const market_cap = unformat_number(nasdaq_data.marketCap);
-            if (isNaN(market_cap)) return false;
-            
-            return market_cap >= searching_options.min_market_cap && 
-                   market_cap <= searching_options.max_market_cap;
-        });
+        BACKGROUND_FETCH_STATE.total = sorted_symbols.length;
+        BACKGROUND_FETCH_STATE.status = 'fetching stock data';
+        notifyListeners();
 
-        if (onStatusChange) onStatusChange(`Found ${pre_filtered_symbols.length} stocks matching market cap criteria`);
+        // Get already cached symbols to skip them
+        const existing_keys = new Set(await get_all_technical_data_keys());
+        const symbols_to_fetch = sorted_symbols.filter(symbol => !existing_keys.has(symbol));
 
-        // Get existing technical data
-        const existing_technical_keys = new Set(await get_all_technical_data_keys());
-        const symbols_needing_data = pre_filtered_symbols.filter(symbol => 
-            !existing_technical_keys.has(symbol)
-        );
+        console.log(`Background fetch: ${symbols_to_fetch.length} stocks to fetch out of ${sorted_symbols.length} total`);
 
-        if (symbols_needing_data.length > 0) {
-            if (onStatusChange) onStatusChange(`Fetching data for ${symbols_needing_data.length} stocks...`);
-            
-            const CHUNK_SIZE = 5;
-            const chunks = [];
-            for (let i = 0; i < symbols_needing_data.length; i += CHUNK_SIZE) {
-                chunks.push(symbols_needing_data.slice(i, i + CHUNK_SIZE));
+        const CHUNK_SIZE = 3;
+        const TIME_DELAY = 2000; // 2 seconds between chunks
+
+        for (let i = 0; i < symbols_to_fetch.length; i += CHUNK_SIZE) {
+            // Check if we should stop
+            if (BACKGROUND_FETCH_STATE.session_id !== session_id) {
+                BACKGROUND_FETCH_STATE.status = 'cancelled';
+                BACKGROUND_FETCH_STATE.is_running = false;
+                notifyListeners();
+                return;
             }
 
-            for (let i = 0; i < chunks.length; i++) {
-                if (state[state_key] !== random_num_hash) {
-                    if (onStatusChange) onStatusChange("Cancelled");
-                    return [];
+            const chunk = symbols_to_fetch.slice(i, i + CHUNK_SIZE);
+            const chunk_promises = chunk.map(async (symbol) => {
+                try {
+                    BACKGROUND_FETCH_STATE.current_symbol = symbol;
+                    BACKGROUND_FETCH_STATE.progress = Math.round((i / symbols_to_fetch.length) * 100);
+                    notifyListeners();
+                    
+                    await fetch_widget_data(symbol);
+                    return symbol;
+                } catch (error) {
+                    console.error(`Background fetch failed for ${symbol}:`, error);
+                    return null;
                 }
+            });
 
-                const chunk = chunks[i];
-                const progress = Math.round((i / chunks.length) * 100);
-                
-                if (onStatusChange) onStatusChange(`Processing chunk ${i + 1}/${chunks.length} (${progress}%)`);
-
-                const promises = chunk.map(async (symbol) => {
-                    try {
-                        await fetch_widget_data(symbol);
-                        if (onProgress) onProgress(symbol, Math.round(((i * CHUNK_SIZE + chunk.indexOf(symbol) + 1) / symbols_needing_data.length) * 100));
-                        return symbol;
-                    } catch (error) {
-                        console.error(`Failed to fetch data for ${symbol}:`, error);
-                        return null;
-                    }
-                });
-
-                // Add delay to prevent rate limiting
-                promises.push(delay(2000));
-                await Promise.all(promises);
-            }
+            // Wait for chunk and add delay
+            chunk_promises.push(delay(TIME_DELAY));
+            await Promise.all(chunk_promises);
         }
 
-        if (state[state_key] !== random_num_hash) {
-            if (onStatusChange) onStatusChange("Cancelled");
-            return [];
+        // Completed successfully
+        if (BACKGROUND_FETCH_STATE.session_id === session_id) {
+            BACKGROUND_FETCH_STATE.is_running = false;
+            BACKGROUND_FETCH_STATE.status = 'completed';
+            BACKGROUND_FETCH_STATE.progress = 100;
+            BACKGROUND_FETCH_STATE.current_symbol = '';
+            notifyListeners();
+            console.log("Background stock fetch completed!");
         }
-
-        if (onStatusChange) onStatusChange("Filtering and sorting results...");
-        
-        // Now get all technical data and filter
-        const all_technical_data = await get_all_technical_data();
-        const filtered_results = filter_tickers(searching_options, pre_filtered_symbols, all_nasdaq_info, all_technical_data);
-        
-        if (onStatusChange) onStatusChange(`Analysis complete! Found ${filtered_results.length} matching stocks.`);
-        
-        return filtered_results;
 
     } catch (error) {
-        console.error("Error in fetch_and_filter_stocks:", error);
-        toast.error("Failed to fetch and filter stocks: " + error.message);
-        if (onStatusChange) onStatusChange("Error occurred");
-        return [];
-    } finally {
-        // Clean up state
-        if (state[state_key] === random_num_hash) {
-            delete state[state_key];
+        console.error("Error in background stock fetch:", error);
+        if (BACKGROUND_FETCH_STATE.session_id === session_id) {
+            BACKGROUND_FETCH_STATE.is_running = false;
+            BACKGROUND_FETCH_STATE.status = 'error: ' + error.message;
+            notifyListeners();
         }
     }
 }
