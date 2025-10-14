@@ -1,7 +1,7 @@
 import "@/app/css/Analysis.css";
 import "@/app/css/Homepage.css";
 import "@/app/css/Playground.css";
-import { filter_tickers, filter_tickers_async, request_database, fetch_and_filter_stocks } from "@/app/funcs/analysis";
+import { filter_tickers, filter_tickers_async, request_database, subscribeToBackgroundFetch, getBackgroundFetchState, stopBackgroundFetch, startBackgroundStockFetch, getCacheStatistics } from "@/app/funcs/analysis";
 import { cache_is_valid, clear_cache, STOCK_CACHE } from "@/app/networking/cache";
 import { get_all_nasdaq_info } from "@/app/networking/scraper";
 import { save_dynamic_sector } from "@/app/funcs/sectors";
@@ -14,7 +14,7 @@ import MarketCapSlider from "@/components/misc/MarketCapSlider";
 import CustomSectorNamePopup from "@/components/popups/CustomSectorNamePopup";
 import TableDownloadPopup from "@/components/popups/TableDownloadPopup";
 import StockWidget from "@/components/widgets/StockWidget";
-import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography } from '@mui/material';
+import { Button, Checkbox, FormControl, InputLabel, MenuItem, Select, Stack, TextField, ThemeProvider, Tooltip, Typography, LinearProgress, Box, Paper } from '@mui/material';
 import localforage from "localforage";
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
@@ -33,10 +33,22 @@ export default class Analysis extends Component {
             search_value: "",
             filtered_tickers: [],
             show_searching_options: false,
-            is_loading: false,
-            loading_status: "",
-            loading_progress: 0,
-            current_symbol: "",
+            is_filtering: false, // Only for filtering operation
+            // Background fetch state
+            background_fetch: {
+                is_running: false,
+                current_symbol: '',
+                progress: 0,
+                total: 0,
+                status: 'idle',
+            },
+            // Cache statistics
+            cache_stats: {
+                total_symbols: 0,
+                cached_symbols: 0,
+                missing_symbols: 0,
+                cache_percentage: 0,
+            },
             searching_options: {
                 min_market_cap: 1_000_000_000,
                 max_market_cap: 1_000_000_000_000_000,
@@ -54,9 +66,13 @@ export default class Analysis extends Component {
         this.sort_all_tickers = this.sort_all_tickers.bind(this);
         this.toggle_searching_options = this.toggle_searching_options.bind(this);
         this.run_analysis = this.run_analysis.bind(this);
-        this.load_existing_data = this.load_existing_data.bind(this);
+        this.start_background_fetch = this.start_background_fetch.bind(this);
+        this.stop_background_fetch = this.stop_background_fetch.bind(this);
+        this.update_cache_stats = this.update_cache_stats.bind(this);
 
         this.save_popup_ref = React.createRef(null);
+        this.unsubscribe_background = null;
+        this.stats_interval = null;
     }
 
     openPopup() {
@@ -68,103 +84,94 @@ export default class Analysis extends Component {
             const all_symbols = await get_all_symbols();
             this.setState({ all_symbols });
             
+            // Subscribe to background fetch updates
+            this.unsubscribe_background = subscribeToBackgroundFetch((state) => {
+                this.setState({ background_fetch: state });
+                
+                // Auto-refresh results when background fetch completes or updates
+                if (!this.state.is_filtering) {
+                    this.update_cache_stats();
+                }
+            });
+            
+            // Update cache statistics periodically
+            this.update_cache_stats();
+            this.stats_interval = setInterval(this.update_cache_stats, 5000); // Every 5 seconds
+            
             // Auto-load existing data if available
-            await this.load_existing_data();
+            await this.run_analysis();
         } catch (error) {
             console.error("Error in componentDidMount:", error);
             toast.error("Failed to load initial data");
         }
     }
 
-    /**
-     * Load and display analysis results from existing cached data
-     */
-    async load_existing_data() {
-        const { searching_options } = this.state;
-        this.setState({ 
-            is_loading: true, 
-            loading_status: "Loading existing data...",
-            loading_progress: 0 
-        });
-
-        try {
-            const filtered_results = await filter_tickers_async(searching_options);
-            this.setState({ 
-                filtered_tickers: filtered_results,
-                is_loading: false,
-                loading_status: filtered_results.length > 0 ? 
-                    `Loaded ${filtered_results.length} stocks from cache` : 
-                    "No cached data available - click 'Run Analysis' to fetch fresh data"
-            });
-        } catch (error) {
-            console.error("Error loading existing data:", error);
-            this.setState({ 
-                is_loading: false, 
-                loading_status: "Failed to load existing data",
-                filtered_tickers: []
-            });
+    componentWillUnmount() {
+        // Cleanup subscription and interval
+        if (this.unsubscribe_background) {
+            this.unsubscribe_background();
+        }
+        if (this.stats_interval) {
+            clearInterval(this.stats_interval);
         }
     }
 
+    async update_cache_stats() {
+        try {
+            const stats = await getCacheStatistics();
+            this.setState({ cache_stats: stats });
+        } catch (error) {
+            console.error("Error updating cache stats:", error);
+        }
+    }
+
+    start_background_fetch() {
+        startBackgroundStockFetch();
+        toast.info("Background data collection started");
+    }
+
+    stop_background_fetch() {
+        stopBackgroundFetch();
+        toast.info("Background data collection stopped");
+    }
+
     /**
-     * Run a complete analysis with fresh data fetching
+     * Run analysis - filters and displays stocks based on current cache
      */
     async run_analysis() {
-        const { searching_options } = this.state;
-        
-        this.setState({ 
-            is_loading: true, 
-            loading_status: "Starting analysis...",
-            loading_progress: 0,
-            filtered_tickers: []
-        });
+        this.setState({ is_filtering: true });
 
         try {
-            const results = await fetch_and_filter_stocks(
-                searching_options,
-                (symbol, progress) => {
-                    this.setState({ 
-                        current_symbol: symbol,
-                        loading_progress: progress 
-                    });
-                },
-                (status) => {
-                    this.setState({ loading_status: status });
-                }
-            );
-
+            const { searching_options } = this.state;
+            const filtered_results = await filter_tickers_async(searching_options);
+            
             this.setState({ 
-                filtered_tickers: results,
-                is_loading: false,
-                loading_status: `Analysis complete! Found ${results.length} matching stocks.`,
-                current_symbol: ""
+                filtered_tickers: filtered_results,
+                is_filtering: false,
             });
 
+            if (filtered_results.length > 0) {
+                toast.success(`Found ${filtered_results.length} matching stocks`);
+            } else {
+                toast.info("No stocks match your criteria");
+            }
         } catch (error) {
             console.error("Error in run_analysis:", error);
-            this.setState({ 
-                is_loading: false,
-                loading_status: "Analysis failed: " + error.message,
-                filtered_tickers: []
-            });
+            this.setState({ is_filtering: false });
+            toast.error("Failed to analyze stocks: " + error.message);
         }
     }
+
+    openPopup() {
+        this.save_popup_ref.current.open();
+    };
+
     /**
-     * 
-     * @param {Boolean} skip_cached - should ignore the cached data if any
-     * @returns {Promise<void>}
+     * @deprecated - Background fetch handles data collection now
      */
     async fetch_all_data(skip_cached = true) {
-        // This method is now deprecated in favor of run_analysis()
-        // Keeping for backwards compatibility
-        console.warn("fetch_all_data is deprecated, use run_analysis() instead");
-        
-        if (!skip_cached) {
-            await this.load_existing_data();
-            return;
-        }
-        
-        await this.run_analysis();
+        console.warn("fetch_all_data is deprecated, use background fetch instead");
+        this.start_background_fetch();
     }
 
     toggle_searching_options() {
@@ -172,8 +179,8 @@ export default class Analysis extends Component {
     }
 
     async sort_all_tickers() {
-        // This method now uses the same logic as load_existing_data
-        await this.load_existing_data();
+        // This method now uses the same logic as run_analysis
+        await this.run_analysis();
     }
     predict(symbol) {
         this.predictions.setItem("AAPL", 180)
@@ -181,7 +188,7 @@ export default class Analysis extends Component {
 
     render() {
         const { all_symbols, search_value, searched_symbols, filtered_tickers, downloadable_stores,
-            show_searching_options, searching_options, is_loading, loading_status, loading_progress, current_symbol } = this.state;
+            show_searching_options, searching_options, is_filtering, background_fetch, cache_stats } = this.state;
         const { settings } = this.context;
         const widgetSize = settings?.Analysis_Page?.settings?.default_widget_size?.value || 'small';
 
@@ -195,92 +202,108 @@ export default class Analysis extends Component {
                 <div className="">
                     <div>
                         <h1>Stock Analysis</h1>
-                        <div>
-                            {`Total symbols available: ${all_symbols.length}`}
-                        </div>
-                        <div>
+                        
+                        {/* Cache Statistics */}
+                        <Paper elevation={1} style={{ marginTop: "10px", padding: "10px", backgroundColor: "#f5f5f5" }}>
+                            <Typography variant="body2">
+                                <strong>Data Cache:</strong> {cache_stats.cached_symbols} / {cache_stats.total_symbols} stocks ({cache_stats.cache_percentage}% complete)
+                            </Typography>
+                            {cache_stats.missing_symbols > 0 && (
+                                <Typography variant="caption" color="textSecondary">
+                                    {cache_stats.missing_symbols} stocks still need data
+                                </Typography>
+                            )}
+                        </Paper>
+
+                        <div style={{ marginTop: "10px" }}>
                             {`Matching stocks found: ${filtered_tickers.length}`}
                         </div>
-                        {is_loading && (
-                            <div style={{ marginTop: "10px" }}>
-                                <div><strong>Status:</strong> {loading_status}</div>
-                                {current_symbol && <div><strong>Processing:</strong> {current_symbol}</div>}
-                                {loading_progress > 0 && (
-                                    <div style={{ marginTop: "5px" }}>
-                                        <div style={{ 
-                                            width: "100%", 
-                                            backgroundColor: "#e0e0e0", 
-                                            borderRadius: "5px",
-                                            height: "10px"
-                                        }}>
-                                            <div style={{ 
-                                                width: `${loading_progress}%`, 
-                                                backgroundColor: "#4caf50", 
-                                                height: "10px",
-                                                borderRadius: "5px",
-                                                transition: "width 0.3s ease"
-                                            }} />
-                                        </div>
-                                        <div style={{ textAlign: "center", fontSize: "12px", marginTop: "2px" }}>
-                                            {loading_progress}%
-                                        </div>
-                                    </div>
+
+                        {/* Background Fetch Status */}
+                        {background_fetch.is_running && (
+                            <Paper elevation={2} style={{ marginTop: "15px", padding: "15px", backgroundColor: "#e3f2fd" }}>
+                                <Typography variant="h6" gutterBottom>Background Data Collection</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {background_fetch.status}
+                                </Typography>
+                                {background_fetch.current_symbol && (
+                                    <Typography variant="body2" color="textSecondary">
+                                        Processing: <strong>{background_fetch.current_symbol}</strong>
+                                    </Typography>
                                 )}
-                            </div>
-                        )}
-                        {!is_loading && loading_status && (
-                            <div style={{ marginTop: "10px", color: filtered_tickers.length > 0 ? "#4caf50" : "#ff9800" }}>
-                                <strong>Status:</strong> {loading_status}
-                            </div>
+                                <Box sx={{ width: '100%', marginTop: 2 }}>
+                                    <LinearProgress variant="determinate" value={background_fetch.progress} />
+                                    <Typography variant="caption" display="block" align="center" sx={{ marginTop: 1 }}>
+                                        {background_fetch.progress}% Complete
+                                    </Typography>
+                                </Box>
+                                <Button 
+                                    onClick={this.stop_background_fetch} 
+                                    variant="outlined" 
+                                    color="error" 
+                                    size="small"
+                                    style={{ marginTop: "10px" }}
+                                >
+                                    Stop Background Fetch
+                                </Button>
+                            </Paper>
                         )}
                     </div>
 
-                    <Stack spacing={2} direction={"row"}>
-                        <Tooltip title={"Run complete analysis with current settings"}>
+                    <Stack spacing={2} direction={"row"} style={{ marginTop: "15px" }}>
+                        {!background_fetch.is_running ? (
+                            <Tooltip title={"Start background data collection (ordered by market cap)"}>
+                                <Button 
+                                    variant="contained" 
+                                    onClick={this.start_background_fetch}
+                                    color="primary"
+                                >
+                                    Start Data Collection
+                                </Button>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title={"Background collection is running"}>
+                                <Button 
+                                    variant="outlined" 
+                                    disabled
+                                >
+                                    Collecting Data...
+                                </Button>
+                            </Tooltip>
+                        )}
+                        
+                        <Tooltip title={"Filter and display stocks with current settings"}>
                             <Button 
                                 variant="contained" 
                                 onClick={this.run_analysis}
-                                disabled={is_loading}
-                                color="primary"
+                                disabled={is_filtering}
+                                color="secondary"
                             >
-                                {is_loading ? "Running..." : "Run Analysis"}
+                                {is_filtering ? "Filtering..." : "Run Analysis"}
                             </Button>
                         </Tooltip>
-                        <Tooltip title={"Load results from cached data"}>
-                            <Button 
-                                onClick={this.load_existing_data}
-                                disabled={is_loading}
-                                variant="outlined"
-                            >
-                                Load Cached Data
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title={"Fetches all missing stock data (legacy)"}>
-                            <Button onClick={() => {
-                                this.fetch_all_data(true)
-                            }} disabled={is_loading}>
-                                Fetch Missing (Legacy)
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title={"EVERYTHING - requests all historical data"}>
+                        
+                        <Tooltip title={"EVERYTHING - requests all historical data (legacy)"}>
                             <Button 
                                 onClick={() => {
                                     request_database()
                                 }}
-                                disabled={is_loading}
+                                disabled={background_fetch.is_running}
                                 color="warning"
                             >
                                 Request All Historical
                             </Button>
                         </Tooltip>
+                        
                         <Button 
                             onClick={this.toggle_searching_options}
                             variant={show_searching_options ? "contained" : "outlined"}
                         >
-                            {show_searching_options ? "Hide" : "Show"} Analysis Options
+                            {show_searching_options ? "Hide" : "Show"} Filter Options
                         </Button>
+                        
                         <div style={{ flex: 1, paddingRight: "1rem" }}>
-                            <Button onClick={clear_cache} style={{ float: "right" }} disabled={is_loading}>
+                            <Button onClick={clear_cache} style={{ float: "right" }} disabled={background_fetch.is_running}>
                                 Clear Cache
                             </Button>
                         </div>
@@ -293,11 +316,11 @@ export default class Analysis extends Component {
                 {show_searching_options && <BackGroundPaper style={{ padding: "1rem", minHeight: "4rem", flex: 1 }}>
                     <Stack spacing={2} direction={"row"}>
                         <Button 
-                            onClick={this.load_existing_data}
-                            disabled={is_loading}
+                            onClick={this.run_analysis}
+                            disabled={is_filtering}
                             variant="contained"
                         >
-                            Apply Settings
+                            Apply Filters
                         </Button>
                         <div>
                             <Typography id="track-false-slider" gutterBottom>
@@ -371,11 +394,13 @@ export default class Analysis extends Component {
                     </Stack>
                 </BackGroundPaper>}
                 <div className="widgets-container" data-tauri-drag-region style={{ height: "auto", flex: 7 }}>
-                    {filtered_tickers.length === 0 && !is_loading ? (
+                    {filtered_tickers.length === 0 && !is_filtering && !background_fetch.is_running ? (
                         <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
                             <Typography variant="h6">No stocks found</Typography>
                             <Typography variant="body2" style={{ marginTop: "1rem" }}>
-                                Try adjusting your search criteria or running a fresh analysis to fetch new data.
+                                {cache_stats.cached_symbols === 0 
+                                    ? "Start data collection to begin fetching stock data."
+                                    : "Try adjusting your filter criteria or wait for more data to be collected."}
                             </Typography>
                         </div>
                     ) : (

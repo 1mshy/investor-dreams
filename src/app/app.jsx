@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import "../app/css/Widgets.css";
 import { clear_cache, complex_retrieve, complex_store } from './networking/cache';
+import { startBackgroundStockFetch } from './funcs/analysis';
 import Background from './mui/Background';
 import Analysis from './pages/Analysis';
 import Home from './pages/Home';
@@ -80,6 +81,12 @@ const BasePage = () => {
       // set_api_keys(keys)
       set_errors(false)
       set_has_checked(true)
+      
+      // Start background stock data fetching on app load
+      console.log("Starting background stock data fetch...");
+      setTimeout(() => {
+        startBackgroundStockFetch();
+      }, 2000); // Delay 2 seconds to let the app fully load
     };
     become_async();
   }, []);
