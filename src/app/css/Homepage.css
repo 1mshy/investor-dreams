@@ -5,11 +5,9 @@
 }
 
 .homepage-mainPage {
-    /* background: linear-gradient(135deg, #0b0530, #070e3a); */
-    /* background-color: #2E3A47; */
-    /* color: #ffffff; */
     display: flex;
     flex-direction: column;
+    color: var(--text-primary);
 }
 
 .homepage-header {
@@ -21,7 +19,7 @@
 
 .homepage-title {
     font-size: 2rem;
-    color: #0080b3;
+    color: var(--primary-color);
 }
 
 .homepage-nav {
@@ -31,16 +29,16 @@
 }
 
 .homepage-navButton {
-    background-color: #0080b3;
+    background-color: var(--primary-color);
     padding: 10px 20px;
-    color: white;
+    color: var(--text-primary);
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.3s ease;
 }
 
 .homepage-navButton:hover {
-    background-color: #005f8a;
+    background-color: var(--primary-color-dark);
 }
 
 .homepage-content {
@@ -48,14 +46,12 @@
     flex-grow: 1;
     justify-content: center;
     overflow: hidden;
-    /* Prevents the playground content from scrolling */
     height: 100%;
-    /* max-height: 90vh; */
 }
 
 .homepage-welcomeText {
     font-size: 2rem;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 

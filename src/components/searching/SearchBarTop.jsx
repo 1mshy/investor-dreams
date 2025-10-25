@@ -2,7 +2,7 @@ import { styled } from '@mui/system';
 import { SearchOutlined } from "@mui/icons-material";
 import { InputAdornment, TextField } from "@mui/material";
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(({ theme }) => ({
     '& .MuiInputBase-root': {
         borderRadius: '20px',
         paddingLeft: '10px',
@@ -14,21 +14,23 @@ const StyledTextField = styled(TextField)({
         minHeight: '40px',
         minWidth: 'fit-content',
         width: '10rem',
+        color: theme.palette.text.primary,
         '& input': {
             cursor: 'text',
+            color: theme.palette.text.primary,
         },
     },
     '& .MuiInputBase-root:hover': {
-        borderColor: '#909090',
+        borderColor: theme.palette.text.disabled,
     },
     '& .MuiInputBase-root.Mui-focused': {
-        borderColor: '#909090',
+        borderColor: theme.palette.primary.main,
         borderWidth: '0.1rem',
     },
     '& .MuiInput-underline:before, & .MuiInput-underline:after': {
         display: 'none',
     },
-});
+}));
 
 export const SearchBarTop = (params) => {
     return (
