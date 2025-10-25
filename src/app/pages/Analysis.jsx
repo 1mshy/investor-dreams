@@ -190,7 +190,7 @@ export default class Analysis extends Component {
         const { all_symbols, search_value, searched_symbols, filtered_tickers, downloadable_stores,
             show_searching_options, searching_options, is_filtering, background_fetch, cache_stats } = this.state;
         const { settings } = this.context;
-        const widgetSize = settings?.Analysis_Page?.settings?.default_widget_size?.value || 'small';
+        const widgetSize = settings?.Analysis_Page?.settings?.default_widget_size?.value || 'mini';
 
         return <ThemeProvider theme={theme}>
             <div className={"analysis-whole"}>
@@ -204,7 +204,7 @@ export default class Analysis extends Component {
                         <h1>Stock Analysis</h1>
                         
                         {/* Cache Statistics */}
-                        <Paper elevation={1} style={{ marginTop: "10px", padding: "10px", backgroundColor: "#f5f5f5" }}>
+                        <Paper elevation={1} style={{ marginTop: "10px", padding: "10px",  }}>
                             <Typography variant="body2">
                                 <strong>Data Cache:</strong> {cache_stats.cached_symbols} / {cache_stats.total_symbols} stocks ({cache_stats.cache_percentage}% complete)
                             </Typography>
@@ -221,7 +221,7 @@ export default class Analysis extends Component {
 
                         {/* Background Fetch Status */}
                         {background_fetch.is_running && (
-                            <Paper elevation={2} style={{ marginTop: "15px", padding: "15px", backgroundColor: "#e3f2fd" }}>
+                            <Paper elevation={2} style={{ marginTop: "15px", padding: "15px", }}>
                                 <Typography variant="h6" gutterBottom>Background Data Collection</Typography>
                                 <Typography variant="body2" color="textSecondary">
                                     {background_fetch.status}
@@ -368,7 +368,7 @@ export default class Analysis extends Component {
                         </FormControl>
 
                         <FormControl>
-                            <label style={{ fontSize: "14px", color: "#666" }}>
+                            <label style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
                                 <Checkbox 
                                     checked={searching_options.reverse} 
                                     onChange={() => {
@@ -395,7 +395,7 @@ export default class Analysis extends Component {
                 </BackGroundPaper>}
                 <div className="widgets-container" data-tauri-drag-region style={{ height: "auto", flex: 7 }}>
                     {filtered_tickers.length === 0 && !is_filtering && !background_fetch.is_running ? (
-                        <div style={{ textAlign: "center", padding: "2rem", color: "#666" }}>
+                        <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-secondary)" }}>
                             <Typography variant="h6">No stocks found</Typography>
                             <Typography variant="body2" style={{ marginTop: "1rem" }}>
                                 {cache_stats.cached_symbols === 0 
@@ -406,7 +406,7 @@ export default class Analysis extends Component {
                     ) : (
                         <div>
                             {filtered_tickers.length > 0 && (
-                                <div style={{ marginBottom: "1rem", padding: "1rem", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+                                <div style={{ marginBottom: "1rem", padding: "1rem", borderRadius: "8px" }}>
                                     <Typography variant="h6">Analysis Results ({filtered_tickers.length} stocks)</Typography>
                                     <Typography variant="body2" style={{ marginTop: "0.5rem" }}>
                                         Sorted by: <strong>{searching_options.sort_by.replace(/_/g, ' ').toUpperCase()}</strong>

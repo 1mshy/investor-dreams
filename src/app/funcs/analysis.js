@@ -72,32 +72,56 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
     const final_list = [];
     
     if (!all_keys || !all_nasdaq_info || !all_technical_data) {
-        console.warn("Missing data for filtering tickers");
+        console.warn("Missing data for filtering tickers", { 
+            has_keys: !!all_keys, 
+            has_nasdaq: !!all_nasdaq_info, 
+            has_technical: !!all_technical_data 
+        });
         return final_list;
     }
+    
+    console.log(`Filtering ${all_keys.length} tickers with ${Object.keys(all_technical_data).length} technical data entries`);
     
     for (let key of all_keys) {
         try {
             const data = all_technical_data[key];
-            if (!data || !data["data"] || !data["data"]["summaryData"] || !all_nasdaq_info[key]) continue;
-            
-            const summaryData = data["data"]["summaryData"];
             const nasdaq_data = all_nasdaq_info[key];
             
-            const current_price = unformat_number(nasdaq_data["lastsale"]);
-            const price_target = unformat_number(summaryData["OneYrTarget"]["value"]);
-            const pe_ratio = unformat_number(summaryData["PERatio"]["value"]);
-            const forward_pe_ratio = unformat_number(summaryData["ForwardPE1Yr"]["value"]);
-            const divided_yield = unformat_number(summaryData["Yield"]["value"]);
-            const net_change = unformat_number(nasdaq_data["netchange"]);
-            const percent_change = unformat_number(nasdaq_data["pctchange"]);
-            const market_cap = unformat_number(summaryData["MarketCap"]["value"]);
+            // Skip if no nasdaq data at all
+            if (!nasdaq_data) continue;
             
-            // Skip if essential data is missing or invalid
-            if (current_price === 0 || isNaN(market_cap) || market_cap <= 0) continue;
+            // Check if we have technical data with summaryData
+            const has_technical_data = data && data["data"] && data["data"]["summaryData"];
+            
+            if (!has_technical_data) {
+                // If no technical data, skip this ticker for now
+                continue;
+            }
+            
+            const summaryData = data["data"]["summaryData"];
+            
+            // Try to get market cap from either technical data or nasdaq data
+            let market_cap = unformat_number(summaryData["MarketCap"]?.["value"]);
+            if (isNaN(market_cap) || market_cap <= 0) {
+                market_cap = unformat_number(nasdaq_data["marketCap"]);
+            }
+            
+            // Skip if no valid market cap found
+            if (isNaN(market_cap) || market_cap <= 0) continue;
             
             // Apply market cap filter
             if (market_cap < searching_options.min_market_cap || market_cap > searching_options.max_market_cap) continue;
+            
+            const current_price = unformat_number(nasdaq_data["lastsale"]);
+            const price_target = unformat_number(summaryData["OneYrTarget"]?.["value"]);
+            const pe_ratio = unformat_number(summaryData["PERatio"]?.["value"]);
+            const forward_pe_ratio = unformat_number(summaryData["ForwardPE1Yr"]?.["value"]);
+            const divided_yield = unformat_number(summaryData["Yield"]?.["value"]);
+            const net_change = unformat_number(nasdaq_data["netchange"]);
+            const percent_change = unformat_number(nasdaq_data["pctchange"]);
+            
+            // Skip if essential price data is missing
+            if (current_price === 0 || isNaN(current_price)) continue;
             
             // Calculate target percent difference (handle case where price_target might be 0 or missing)
             const target_percent_difference = (price_target > 0) ? percentage_change(price_target, current_price) : 0;
@@ -122,6 +146,8 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
         }
     }
     
+    console.log(`Filtered down to ${final_list.length} tickers matching criteria`);
+    
     // Sort the results
     final_list.sort((a, b) => {
         const valueA = a[searching_options.sort_by] || 0;
@@ -131,7 +157,10 @@ export function filter_tickers(searching_options, all_keys, all_nasdaq_info, all
     
     if (searching_options.reverse) final_list.reverse();
     
-    return final_list.slice(0, searching_options.tickers_shown || 50);
+    const result = final_list.slice(0, searching_options.tickers_shown || 50);
+    console.log(`Returning ${result.length} tickers after sorting and limiting`);
+    
+    return result;
 }
 
 export async function filter_tickers_async(searching_options) {

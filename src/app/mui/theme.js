@@ -7,38 +7,13 @@
  */
 
 import { Paper } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
+import { standardTheme, colors } from '../theme/standardTheme';
 
 /**
- * MUI theme overrides for the entire project.
- * Defines global styles for Material-UI components including
- * custom background colors and text colors.
- * 
- * @type {import("@mui/material").Theme}
- * @property {Object} components - Component-specific style overrides
- * @property {Object} components.MuiPaper - Paper component styles
- * @property {Object} components.MuiTextField - TextField component styles
+ * Export the standardized theme for use throughout the app
  */
-export const theme = createTheme({
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#1e293b',
-          color: '#ffffff',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          color: '#ffffff',
-        },
-      },
-    },
-  },
-});
+export const theme = standardTheme;
 
 /**
  * A Paper component with a semi-transparent background and white text.
@@ -53,8 +28,8 @@ export const theme = createTheme({
  * )
  */
 export const SoftPaper = styled(Paper)`
-  background-color: rgba(30, 41, 59, 0.9) !important;
-  color: #ffffff !important;
+  background-color: ${colors.background.paperLight} !important;
+  color: ${colors.text.primary} !important;
   border-radius: 1rem !important; 
   padding: 1rem;
   overflow: hidden;
@@ -74,7 +49,7 @@ export const SoftPaper = styled(Paper)`
  * )
  */
 export const SolidPaper = styled(SoftPaper)`
-  background-color: rgba(30, 41, 59, 1) !important;
+  background-color: ${colors.background.paperSolid} !important;
 `;
 
 /**
@@ -91,8 +66,8 @@ export const SolidPaper = styled(SoftPaper)`
  * )
  */
 export const BackGroundPaper = styled(Paper)`
-  background-color: rgba(30, 41, 59, 0.5);
-  color: #ffffff;
+  background-color: ${colors.background.paperTransparent};
+  color: ${colors.text.primary};
   border-radius: 0;
   margin: 0;
   padding: 0;
