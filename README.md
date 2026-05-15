@@ -1,5 +1,7 @@
 https://github.com/user-attachments/assets/1c5b1dc6-037e-4c1e-8bd2-42790a2decf0
 
+> **Project moved:** This project has evolved into a new shape and now lives as **auto-analyser-2** on GitHub. Future development continues there.
+
 # Investors Dream
 This project is made to show the daily changes of US based stocks that are part of the s&p 500. 
 I have wanted to visualize the changes to the stocks that are part of the Standard & Poor’s 500 
