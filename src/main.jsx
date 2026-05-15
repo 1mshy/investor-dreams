@@ -5,7 +5,7 @@ import { SettingsProvider } from './app/settings/SettingsContext';
 
 import "@/app/css/globals.css";
 import 'react-toastify/dist/ReactToastify.css';
-
+//test
 ReactDOM.createRoot(document.getElementById("application")).render(
     <React.StrictMode>
         <SettingsProvider>
